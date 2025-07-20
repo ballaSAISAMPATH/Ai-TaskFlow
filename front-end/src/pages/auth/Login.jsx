@@ -2,24 +2,37 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Eye, EyeOff, Mail, Lock, LogIn } from 'lucide-react'
-
+import { useDispatch } from 'react-redux'
+import {login} from '../../store/auth/index'
+import { toast } from "sonner"
 const Login = () => {
   const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const dispatch = useDispatch()
+const handleLogin = async (e) => {
+  e.preventDefault();
+  setIsLoading(true);
 
-  const handleLogin = async (e) => {
-    e.preventDefault()
-    setIsLoading(true)
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false)
-      console.log('Login attempted with:', { email, password })
-    }, 1500)
+  try {
+    const result = await dispatch(login({ email, password }));
+    if(result.payload.success)
+    {
+      toast.success(result.payload.message);
+    }
+    else{
+      toast.error(result.payload.message)
+    }
+    console.log("User data:", result);
+  } catch (err) {
+    toast.error(err?.message || "Login failed");
+    console.error("Login error:", err);
+  } finally {
+    setIsLoading(false);
   }
+};
 
   return (
     <div className="w-full max-w-md mx-auto mb-[20rem]">
@@ -90,26 +103,7 @@ const Login = () => {
           </div>
         </div>
 
-        {/* Remember Me & Forgot Password */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <input
-              id="remember-me"
-              name="remember-me"
-              type="checkbox"
-              className="h-4 w-4 text-green-500 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
-            />
-            <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-              Remember me
-            </label>
-          </div>
-          <div className="text-sm">
-            <a href="#" className="font-medium text-green-500 hover:text-green-600 transition-colors duration-200">
-              Forgot your password?
-            </a>
-          </div>
-        </div>
-
+    
         {/* Login Button */}
         <div>
           <Button

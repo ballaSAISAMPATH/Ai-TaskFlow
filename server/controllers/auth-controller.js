@@ -23,21 +23,15 @@ admin.initializeApp({
  * Register user (email/password)
  */
 const registerUser = async (req, res) => {
-  console.log("Register request body:", req.body);
 
   const { userName, email, password } = req.body;
 
-  if (!password || password.trim() === "") {
-    return res.status(400).json({
-      success: false,
-      message: "Password is required.",
-    });
-  }
 
   try {
     const check = await User.findOne({ email });
+    
     if (check) {
-      return res.status(400).json({
+      return res.status(200).json({
         success: false,
         message: "User already exists!",
       });

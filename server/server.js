@@ -14,8 +14,8 @@ const app = express();
 
 // CORS config
 app.use(cors({
-  origin: ['http://localhost:3000'],
-  credentials: true,
+  origin: 'http://localhost:5173', // ✅ must be the exact origin
+  credentials: true,              // ✅ allow cookies and auth headers
 }));
 
 app.use(cookieParser());
