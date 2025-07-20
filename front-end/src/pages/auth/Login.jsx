@@ -1,12 +1,169 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
+import { Eye, EyeOff, Mail, Lock, LogIn } from 'lucide-react'
+
 const Login = () => {
-    const navigate = useNavigate()
+  const navigate = useNavigate()
+  const [showPassword, setShowPassword] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleLogin = async (e) => {
+    e.preventDefault()
+    setIsLoading(true)
+    
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoading(false)
+      console.log('Login attempted with:', { email, password })
+    }, 1500)
+  }
+
   return (
-    <div>
-     this is a login Page
-     <Button onClick={()=>{navigate('/auth/register')}}>Sigup</Button>
+    <div className="w-full max-w-md mx-auto mb-[20rem]">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
+        <p className="text-gray-600">
+          Sign in to your AI-powered workspace
+        </p>
+      </div>
+
+      {/* Login Form */}
+      <form className="space-y-6" onSubmit={handleLogin}>
+        <div className="space-y-5">
+          {/* Email Field */}
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              Email Address
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Mail className="h-5 w-5 text-green-500" />
+              </div>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="block w-full pl-10 pr-3 py-3 border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-500 focus:ring-0 transition-colors duration-200"
+                placeholder="Enter your email"
+              />
+            </div>
+          </div>
+
+          {/* Password Field */}
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              Password
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Lock className="h-5 w-5 text-green-500" />
+              </div>
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="block w-full pl-10 pr-12 py-3 border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-500 focus:ring-0 transition-colors duration-200"
+                placeholder="Enter your password"
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-gray-50 rounded-r-lg transition-colors duration-200"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5 text-green-500" />
+                ) : (
+                  <Eye className="h-5 w-5 text-green-500" />
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Remember Me & Forgot Password */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <input
+              id="remember-me"
+              name="remember-me"
+              type="checkbox"
+              className="h-4 w-4 text-green-500 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
+            />
+            <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+              Remember me
+            </label>
+          </div>
+          <div className="text-sm">
+            <a href="#" className="font-medium text-green-500 hover:text-green-600 transition-colors duration-200">
+              Forgot your password?
+            </a>
+          </div>
+        </div>
+
+        {/* Login Button */}
+        <div>
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+          >
+            {isLoading ? (
+              <div className="flex items-center space-x-2">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                <span>Signing you in...</span>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <LogIn className="w-4 h-4" />
+                <span>Sign In</span>
+              </div>
+            )}
+          </Button>
+        </div>
+
+        {/* Divider */}
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-200" />
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-4 bg-white text-gray-500">Don't have an account?</span>
+          </div>
+        </div>
+
+        {/* Sign Up Button */}
+        <div>
+          <Button
+            type="button"
+            onClick={() => navigate('/auth/register')}
+            className="w-full flex justify-center py-3 px-4 border-2 border-green-500 text-sm font-medium rounded-lg text-green-500 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200"
+          >
+            Create New Account
+          </Button>
+        </div>
+      </form>
+
+      {/* AI Feature Teaser */}
+      <div className="mt-8 p-4 bg-green-50 rounded-lg border border-green-200">
+        <div className="text-center">
+          <p className="text-sm text-gray-700 mb-2">
+            <span className="font-semibold text-green-600">Ready to boost productivity?</span>
+          </p>
+          <p className="text-xs text-gray-600">
+            Join thousands using AI to manage tasks smarter, not harder
+          </p>
+        </div>
+      </div>
     </div>
   )
 }
