@@ -2,54 +2,71 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Eye, EyeOff, Mail, Lock, User, CheckCircle, UserPlus } from 'lucide-react'
-
+import { register } from '../../store/auth'; // adjust path if needed
+import { toast } from 'sonner';
+import { useDispatch } from 'react-redux';
 const Register = () => {
   const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
-  })
+  userName: '',
+  email: '',
+  password: '',
+  confirmPassword: ''
+});
+
   const [isLoading, setIsLoading] = useState(false)
   const [passwordStrength, setPasswordStrength] = useState(0)
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }))
+ const handleInputChange = (e) => {
+  const { name, value } = e.target;
+  setFormData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
 
-    // Calculate password strength
-    if (name === 'password') {
-      let strength = 0
-      if (value.length >= 8) strength++
-      if (/[A-Z]/.test(value)) strength++
-      if (/[a-z]/.test(value)) strength++
-      if (/[0-9]/.test(value)) strength++
-      if (/[^A-Za-z0-9]/.test(value)) strength++
-      setPasswordStrength(strength)
-    }
+  if (name === 'password') {
+    let strength = 0;
+    if (value.length >= 8) strength++;
+    if (/[A-Z]/.test(value)) strength++;
+    if (/[a-z]/.test(value)) strength++;
+    if (/[0-9]/.test(value)) strength++;
+    if (/[^A-Za-z0-9]/.test(value)) strength++;
+    setPasswordStrength(strength);
+  }
+};
+
+ const handleRegister = async (e) => {
+  e.preventDefault();
+
+  if (formData.password !== formData.confirmPassword) {
+    toast.error("Passwords don't match!");
+    return;
   }
 
-  const handleRegister = async (e) => {
-    e.preventDefault()
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords don't match!")
-      return
+  setIsLoading(true);
+
+  try {
+    const data = await dispatch(register(formData));
+    await  console.log(data.payload);
+    
+    if (data.payload.success) {
+      toast.success(data.payload.message);
+      navigate('/auth/login');
+    } else {
+      toast.error(data.payload.message); // ❗ Show error toast for failure
     }
-    
-    setIsLoading(true)
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false)
-      console.log('Registration attempted with:', formData)
-    }, 2000)
+  } catch (err) {
+    toast.error(err?.message || "Something went wrong!");
+    console.error("Unexpected error during registration:", err);
+  } finally {
+    setIsLoading(false);
   }
+};
+
+
 
   const getStrengthColor = () => {
     if (passwordStrength <= 1) return 'bg-red-400'
@@ -85,16 +102,17 @@ const Register = () => {
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <User className="h-5 w-5 text-green-500" />
               </div>
-              <input
-                id="fullName"
-                name="fullName"
-                type="text"
-                required
-                value={formData.fullName}
-                onChange={handleInputChange}
-                className="block w-full pl-10 pr-3 py-3 border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-500 focus:ring-0 transition-colors duration-200"
-                placeholder="Enter your full name"
-              />
+            <input
+            id="userName"
+            name="userName"
+            type="text"
+            required
+            value={formData.userName}
+            onChange={handleInputChange}
+            placeholder="Enter your username"
+            className="block w-full pl-10 pr-3 py-3 border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-500 focus:ring-0 transition-colors duration-200"
+          />
+
             </div>
           </div>
 

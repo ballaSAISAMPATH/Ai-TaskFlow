@@ -1,15 +1,16 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
 import { Brain, CheckCircle, Target, Calendar, Clock, Zap, Users, TrendingUp } from 'lucide-react'
-
+import { useNavigate } from 'react-router-dom'
 const AuthLayout = () => {
+  const navigate  = useNavigate()
   return (
     <div className="min-h-screen bg-white">
       {/* Fixed Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b-2 border-green-500 py-6">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3" onClick={()=>navigate('/')} >
               <div className="p-2 bg-green-500 rounded-lg">
                 <Brain className="w-8 h-8 text-white" />
               </div>
