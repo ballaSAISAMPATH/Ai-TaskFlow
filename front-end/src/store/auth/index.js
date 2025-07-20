@@ -4,7 +4,7 @@ import axios from 'axios'
 const initialData = {
   user: null,
   isAuthenticated: false,
-  isLoading: false
+  isLoading: true
 }
 
 export const register = createAsyncThunk(
@@ -13,6 +13,7 @@ export const register = createAsyncThunk(
     const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/register`, formData, {
       withCredentials: true
     })
+    console.log(response);
     
     return response.data
   }   
