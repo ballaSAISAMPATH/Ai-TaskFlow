@@ -1,15 +1,32 @@
-import React from 'react'
-import { useLocation } from 'react-router-dom'
-const CheckAuth = ({isAuthenticated}) => {
-    const location = useLocation()
-  return (
-    <div>
-      if(isAuthenticated)
-      {
+import { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-      }
-    </div>
-  )
-}
+const CheckAuth = ({ isAuthenticated, children }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
 
-export default CheckAuth
+  useEffect(() => {
+    const path = location.pathname;
+
+  console.log("CheckAuth running:", location.pathname, "Authenticated:", isAuthenticated);
+
+    if (path === '/') {
+      navigate(isAuthenticated ? '/user/home' : '/auth/login');
+    }
+
+    if (
+      isAuthenticated &&
+      (path === '/auth/login' || path === '/auth/register')
+    ) {
+      navigate('/user/home');
+    }
+
+    if (!isAuthenticated && path.startsWith('/user')) {
+      navigate('/auth/login');
+    }
+  }, [location.pathname, isAuthenticated, navigate]);
+
+  return children;
+};
+
+export default CheckAuth;
