@@ -1,0 +1,11 @@
+.app-container.light {
+  background-color: #f0f2f5;
+  color: #333;
+  min-height: 100vh;
+}
+
+.app-container.dark {
+  background-color: #121212;
+  color: #eee;
+  min-height: 100vh;
+}

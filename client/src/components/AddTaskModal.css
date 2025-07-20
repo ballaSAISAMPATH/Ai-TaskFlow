@@ -1,0 +1,69 @@
+.add-task-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 400px;
+  margin: 30px auto;
+  padding: 20px;
+  background: #f8f8f8;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.add-task-input {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px 14px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.add-task-btn {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.add-task-btn:hover {
+  background-color: #0056b3;
+}
+
+.add-task-form.dark {
+  background: #333;
+}
+
+.add-task-input.dark {
+  background: #444;
+  color: #fff;
+  border: 1px solid #666;
+}
+
+.add-task-btn.dark {
+  background-color: #28a745;
+}
+
+.add-task-btn.dark:hover {
+  background-color: #218838;
+}
+
+/* Light theme adjustments */
+.add-task-input.light {
+  background-color: #fff;
+  color: #333;
+}
+
+/* Dark theme adjustments */
+.add-task-input.dark {
+  background-color: #333;
+  color: #fff;
+  border-color: #555;
+}
