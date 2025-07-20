@@ -5,10 +5,12 @@ import AuthLayout from './components/Auth/AuthLayout'
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
 import { Route } from 'react-router-dom'
+import LandingPage from './components/Entrance/LandingPage'
 const App = () => {
   return (
     <div>
         <Routes>
+          <Route path='/' element={<LandingPage/>}/>
             <Route path='/auth' element={<AuthLayout/>}>
                 <Route path='login' element={<Login/>} />
                 <Route path='register' element={<Register/>}/>
