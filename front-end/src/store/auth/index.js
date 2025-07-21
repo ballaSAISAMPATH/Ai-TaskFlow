@@ -41,9 +41,6 @@ export const logoutUser = createAsyncThunk(
       {},
       { withCredentials: true }
     );
-    
-    dispatch({ type: 'pdfChat/resetPdfChat' });
-    
     return response.data;
   }
 );

@@ -3,13 +3,15 @@ import { Brain, Zap, TrendingUp, Home, BarChart3, User, Target, LogOut } from 'l
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-
+import { logoutUser } from '@/store/auth';
+import { useDispatch } from 'react-redux';
+import { toast } from 'sonner';
 const UserHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useSelector((state) => state.auth);
-
+  const dispatch = useDispatch()
   const menuItems = [
     {
       icon: TrendingUp,
@@ -36,6 +38,23 @@ const UserHeader = () => {
       description: 'Manage account',
     },
   ];
+  const handleLogout = async()=>{
+      try{
+        const data = await dispatch(logoutUser())
+        console.log(data.payload);
+        if(data.payload.success)
+        {
+          toast.success(data.payload.message)
+        }
+        else{
+            toast.error(data.payload.message)
+        }
+      }
+      catch(err){
+        toast.error(`something went wrong ${err}`)
+      }
+      
+  }
 
   const isAITaskActive = location.pathname === '/user/add-task';
   const isManualTaskActive = location.pathname === '/user/add-manual';
@@ -80,7 +99,7 @@ const UserHeader = () => {
               className="bg-gradient-to-br from-green-500 to-green-600 hover:from-[#8FE877] hover:to-green-500 text-white font-bold w-10 h-10 rounded-full transition-all duration-200 text-sm flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105 ring-2 ring-white/20"
               onClick={() => navigate('/user/profile')}
             >
-              {user.userName?.[0]?.toUpperCase()}
+              {user&&user.userName?.[0]?.toUpperCase()}
             </button>
           </nav>
 
@@ -89,7 +108,7 @@ const UserHeader = () => {
             <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
               <SheetTrigger asChild>
                 <button className="bg-gradient-to-br from-green-500 to-green-600 hover:from-[#8FE877] hover:to-green-500 text-white font-bold w-10 h-10 rounded-full transition-all duration-200 text-sm flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105 ring-2 ring-white/20">
-                  {user.userName?.[0]?.toUpperCase()}
+                  {user &&user.userName?.[0]?.toUpperCase()}
                 </button>
               </SheetTrigger>
 
@@ -105,7 +124,7 @@ const UserHeader = () => {
                       </div>
                       <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-br from-green-500 to-[#66B539] rounded-full animate-pulse shadow-sm"></div>
                     </div>
-                      <span className="text-xl font-bold text-gray-900">{user.userName}</span>
+                      <span className="text-xl font-bold text-gray-900">{user&&user.userName}</span>
                    
                   </SheetTitle>
                 </SheetHeader>
@@ -167,10 +186,7 @@ const UserHeader = () => {
                 <div className="mt-6 border-t border-gray-200 pt-4">
                   <button
                     className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 text-gray-700 hover:text-green-500 hover:bg-green-500/5"
-                    onClick={() => {
-                      // TODO: handle logout
-                      console.log('Logging out...');
-                    }}
+                    onClick={handleLogout}
                   >
                     <LogOut className="w-5 h-5 text-green-500" />
                     <span>Logout</span>
