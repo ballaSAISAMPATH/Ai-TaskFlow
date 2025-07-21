@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Home = () => {
+const AddTask = () => {
   return (
     <div>
       This is user home
@@ -8,4 +8,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default AddTask
