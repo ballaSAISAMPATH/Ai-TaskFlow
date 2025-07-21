@@ -1,24 +1,23 @@
 import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-
+import ScrollToTop from './utilities/ScrollToTop';
 import { Toaster } from "@/components/ui/sonner";
 import { checkAuthUser } from './store/auth';
-
 import AuthLayout from './components/Auth/AuthLayout';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import LandingPage from './components/Entrance/LandingPage';
-import Home from './pages/auth/UserPages/Home';
-import UserTasks from './pages/auth/UserPages/UserTasks';
-import DashBoard from './pages/auth/UserPages/DashBoard';
+import DashBoard from './pages/UserPages/DashBoard';
 import TaskLayout from './components/User/TaskLayout';
 import CheckAuth from './components/common/CheckAuth';
-
+import UserProfile from './pages/UserPages/UserProfile';
+import AddTask from './pages/UserPages/AddTask';
+import UpdateProgress from './pages/UserPages/UpdateProgress';
+import ManualTask from './pages/UserPages/ManualTask';
 const App = () => {
   const dispatch = useDispatch();
   const { isAuthenticated, isLoading } = useSelector((state) => state.auth);
-  console.log("isLoading : "+isLoading);
   
   useEffect(() => {
     const checkAuth = async () => {
@@ -36,7 +35,9 @@ const App = () => {
   }
 
   return (
-  <CheckAuth isAuthenticated={isAuthenticated} >
+    <div>
+      <ScrollToTop />
+      <CheckAuth isAuthenticated={isAuthenticated} >
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth" element={<AuthLayout />}>
@@ -44,13 +45,16 @@ const App = () => {
           <Route path="register" element={<Register />} />
         </Route>
         <Route path="/user" element={<TaskLayout />}>
-          <Route path="home" element={<Home />} />
-          <Route path="tasks" element={<UserTasks />} />
+          <Route path="add-task" element={<AddTask />} />
           <Route path="dashboard" element={<DashBoard />} />
+          <Route path='update-progress' element={<UpdateProgress/>} />
+          <Route path='profile' element={<UserProfile/>} />
+          <Route path='add-manual' element={<ManualTask/>} />
         </Route>
       </Routes>
       <Toaster richColors position="bottom-right" />
     </CheckAuth>
+    </div>
   );
 };
 
