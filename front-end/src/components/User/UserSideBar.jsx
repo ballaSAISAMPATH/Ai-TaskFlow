@@ -8,11 +8,30 @@ import {
   Target,
   LogOut
 } from 'lucide-react';
-
+import { logoutUser } from '@/store/auth';
+import { useDispatch } from 'react-redux';
+import { toast } from 'sonner';
 const UserSideBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  const dispatch = useDispatch()
+  const handleLogout = async()=>{
+      try{
+        const data = await dispatch(logoutUser())
+        console.log(data.payload);
+        if(data.payload.success)
+        {
+          toast.success(data.payload.message)
+        }
+        else{
+            toast.error(data.payload.message)
+        }
+      }
+      catch(err){
+        toast.error(`something went wrong ${err}`)
+      }
+      
+  }
   const menuItems = [
     {
       icon: TrendingUp,
@@ -126,6 +145,7 @@ const UserSideBar = () => {
       {/* Logout Button */}
       <div className="p-6 border-t border-gray-200">
         <button
+        onClick={handleLogout}
           className="w-full group flex items-center space-x-3 px-3 py-3 rounded-lg 
                     transition-all duration-300 text-gray-700 
                     hover:text-green-500 hover:bg-green-500/5 hover:translate-x-1"

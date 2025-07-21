@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Brain, Zap, Calendar, Target, CheckCircle, Tag } from 'lucide-react';
 import Header from './Header';
 import Footer from './Footer';
-
+import TestimonialsComponent from './TestimonialsComponent';
 // AI Demo Component
 const AIDemo = () => {
   const [userInput, setUserInput] = useState("Finish my React project by next week");
@@ -159,29 +159,7 @@ const LandingPage = () => {
     }
   ];
 
-  const testimonials = [
-    {
-      name: "Sarah Chen",
-      role: "Product Manager at TechCorp",
-      avatar: "SC",
-      content: "AI TaskFlow transformed how our team handles complex projects. The AI breakdown feature alone saved us 10+ hours per week.",
-      rating: 5
-    },
-    {
-      name: "Marcus Rodriguez",
-      role: "Startup Founder",
-      avatar: "MR",
-      content: "The intelligent prioritization is incredible. It's like having a personal productivity coach that never sleeps.",
-      rating: 5
-    },
-    {
-      name: "Emily Watson",
-      role: "Engineering Lead",
-      avatar: "EW",
-      content: "Finally, a task manager that understands context. The AI scheduling has completely optimized our sprint planning.",
-      rating: 5
-    }
-  ];
+  
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -338,7 +316,9 @@ const LandingPage = () => {
           <AIDemo />
         </div>
       </section>
-
+      <div  id="reviews">
+          <TestimonialsComponent />
+      </div>
       {/* Stats Section */}
       <section id="stats" data-scroll-animate className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

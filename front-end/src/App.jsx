@@ -15,6 +15,7 @@ import UserProfile from './pages/UserPages/UserProfile';
 import AddTask from './pages/UserPages/AddTask';
 import UpdateProgress from './pages/UserPages/UpdateProgress';
 import ManualTask from './pages/UserPages/ManualTask';
+import NotFound from './pages/auth/NotFound';
 const App = () => {
   const dispatch = useDispatch();
   const { isAuthenticated, isLoading } = useSelector((state) => state.auth);
@@ -51,6 +52,7 @@ const App = () => {
           <Route path='profile' element={<UserProfile/>} />
           <Route path='add-manual' element={<ManualTask/>} />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster richColors position="bottom-right" />
     </CheckAuth>
