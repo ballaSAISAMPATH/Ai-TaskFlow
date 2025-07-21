@@ -27,8 +27,9 @@ const Header = () => {
           </div>
           
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#features" className="text-gray-600 hover:text-green-500 transition-colors duration-200">AI Features</a>
             <a href="#demo" className="text-gray-600 hover:text-green-500 transition-colors duration-200">Try Demo</a>
+            <a href="#features" className="text-gray-600 hover:text-green-500 transition-colors duration-200">AI Features</a>
+            <a href="#reviews" className="text-gray-600 hover:text-green-500 transition-colors duration-200">Reviews</a>
             <button 
               className="bg-green-500 hover:bg-[#8FE877] text-white font-semibold px-4 py-2 rounded-md transition-colors duration-200"
               onClick={() => navigate('/auth/login')}
@@ -71,6 +72,14 @@ const Header = () => {
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="flex flex-col space-y-4 mt-8">
+                  <a 
+                    href="#reviews" 
+                    className="group flex items-center space-x-3 text-gray-700 hover:text-green-500 transition-all duration-300 text-lg font-medium py-3 px-4 rounded-lg hover:bg-[#66B539]/5 hover:translate-x-1"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Brain className="w-5 h-5 text-green-500 group-hover:text-[#66B539] transition-colors duration-300" />
+                    <span>Reviews</span>
+                  </a>
                   <a 
                     href="#features" 
                     className="group flex items-center space-x-3 text-gray-700 hover:text-green-500 transition-all duration-300 text-lg font-medium py-3 px-4 rounded-lg hover:bg-[#66B539]/5 hover:translate-x-1"
