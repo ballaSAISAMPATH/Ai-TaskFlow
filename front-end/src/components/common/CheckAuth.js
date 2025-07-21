@@ -8,17 +8,16 @@ const CheckAuth = ({ isAuthenticated, children }) => {
   useEffect(() => {
     const path = location.pathname;
 
-  console.log("CheckAuth running:", location.pathname, "Authenticated:", isAuthenticated);
 
     if (path === '/') {
-      navigate(isAuthenticated ? '/user/home' : '/auth/login');
+      navigate(isAuthenticated ? '/user/update-progress' : '/');
     }
 
     if (
       isAuthenticated &&
       (path === '/auth/login' || path === '/auth/register')
     ) {
-      navigate('/user/home');
+      navigate('/user/update-progress');
     }
 
     if (!isAuthenticated && path.startsWith('/user')) {
