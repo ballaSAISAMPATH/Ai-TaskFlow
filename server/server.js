@@ -2,33 +2,28 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
-const dotenv = require('dotenv');
+require('dotenv').config(); 
 const cookieParser = require('cookie-parser');
-
 const taskRoutes = require('./routes/taskRoutes');
 const authRouter = require('./routes/auth-routes');
 
-dotenv.config();
+
 
 const app = express();
 
-// CORS config
 app.use(cors({
-  origin: 'http://localhost:5173', // ✅ must be the exact origin
-  credentials: true,              // ✅ allow cookies and auth headers
+  origin: 'http://localhost:5173', 
+  credentials: true,             
 }));
 
 app.use(cookieParser());
 app.use(express.json());
 
-// ✅ Serve uploaded images
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
-// ✅ FIX: mount tasks router under /api/tasks
 app.use('/api/tasks', taskRoutes);
 app.use('/api/auth', authRouter);
 
-// MongoDB connection
 mongoose
   .connect('mongodb://127.0.0.1:27017/taskDB', {
     useNewUrlParser: true,
