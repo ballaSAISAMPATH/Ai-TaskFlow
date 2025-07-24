@@ -13,9 +13,10 @@ import TaskLayout from './components/User/TaskLayout';
 import CheckAuth from './components/common/CheckAuth';
 import UserProfile from './pages/UserPages/UserProfile';
 import AddTask from './pages/UserPages/AddTask';
-import UpdateProgress from './pages/UserPages/UpdateProgress';
 import ManualTask from './pages/UserPages/ManualTask';
 import NotFound from './pages/auth/NotFound';
+import UserHome from './pages/UserPages/UserHome'
+import GoalDetail from './pages/UserPages/GoalDetail';
 const App = () => {
   const dispatch = useDispatch();
   const { user,isAuthenticated, isLoading } = useSelector((state) => state.auth);
@@ -50,9 +51,10 @@ const App = () => {
         <Route path="/user" element={<TaskLayout />}>
           <Route path="add-task" element={<AddTask />} />
           <Route path="dashboard" element={<DashBoard />} />
-          <Route path='update-progress' element={<UpdateProgress/>} />
+          <Route path='home' element={<UserHome/>} />
           <Route path='profile' element={<UserProfile/>} />
           <Route path='add-manual' element={<ManualTask/>} />
+          <Route path="goal/:goalId" element={<GoalDetail />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

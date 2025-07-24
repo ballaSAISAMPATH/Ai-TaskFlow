@@ -1,18 +1,15 @@
-// routes/goals.js
 const express = require('express');
 const router = express.Router();
 const  {createGoal,getAllGoals,getGoalById,updateGoal,updateDailyTaskStatus,updateWeeklyTaskStatus,updateMonthlyTaskStatus,getDailyTasks
   ,getWeeklyTasks,getMonthlyTasks,deleteGoal,getGoalStats
 } =require('../controllers/task-controller');
-// Goal CRUD
 router.post('/create', createGoal);
-router.get('/display', getAllGoals);
-router.get('/stats', getGoalStats);
-router.get('/:id', getGoalById);
+router.post('/displayAll', getAllGoals);
+router.post('/stats', getGoalStats);
+router.post('/goal/:id', getGoalById);
 router.put('/:id', updateGoal);
 router.delete('/:id', deleteGoal);
 
-// Task Management
 router.get('/:id/daily-tasks', getDailyTasks);
 router.patch('/:id/daily-tasks/status', updateDailyTaskStatus);
 

@@ -10,14 +10,14 @@ const CheckAuth = ({ isAuthenticated, children }) => {
 
 
     if (path === '/') {
-      navigate(isAuthenticated ? '/user/update-progress' : '/');
+      navigate(isAuthenticated ? '/user/home' : '/');
     }
 
     if (
       isAuthenticated &&
       (path === '/auth/login' || path === '/auth/register')
     ) {
-      navigate('/user/update-progress');
+      navigate('/user/home');
     }
 
     if (!isAuthenticated && path.startsWith('/user')) {

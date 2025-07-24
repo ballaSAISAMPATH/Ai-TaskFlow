@@ -2,9 +2,11 @@ import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { createGoal } from '@/store/task'
 import { toast } from 'sonner'
+import { useNavigate } from 'react-router-dom'
 
 const AddTask = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const { user } = useSelector((state) => state.auth)
   const { loading } = useSelector((state) => state.task)
   
@@ -15,7 +17,6 @@ const AddTask = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({
@@ -24,7 +25,6 @@ const AddTask = () => {
     }))
   }
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault()
     
@@ -47,22 +47,51 @@ const AddTask = () => {
         user: user
       })).unwrap()
       
-      // Show success toast with the message from backend
-      toast.success('Goal created successfully')
+      const taskId = result.taskId
       
-      // Reset form on success
+      toast.success(
+        <div className="flex flex-col space-y-2">
+          <span className="font-semibold">🎉 Goal created successfully!</span>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => {
+                navigate(`/user/goal/${taskId}`)
+                toast.dismiss() 
+              }}
+              className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md text-sm font-medium transition-colors"
+            >
+              View Goal
+            </button>
+            <button
+              onClick={() => navigate('/user/home')}
+              className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded-md text-sm font-medium transition-colors"
+            >
+              Go to Dashboard
+            </button>
+          </div>
+        </div>,
+        {
+          duration: 8000, 
+          dismissible: true,
+        }
+      )
+      
       setFormData({
         task: '',
         duration: ''
       })
       
-      console.log('Goal created with ID:', result.taskId)
+      console.log('Goal created with ID:', taskId)
     } catch (error) {
       toast.error(error.message || 'Failed to create goal')
       console.error('Failed to create goal:', error)
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  const handleViewGoalDirectly = () => {
+    navigate('/user/home')
   }
 
   return (
@@ -82,7 +111,6 @@ const AddTask = () => {
       </div>
 
       <div className="space-y-6">
-        {/* Task Input */}
         <div>
           <label htmlFor="task" className="block text-sm font-semibold text-gray-700 mb-2">
             What's your goal? *
@@ -99,7 +127,6 @@ const AddTask = () => {
           />
         </div>
 
-        {/* Duration Input */}
         <div>
           <label htmlFor="duration" className="block text-sm font-semibold text-gray-700 mb-2">
             Duration *
@@ -119,7 +146,6 @@ const AddTask = () => {
           </p>
         </div>
 
-        {/* User Info Display */}
         {user && (
           <div className="flex items-center space-x-2 text-sm text-gray-600 bg-gray-50 p-3 rounded-xl">
             <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
@@ -131,7 +157,6 @@ const AddTask = () => {
           </div>
         )}
 
-        {/* Submit Button */}
         <button
           onClick={handleSubmit}
           disabled={isSubmitting || loading.createGoal || !formData.task.trim() || !formData.duration.trim()}
@@ -162,7 +187,6 @@ const AddTask = () => {
         </button>
       </div>
 
-      {/* Help Text */}
       <div className="mt-6 text-center">
         <div className="inline-flex items-center space-x-2 text-sm text-gray-500 bg-green-50 px-4 py-2 rounded-lg">
           <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

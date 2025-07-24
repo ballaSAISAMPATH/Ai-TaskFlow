@@ -30,17 +30,10 @@ export const createGoal = createAsyncThunk(
 
 export const getAllGoals = createAsyncThunk(
   'tasks/getAllGoals',
-  async ({ user, page = 1, limit = 10, sortBy = 'createdAt', sortOrder = 'desc' }, { rejectWithValue }) => {
+  async ({ user }, { rejectWithValue }) => {
     try {
-      const queryParams = new URLSearchParams({
-        page: page.toString(),
-        limit: limit.toString(),
-        sortBy,
-        sortOrder
-      });
-      
-      const response = await fetch(`${API_BASE_URL}/display?${queryParams}`, {
-        method: 'GET',
+      const response = await fetch(`${API_BASE_URL}/displayAll`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -64,8 +57,8 @@ export const getGoalById = createAsyncThunk(
   'tasks/getGoalById',
   async ({ goalId, user }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/${goalId}`, {
-        method: 'GET',
+      const response = await fetch(`${API_BASE_URL}/goal/${goalId}`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -73,6 +66,8 @@ export const getGoalById = createAsyncThunk(
       });
       
       const data = await response.json();
+      console.log(data);
+      
       
       if (!response.ok) {
         return rejectWithValue(data);
@@ -85,30 +80,6 @@ export const getGoalById = createAsyncThunk(
   }
 );
 
-export const updateGoal = createAsyncThunk(
-  'tasks/updateGoal',
-  async ({ goalId, goalTitle, duration, user }, { rejectWithValue }) => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/${goalId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ goalTitle, duration, user }),
-      });
-      
-      const data = await response.json();
-      
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-      
-      return data;
-    } catch (error) {
-      return rejectWithValue({ message: error.message });
-    }
-  }
-);
 
 export const deleteGoal = createAsyncThunk(
   'tasks/deleteGoal',
@@ -140,7 +111,7 @@ export const getGoalStats = createAsyncThunk(
   async ({ user }, { rejectWithValue }) => {
     try {
       const response = await fetch(`${API_BASE_URL}/stats`, {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -318,18 +289,10 @@ const initialState = {
   weeklyTasks: [],
   monthlyTasks: [],
   stats: null,
-  pagination: {
-    currentPage: 1,
-    totalPages: 0,
-    totalGoals: 0,
-    hasNext: false,
-    hasPrev: false
-  },
   loading: {
     createGoal: false,
     getAllGoals: false,
     getGoalById: false,
-    updateGoal: false,
     deleteGoal: false,
     getStats: false,
     getDailyTasks: false,
@@ -389,7 +352,6 @@ const taskSlice = createSlice({
       .addCase(getAllGoals.fulfilled, (state, action) => {
         state.loading.getAllGoals = false;
         state.goals = action.payload.data;
-        state.pagination = action.payload.pagination;
       })
       .addCase(getAllGoals.rejected, (state, action) => {
         state.loading.getAllGoals = false;
@@ -409,29 +371,6 @@ const taskSlice = createSlice({
       .addCase(getGoalById.rejected, (state, action) => {
         state.loading.getGoalById = false;
         state.error = action.payload?.message || 'Failed to fetch goal';
-      })
-
-    // Update Goal
-    builder
-      .addCase(updateGoal.pending, (state) => {
-        state.loading.updateGoal = true;
-        state.error = null;
-      })
-      .addCase(updateGoal.fulfilled, (state, action) => {
-        state.loading.updateGoal = false;
-        const updatedGoal = action.payload.data;
-        const index = state.goals.findIndex(goal => goal._id === updatedGoal._id);
-        if (index !== -1) {
-          state.goals[index] = updatedGoal;
-        }
-        if (state.selectedGoal && state.selectedGoal._id === updatedGoal._id) {
-          state.selectedGoal = updatedGoal;
-        }
-        state.successMessage = action.payload.message;
-      })
-      .addCase(updateGoal.rejected, (state, action) => {
-        state.loading.updateGoal = false;
-        state.error = action.payload?.message || 'Failed to update goal';
       })
 
     // Delete Goal

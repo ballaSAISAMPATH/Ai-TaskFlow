@@ -6,7 +6,6 @@ const AuthLayout = () => {
   const navigate  = useNavigate()
   return (
     <div className="min-h-screen bg-white">
-      {/* Fixed Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b-2 border-green-500 py-6">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center justify-between">
@@ -33,9 +32,7 @@ const AuthLayout = () => {
         </div>
       </div>
 
-      {/* Main content with top padding to account for fixed header */}
       <div className="flex min-h-screen pt-[120px]">
-        {/* Left Side - Features Showcase */}
         <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-green-50 to-green-100 p-12 flex-col justify-center">
           <div className="max-w-md mx-auto">
             <div className="mb-8">
@@ -47,7 +44,6 @@ const AuthLayout = () => {
               </p>
             </div>
 
-            {/* AI Features */}
             <div className="space-y-6">
               <div className="flex items-start space-x-4">
                 <div className="p-3 bg-green-500 rounded-lg flex-shrink-0">
@@ -98,7 +94,6 @@ const AuthLayout = () => {
               </div>
             </div>
 
-            {/* Example Usage */}
             <div className="mt-8 p-6 bg-white rounded-lg border-2 border-green-200 shadow-sm">
               <div className="flex items-center space-x-2 mb-3">
                 <Zap className="w-5 h-5 text-green-500" />
@@ -124,7 +119,6 @@ const AuthLayout = () => {
           </div>
         </div>
 
-        {/* Right Side - Auth Forms */}
         <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
           <div className="w-full max-w-md">
             <Outlet />
@@ -132,7 +126,6 @@ const AuthLayout = () => {
         </div>
       </div>
 
-      {/* Footer */}
       <div className="bg-gray-50 border-t py-6">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center justify-between">
