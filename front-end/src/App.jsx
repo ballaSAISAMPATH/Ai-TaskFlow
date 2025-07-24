@@ -18,7 +18,9 @@ import ManualTask from './pages/UserPages/ManualTask';
 import NotFound from './pages/auth/NotFound';
 const App = () => {
   const dispatch = useDispatch();
-  const { isAuthenticated, isLoading } = useSelector((state) => state.auth);
+  const { user,isAuthenticated, isLoading } = useSelector((state) => state.auth);
+  console.log(user);
+  
   
   useEffect(() => {
     const checkAuth = async () => {
