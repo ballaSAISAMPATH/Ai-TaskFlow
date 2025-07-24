@@ -19,9 +19,7 @@ admin.initializeApp({
   }),
 });
 
-/**
- * Register user (email/password)
- */
+
 const registerUser = async (req, res) => {
 
   const { userName, email, password } = req.body;
