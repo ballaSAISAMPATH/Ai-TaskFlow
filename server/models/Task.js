@@ -1,42 +1,58 @@
-
 const mongoose = require('mongoose');
 
-const taskSchema = new mongoose.Schema({
-  title: {
+const taskGroupSchema = new mongoose.Schema({
+  label: {
     type: String,
     required: true
   },
-  startTime: {
-    type: Date,
+  tasks: {
+    type: [String],
     required: true
   },
-  endTime: {
-    type: Date,
-    required: true
-  },
-  completed: {
+  status: {
     type: Boolean,
     default: false
+  }
+});
+
+const goalSchema = new mongoose.Schema({
+  goalTitle: {
+    type: String,
+    required: true
+  },
+  totalDays: {
+    type: Number,
+    required: true
+  },
+  duration: {
+    type: String,
+    required: true 
+  },
+  monthlyTasks: {
+    type: [taskGroupSchema],
+    default: []
+  },
+  weeklyTasks: {
+    type: [taskGroupSchema],
+    default: []
+  },
+  dailyTasks: {
+    type: [taskGroupSchema],
+    default: []
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   },
   createdAt: {
     type: Date,
     default: Date.now
-  },
-  completedAt: {
-    type: Date,
-    default: null
-  },
-  imagePath: {
-    type: String,
-    default: null
-  },
-  userId: {
-    type: String,
-    required: true
   }
 }, {
   timestamps: true
 });
 
-const Task = mongoose.model('Task', taskSchema);
-module.exports = Task;
+// FIX: Create the model properly
+const Goal = mongoose.model('Goal', goalSchema);
+module.exports = Goal;
