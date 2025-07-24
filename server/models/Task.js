@@ -48,11 +48,14 @@ const goalSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  isCompleted:{
+    type:Boolean,
+    default:false
   }
 }, {
   timestamps: true
 });
 
-// FIX: Create the model properly
 const Goal = mongoose.model('Goal', goalSchema);
 module.exports = Goal;
