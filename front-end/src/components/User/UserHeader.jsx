@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Brain, Zap, TrendingUp, Home, BarChart3, User, Target, LogOut } from 'lucide-react';
+import { Brain, Zap, TrendingUp, Home, BarChart3, User, Target, LogOut,  Plus  } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -12,31 +12,31 @@ const UserHeader = () => {
   const location = useLocation();
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch()
-  const menuItems = [
-    {
-      icon: TrendingUp,
-      label: 'Progress',
-      path: '/user/update-progress',
-      description: 'Update status',
-    },
+const menuItems = [
     {
       icon: Home,
-      label: 'Home',
+      label: 'Your tasks',
+      path: '/user/home',
+      description: 'Update status'
+    },
+    {
+      icon: Plus,
+      label: 'Add Task',
       path: '/user/add-task',
-      description: 'Add new AI tasks',
+      description: 'Add new AI tasks'
     },
     {
       icon: BarChart3,
       label: 'Dashboard',
       path: '/user/dashboard',
-      description: 'View analytics',
+      description: 'View analytics'
     },
     {
       icon: User,
       label: 'Profile',
       path: '/user/profile',
-      description: 'Manage account',
-    },
+      description: 'Manage account'
+    }
   ];
   const handleLogout = async()=>{
       try{
@@ -63,7 +63,6 @@ const UserHeader = () => {
     <header className="fixed top-0 w-full bg-white/95 backdrop-blur-md border-b border-gray-200 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
-          {/* Logo */}
           <div className="flex items-center space-x-3" onClick={() => navigate('/')}>
             <div className="relative">
               <div className="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center transform rotate-12">
@@ -77,7 +76,6 @@ const UserHeader = () => {
             </div>
           </div>
 
-          {/* Desktop Nav */}
           <nav className="hidden md:flex items-center space-x-8 relative">
             <a
               onClick={() => navigate('/user/add-task')}
@@ -103,7 +101,6 @@ const UserHeader = () => {
             </button>
           </nav>
 
-          {/* Mobile Nav */}
           <div className="md:hidden flex items-center">
             <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
               <SheetTrigger asChild>
@@ -129,7 +126,6 @@ const UserHeader = () => {
                   </SheetTitle>
                 </SheetHeader>
 
-                {/* Sidebar Menu Items */}
                 <nav className="flex flex-col gap-4 mt-6">
                   {menuItems.map((item) => {
                     const Icon = item.icon;
@@ -160,7 +156,6 @@ const UserHeader = () => {
                   })}
                 </nav>
 
-                {/* Quick Stats Section */}
                 <div className="mt-8 p-4 bg-gradient-to-br from-gray-50 to-green-500/5 rounded-xl border border-gray-200/50">
                   <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center space-x-2">
                     <Target className="w-4 h-4 text-green-500" />
@@ -182,7 +177,6 @@ const UserHeader = () => {
                   </div>
                 </div>
 
-                {/* Logout Button */}
                 <div className="mt-6 border-t border-gray-200 pt-4">
                   <button
                     className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 text-gray-700 hover:text-green-500 hover:bg-green-500/5"

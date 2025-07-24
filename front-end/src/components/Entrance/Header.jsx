@@ -38,7 +38,6 @@ const Header = () => {
             </button>
           </nav>
           
-          {/* Mobile navigation - Login button and menu */}
           <div className="md:hidden flex items-center space-x-3">
             <button 
               className="bg-green-500 hover:bg-[#8FE877] text-white font-semibold px-3 py-2 rounded-md transition-colors duration-200 text-sm"

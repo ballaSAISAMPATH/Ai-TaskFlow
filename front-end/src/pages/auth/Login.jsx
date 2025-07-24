@@ -36,7 +36,6 @@ const handleLogin = async (e) => {
 
   return (
     <div className="w-full max-w-md mx-auto mb-[20rem]">
-      {/* Header */}
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
         <p className="text-gray-600">
@@ -44,10 +43,8 @@ const handleLogin = async (e) => {
         </p>
       </div>
 
-      {/* Login Form */}
       <form className="space-y-6" onSubmit={handleLogin}>
         <div className="space-y-5">
-          {/* Email Field */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
               Email Address
@@ -69,7 +66,6 @@ const handleLogin = async (e) => {
             </div>
           </div>
 
-          {/* Password Field */}
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
               Password
@@ -104,7 +100,6 @@ const handleLogin = async (e) => {
         </div>
 
     
-        {/* Login Button */}
         <div>
           <Button
             type="submit"
@@ -125,7 +120,6 @@ const handleLogin = async (e) => {
           </Button>
         </div>
 
-        {/* Divider */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-200" />
@@ -135,7 +129,6 @@ const handleLogin = async (e) => {
           </div>
         </div>
 
-        {/* Sign Up Button */}
         <div>
           <Button
             type="button"
@@ -147,7 +140,6 @@ const handleLogin = async (e) => {
         </div>
       </form>
 
-      {/* AI Feature Teaser */}
       <div className="mt-8 p-4 bg-green-50 rounded-lg border border-green-200">
         <div className="text-center">
           <p className="text-sm text-gray-700 mb-2">

@@ -59,7 +59,6 @@ const TestimonialsComponent = () => {
     }
   ];
 
-  // Duplicate testimonials for seamless scrolling
   const duplicatedTestimonials = [...testimonials, ...testimonials];
 
   return (
@@ -76,22 +75,18 @@ const TestimonialsComponent = () => {
       </div>
 
       <div className="relative">
-        {/* Gradient overlays for smooth fade effect */}
         <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white via-green-50/30 to-transparent z-10 pointer-events-none"></div>
         <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white via-green-50/30 to-transparent z-10 pointer-events-none"></div>
 
-        {/* Scrolling container */}
         <div className="flex animate-scroll space-x-6 w-max hover:pause-animation">
           {duplicatedTestimonials.map((testimonial, index) => (
             <div
               key={`${testimonial.id}-${index}`}
               className="w-80 bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-green-100/50 group"
             >
-              {/* Quote icon */}
               <div className="flex justify-between items-start mb-4">
                 <Quote className="w-8 h-8 text-green-500/30 group-hover:text-green-500/50 transition-colors duration-300" />
                 
-                {/* Rating stars */}
                 <div className="flex space-x-1">
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <Star
@@ -102,12 +97,10 @@ const TestimonialsComponent = () => {
                 </div>
               </div>
 
-              {/* Testimonial content */}
               <blockquote className="text-gray-700 mb-6 leading-relaxed">
                 "{testimonial.content}"
               </blockquote>
 
-              {/* User info */}
               <div className="flex items-center space-x-3">
                 <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg">
                   <span className="text-white font-bold text-sm">
@@ -127,14 +120,12 @@ const TestimonialsComponent = () => {
                 </div>
               </div>
 
-              {/* Hover effect accent */}
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-green-500/5 to-green-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* CSS for animation */}
       <style jsx>{`
         @keyframes scroll {
           0% {
