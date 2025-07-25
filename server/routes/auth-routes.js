@@ -4,7 +4,8 @@ const {
   loginUser,
   logoutUser,
   googleLogin,
-  authMiddleware
+  authMiddleware,
+  deleteAccount
 } = require("../controllers/auth-controller");
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
@@ -15,6 +16,7 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
 router.post("/google-login", googleLogin);
+router.delete('/delete-account',deleteAccount)
 
 router.get("/check-auth", authMiddleware, async (req, res) => {
   try {
