@@ -24,25 +24,57 @@ const UserSideBar = () => {
   const [stats, setStats] = useState(null);
   const [statsLoading, setStatsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        setStatsLoading(true);
-        const response = await dispatch(getGoalStats({ user }));
-        if (response.payload?.success) {
-          setStats(response.payload.data);
-        }
-      } catch (error) {
-        console.error('Error fetching stats:', error);
-      } finally {
-        setStatsLoading(false);
+  const fetchStats = async () => {
+    try {
+      setStatsLoading(true);
+      const response = await dispatch(getGoalStats({ user }));
+      if (response.payload?.success) {
+        setStats(response.payload.data);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    } finally {
+      setStatsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     if (user) {
       fetchStats();
     }
   }, [user, dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      fetchStats();
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const interval = setInterval(() => {
+      fetchStats();
+    }, 30000); 
+
+    return () => clearInterval(interval);
+  }, [user]);
+
+  useEffect(() => {
+    const handleStatsUpdate = () => {
+      fetchStats();
+    };
+
+    window.addEventListener('goalCompleted', handleStatsUpdate);
+    window.addEventListener('goalAdded', handleStatsUpdate);
+    window.addEventListener('goalUpdated', handleStatsUpdate);
+
+    return () => {
+      window.removeEventListener('goalCompleted', handleStatsUpdate);
+      window.removeEventListener('goalAdded', handleStatsUpdate);
+      window.removeEventListener('goalUpdated', handleStatsUpdate);
+    };
+  }, []);
 
   const handleLogout = async () => {
     try {

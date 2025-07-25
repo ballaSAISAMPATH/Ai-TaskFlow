@@ -1,18 +1,75 @@
-import React, { useState } from 'react';
-import { Brain, Zap, TrendingUp, Home, BarChart3, User, Target, LogOut,  Plus  } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Brain, Zap, TrendingUp, Home, BarChart3, User, Target, LogOut, Plus, CheckCircle, Clock } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { logoutUser } from '@/store/auth';
+import { getGoalStats } from '@/store/task';
 import { useDispatch } from 'react-redux';
 import { toast } from 'sonner';
+
 const UserHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [stats, setStats] = useState(null);
+  const [statsLoading, setStatsLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useSelector((state) => state.auth);
-  const dispatch = useDispatch()
-const menuItems = [
+  const dispatch = useDispatch();
+
+  const fetchStats = async () => {
+    try {
+      setStatsLoading(true);
+      const response = await dispatch(getGoalStats({ user }));
+      if (response.payload?.success) {
+        setStats(response.payload.data);
+      }
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    } finally {
+      setStatsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchStats();
+    }
+  }, [user, dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      fetchStats();
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const interval = setInterval(() => {
+      fetchStats();
+    }, 30000); 
+
+    return () => clearInterval(interval);
+  }, [user]);
+
+  useEffect(() => {
+    const handleStatsUpdate = () => {
+      fetchStats();
+    };
+
+    window.addEventListener('goalCompleted', handleStatsUpdate);
+    window.addEventListener('goalAdded', handleStatsUpdate);
+    window.addEventListener('goalUpdated', handleStatsUpdate);
+
+    return () => {
+      window.removeEventListener('goalCompleted', handleStatsUpdate);
+      window.removeEventListener('goalAdded', handleStatsUpdate);
+      window.removeEventListener('goalUpdated', handleStatsUpdate);
+    };
+  }, []);
+
+  const menuItems = [
     {
       icon: Home,
       label: 'Your tasks',
@@ -38,26 +95,26 @@ const menuItems = [
       description: 'Manage account'
     }
   ];
-  const handleLogout = async()=>{
-      try{
-        const data = await dispatch(logoutUser())
-        console.log(data.payload);
-        if(data.payload.success)
-        {
-          toast.success(data.payload.message)
-        }
-        else{
-            toast.error(data.payload.message)
-        }
+
+  const handleLogout = async () => {
+    try {
+      const data = await dispatch(logoutUser());
+      console.log(data.payload);
+      if (data.payload.success) {
+        toast.success(data.payload.message);
+      } else {
+        toast.error(data.payload.message);
       }
-      catch(err){
-        toast.error(`something went wrong ${err}`)
-      }
-      
-  }
+    } catch (err) {
+      toast.error(`something went wrong ${err}`);
+    }
+  };
 
   const isAITaskActive = location.pathname === '/user/add-task';
   const isManualTaskActive = location.pathname === '/user/add-manual';
+
+  const activeGoals = stats ? stats.totalGoals - stats.completedGoals : 0;
+  const weeklyProgress = stats?.overallCompletionRate || 0;
 
   return (
     <header className="fixed top-0 w-full bg-white/95 backdrop-blur-md border-b border-gray-200 z-50">
@@ -97,7 +154,7 @@ const menuItems = [
               className="bg-gradient-to-br from-green-500 to-green-600 hover:from-[#8FE877] hover:to-green-500 text-white font-bold w-10 h-10 rounded-full transition-all duration-200 text-sm flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105 ring-2 ring-white/20"
               onClick={() => navigate('/user/profile')}
             >
-              {user&&user.userName?.[0]?.toUpperCase()}
+              {user && user.userName?.[0]?.toUpperCase()}
             </button>
           </nav>
 
@@ -105,7 +162,7 @@ const menuItems = [
             <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
               <SheetTrigger asChild>
                 <button className="bg-gradient-to-br from-green-500 to-green-600 hover:from-[#8FE877] hover:to-green-500 text-white font-bold w-10 h-10 rounded-full transition-all duration-200 text-sm flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105 ring-2 ring-white/20">
-                  {user &&user.userName?.[0]?.toUpperCase()}
+                  {user && user.userName?.[0]?.toUpperCase()}
                 </button>
               </SheetTrigger>
 
@@ -121,8 +178,7 @@ const menuItems = [
                       </div>
                       <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-br from-green-500 to-[#66B539] rounded-full animate-pulse shadow-sm"></div>
                     </div>
-                      <span className="text-xl font-bold text-gray-900">{user&&user.userName}</span>
-                   
+                    <span className="text-xl font-bold text-gray-900">{user && user.userName}</span>
                   </SheetTitle>
                 </SheetHeader>
 
@@ -161,20 +217,67 @@ const menuItems = [
                     <Target className="w-4 h-4 text-green-500" />
                     <span>Quick Stats</span>
                   </h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between text-gray-700">
-                      <span>Active Tasks</span>
-                      <span className="font-semibold text-green-500">12</span>
+                  
+                  {statsLoading ? (
+                    <div className="space-y-2">
+                      {[...Array(3)].map((_, i) => (
+                        <div key={i} className="flex justify-between items-center">
+                          <div className="h-3 bg-gray-200 rounded w-20 animate-pulse"></div>
+                          <div className="h-3 bg-gray-200 rounded w-8 animate-pulse"></div>
+                        </div>
+                      ))}
                     </div>
-                    <div className="flex justify-between text-gray-700">
-                      <span>Completed</span>
-                      <span className="font-semibold text-gray-900">48</span>
+                  ) : stats ? (
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between text-gray-700">
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          Active Goals
+                        </span>
+                        <span className="font-semibold text-green-500">{activeGoals}</span>
+                      </div>
+                      <div className="flex justify-between text-gray-700">
+                        <span className="flex items-center gap-1">
+                          <CheckCircle className="w-3 h-3" />
+                          Completed
+                        </span>
+                        <span className="font-semibold text-gray-900">{stats.completedGoals}</span>
+                      </div>
+                      <div className="flex justify-between text-gray-700">
+                        <span className="flex items-center gap-1">
+                          <TrendingUp className="w-3 h-3" />
+                          Progress
+                        </span>
+                        <span className={`font-semibold ${weeklyProgress > 0 ? 'text-[#8FE877]' : 'text-gray-500'}`}>
+                          {weeklyProgress > 0 ? `${weeklyProgress}%` : '0%'}
+                        </span>
+                      </div>
+                      
+                      {weeklyProgress > 0 && (
+                        <div className="mt-2">
+                          <div className="w-full h-1.5 bg-gray-200 rounded-full">
+                            <div 
+                              className="h-full bg-gradient-to-r from-green-500 to-[#8FE877] rounded-full transition-all duration-300"
+                              style={{ width: `${Math.min(weeklyProgress, 100)}%` }}
+                            />
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <div className="flex justify-between text-gray-700">
-                      <span>This Week</span>
-                      <span className="font-semibold text-[#8FE877]">+15%</span>
+                  ) : (
+                    <div className="text-center py-2">
+                      <div className="text-xs text-gray-500 mb-1">No data available</div>
+                      <button 
+                        onClick={() => {
+                          navigate('/user/add-task');
+                          setIsMenuOpen(false);
+                        }}
+                        className="text-xs text-green-500 hover:text-green-600 font-medium"
+                      >
+                        Create your first goal
+                      </button>
                     </div>
-                  </div>
+                  )}
                 </div>
 
                 <div className="mt-6 border-t border-gray-200 pt-4">
