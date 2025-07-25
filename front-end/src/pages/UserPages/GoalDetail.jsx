@@ -54,7 +54,6 @@ const GoalDetail = () => {
                 })).unwrap()
             }
             
-            // Refresh the goal data to get updated status
             await dispatch(getGoalById({ goalId, user }))
             
             toast.success(`Task ${newStatus ? 'completed' : 'marked as incomplete'}!`)
@@ -84,7 +83,7 @@ const GoalDetail = () => {
                                 {group.label}
                             </span>
                             <span className="text-sm text-gray-600">
-                                ({group.tasks?.filter(task => task.status).length || 0}/{group.tasks?.length || 0} completed)
+                                ({group.status ? 1 : 0}/1 completed)
                             </span>
                         </h3>
                         
@@ -215,7 +214,6 @@ const GoalDetail = () => {
             </div>
 
             <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6">
-                {/* Progress Overview */}
                 <div className={`rounded-lg p-6 mb-8 ${selectedGoal.isCompleted ? 'bg-green-100 border-2 border-green-300' : 'bg-green-50'}`}>
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-lg font-semibold text-gray-800">Overall Progress</h2>
