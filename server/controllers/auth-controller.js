@@ -235,9 +235,7 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-/**
- * Check Auth - new endpoint
- */
+
 const checkAuth = async (req, res) => {
   const token = req.cookies.token;
 
@@ -279,6 +277,40 @@ const checkAuth = async (req, res) => {
     });
   }
 };
+const deleteAccount = async (req, res) => {
+  try {
+    const { userId } = req.body; 
+    
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required.",
+      });
+    }
+    
+    const deletedUser = await User.findByIdAndDelete(userId);
+    
+    if (!deletedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found.",
+      });
+    }
+
+    res.clearCookie("token");
+
+    res.status(200).json({
+      success: true,
+      message: "Account deleted successfully.",
+    });
+  } catch (error) {
+    console.error('Account deletion error:', error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete account. Please try again.",
+    });
+  }
+};
 
 module.exports = {
   registerUser,
@@ -287,4 +319,5 @@ module.exports = {
   authMiddleware,
   googleLogin,
   checkAuth,
+  deleteAccount
 };
