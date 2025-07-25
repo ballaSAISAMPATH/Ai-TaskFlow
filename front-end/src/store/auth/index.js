@@ -103,6 +103,30 @@ export const googleLogin = createAsyncThunk(
     }
   }
 );
+export const deleteAccountAction = createAsyncThunk(
+  "auth/deleteAccount",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/delete-account`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return rejectWithValue(data.message || "Failed to delete account");
+      }
+
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message || "Network error occurred");
+    }
+  }
+);
 const authSlice = createSlice({
   name: "auth",
   initialState: initialData,
@@ -170,7 +194,17 @@ const authSlice = createSlice({
       .addCase(googleLogin.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload?.message || 'Google login failed';
-      });
+      }).addCase(deleteAccountAction.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteAccountAction.fulfilled, (state) => {
+        state.isLoading = false;
+        state.isAuthenticated = false;
+        state.user = null;
+      })
+      .addCase(deleteAccountAction.rejected, (state) => {
+        state.isLoading = false;
+      });;
   },
 });
 
