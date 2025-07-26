@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteAccountAction } from '@/store/auth';
 import { toast } from 'sonner';
-
+import { useNavigate } from 'react-router-dom';
 const UserProfile = () => {
+  const navigate = useNavigate()
   const { user, isLoading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handlePasswordChange = () => {
-    toast.info('Password change functionality will be implemented later');
+    navigate('/user/set-new-password')
   };
 
   const handleAccountDeletion = async () => {
