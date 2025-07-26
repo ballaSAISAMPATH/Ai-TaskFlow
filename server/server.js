@@ -8,9 +8,10 @@ const taskRoutes = require('./routes/taskRoutes');
 const authRouter = require('./routes/auth-routes');
 
 const app = express();
+const PORT=process.env.PORT
 
 app.use(cors({
-  origin: 'http://localhost:5173', 
+  origin: process.env.CLIENT_ORIGIN, 
   credentials: true,             
 }));
 
@@ -23,17 +24,13 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/auth', authRouter);
 
 mongoose
-  .connect('mongodb://127.0.0.1:27017/taskDB', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log('MongoDB connected');
-    const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
   })
   .catch((err) => {
     console.error(err);
   });
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
