@@ -131,7 +131,6 @@ const handleLogin = async (e) => {
           </div>
         </div>
 
-        {/* Google Login Component */}
         <ContinueWithGoogle />
 
         <div className="relative">
