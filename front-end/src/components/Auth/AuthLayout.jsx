@@ -132,9 +132,8 @@ const AuthLayout = () => {
             <div className="flex items-center space-x-6">
               <span className="text-sm text-gray-600">© 2025 TaskAI. All rights reserved.</span>
               <div className="hidden md:flex items-center space-x-4">
-                <a href="#" className="text-sm text-green-500 hover:text-green-600">Privacy Policy</a>
-                <a href="#" className="text-sm text-green-500 hover:text-green-600">Terms of Service</a>
-                <a href="#" className="text-sm text-green-500 hover:text-green-600">Help Center</a>
+                <a onClick={()=>navigate('/privacy-policy')} className="text-sm text-green-500 hover:text-green-600 cursor-pointer">Privacy Policy</a>
+                <a onClick={()=>navigate('/terms-service')} className="text-sm text-green-500 hover:text-green-600 cursor-pointer">Terms of Service</a>
               </div>
             </div>
             <div className="flex items-center space-x-2 text-sm text-gray-600">

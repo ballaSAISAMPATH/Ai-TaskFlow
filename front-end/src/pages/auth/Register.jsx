@@ -249,11 +249,11 @@ const Register = () => {
           />
           <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
             I agree to the{' '}
-            <a href="#" className="font-medium text-green-500 hover:text-green-600 transition-colors duration-200">
+            <a onClick={()=>navigate('/privacy-policy')} className="font-medium text-green-500 hover:text-green-600 transition-colors duration-200">
               Terms of Service
             </a>
             {' '}and{' '}
-            <a href="#" className="font-medium text-green-500 hover:text-green-600 transition-colors duration-200">
+            <a onClick={()=>navigate('/terms-service')} className="font-medium text-green-500 hover:text-green-600 transition-colors duration-200">
               Privacy Policy
             </a>
           </label>
