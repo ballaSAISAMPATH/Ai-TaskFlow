@@ -17,6 +17,7 @@ import ManualTask from './pages/UserPages/ManualTask';
 import NotFound from './pages/auth/NotFound';
 import UserHome from './pages/UserPages/UserHome'
 import GoalDetail from './pages/UserPages/GoalDetail';
+import SetNewPassword from './pages/UserPages/SetNewPassword';
 const App = () => {
   const dispatch = useDispatch();
   const { user,isAuthenticated, isLoading } = useSelector((state) => state.auth);
@@ -55,6 +56,7 @@ const App = () => {
           <Route path='profile' element={<UserProfile/>} />
           <Route path='add-manual' element={<ManualTask/>} />
           <Route path="goal/:goalId" element={<GoalDetail />} />
+          <Route path='set-new-password' element={<SetNewPassword/>} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
