@@ -5,6 +5,8 @@ import { Eye, EyeOff, Mail, Lock, LogIn } from 'lucide-react'
 import { useDispatch } from 'react-redux'
 import {login} from '../../store/auth/index'
 import { toast } from "sonner"
+import ContinueWithGoogle from '@/components/Auth/ContinueWithGoogle'
+
 const Login = () => {
   const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
@@ -12,6 +14,7 @@ const Login = () => {
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const dispatch = useDispatch()
+
 const handleLogin = async (e) => {
   e.preventDefault();
   setIsLoading(true);
@@ -99,7 +102,6 @@ const handleLogin = async (e) => {
           </div>
         </div>
 
-    
         <div>
           <Button
             type="submit"
@@ -119,6 +121,18 @@ const handleLogin = async (e) => {
             )}
           </Button>
         </div>
+
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-200" />
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-4 bg-white text-gray-500">Or continue with</span>
+          </div>
+        </div>
+
+        {/* Google Login Component */}
+        <ContinueWithGoogle />
 
         <div className="relative">
           <div className="absolute inset-0 flex items-center">

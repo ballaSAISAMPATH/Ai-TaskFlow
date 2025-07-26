@@ -18,6 +18,8 @@ import NotFound from './pages/auth/NotFound';
 import UserHome from './pages/UserPages/UserHome'
 import GoalDetail from './pages/UserPages/GoalDetail';
 import SetNewPassword from './pages/UserPages/SetNewPassword';
+import TermsOfService from './components/common/TermsOfService';
+import PrivacyPolicy from './components/common/PrivacyPolicy';
 const App = () => {
   const dispatch = useDispatch();
   const { user,isAuthenticated, isLoading } = useSelector((state) => state.auth);
@@ -44,6 +46,8 @@ const App = () => {
       <CheckAuth isAuthenticated={isAuthenticated} >
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path='privacy-policy' element={<PrivacyPolicy/>} />
+        <Route path='terms-service' element={<TermsOfService/>} />
         <Route path="/auth" element={<AuthLayout />}>
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
