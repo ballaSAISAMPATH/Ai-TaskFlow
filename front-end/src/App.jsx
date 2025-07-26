@@ -20,10 +20,10 @@ import GoalDetail from './pages/UserPages/GoalDetail';
 import SetNewPassword from './pages/UserPages/SetNewPassword';
 import TermsOfService from './components/common/TermsOfService';
 import PrivacyPolicy from './components/common/PrivacyPolicy';
+
 const App = () => {
   const dispatch = useDispatch();
-  const { user,isAuthenticated, isLoading } = useSelector((state) => state.auth);
-  
+  const { user, isAuthenticated, isLoading } = useSelector((state) => state.auth);
   
   useEffect(() => {
     const checkAuth = async () => {
@@ -34,8 +34,8 @@ const App = () => {
 
   if (isLoading) {
     return (
-      <div className="h-screen flex items-center justify-center text-lg text-green-500">
-        Checking authentication...
+      <div className="h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-4 border-green-200 border-t-green-500"></div>
       </div>
     );
   }
@@ -44,27 +44,27 @@ const App = () => {
     <div>
       <ScrollToTop />
       <CheckAuth isAuthenticated={isAuthenticated} >
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path='privacy-policy' element={<PrivacyPolicy/>} />
-        <Route path='terms-service' element={<TermsOfService/>} />
-        <Route path="/auth" element={<AuthLayout />}>
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-        </Route>
-        <Route path="/user" element={<TaskLayout />}>
-          <Route path="add-task" element={<AddTask />} />
-          <Route path="dashboard" element={<DashBoard />} />
-          <Route path='home' element={<UserHome/>} />
-          <Route path='profile' element={<UserProfile/>} />
-          <Route path='add-manual' element={<ManualTask/>} />
-          <Route path="goal/:goalId" element={<GoalDetail />} />
-          <Route path='set-new-password' element={<SetNewPassword/>} />
-        </Route>
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      <Toaster richColors position="bottom-right" />
-    </CheckAuth>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path='privacy-policy' element={<PrivacyPolicy/>} />
+          <Route path='terms-service' element={<TermsOfService/>} />
+          <Route path="/auth" element={<AuthLayout />}>
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+          </Route>
+          <Route path="/user" element={<TaskLayout />}>
+            <Route path="add-task" element={<AddTask />} />
+            <Route path="dashboard" element={<DashBoard />} />
+            <Route path='home' element={<UserHome/>} />
+            <Route path='profile' element={<UserProfile/>} />
+            <Route path='add-manual' element={<ManualTask/>} />
+            <Route path="goal/:goalId" element={<GoalDetail />} />
+            <Route path='set-new-password' element={<SetNewPassword/>} />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <Toaster richColors position="bottom-right" />
+      </CheckAuth>
     </div>
   );
 };
