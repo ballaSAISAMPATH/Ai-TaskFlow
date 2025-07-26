@@ -1,8 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-const API_BASE_URL = 'http://localhost:5000/api/tasks';
+const API_BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/api/tasks`;
 
-// Async thunks for API calls
 export const createGoal = createAsyncThunk(
   'tasks/createGoal',
   async ({ goal, duration, user }, { rejectWithValue }) => {
@@ -281,7 +280,6 @@ export const updateMonthlyTaskStatus = createAsyncThunk(
   }
 );
 
-// Initial state
 const initialState = {
   goals: [],
   selectedGoal: null,
@@ -306,7 +304,6 @@ const initialState = {
   successMessage: null
 };
 
-// Create slice
 const taskSlice = createSlice({
   name: 'tasks',
   initialState,
@@ -511,8 +508,6 @@ const taskSlice = createSlice({
   }
 });
 
-// Export actions
 export const { clearError, clearSuccessMessage, clearSelectedGoal, clearTasks } = taskSlice.actions;
 
-// Export reducer
 export default taskSlice.reducer;
