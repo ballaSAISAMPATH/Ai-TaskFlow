@@ -313,8 +313,8 @@ const deleteAccount = async (req, res) => {
 };
 
 const changePassword = async (req, res) => {
-  console.log(req.body);
-  
+w
+
   try {
     const { userId, oldPassword, newPassword } = req.body;
 
@@ -334,7 +334,6 @@ const changePassword = async (req, res) => {
     }
 
 
-    // Verify old password (direct comparison)
     if (oldPassword !== user.password) {
       return res.status(400).json({
         success: false,
@@ -342,7 +341,6 @@ const changePassword = async (req, res) => {
       });
     }
 
-    // Update user password (store as plain text)
     await User.findByIdAndUpdate(userId, {
       password: newPassword
     });

@@ -16,25 +16,18 @@ const TaskLayout = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50/30">
-      {/* Header - Fixed at top */}
       <UserHeader toggleSidebar={toggleSidebar} />
       
-      {/* Sidebar - Responsive */}
       <UserSideBar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
       
-      {/* Main Content Area - Responsive margins */}
       <main className="md:ml-64 pt-16 min-h-screen transition-all duration-300">
-        {/* Content Container with proper spacing and styling */}
         <div className="p-4 md:p-6 lg:p-8">
-          {/* Content wrapper with subtle styling */}
           <div className="max-w-7xl mx-auto">
-            {/* Background decoration */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
               <div className="absolute top-20 right-10 w-32 h-32 bg-green-500/5 rounded-full blur-3xl"></div>
               <div className="absolute bottom-20 left-10 w-40 h-40 bg-[#8FE877]/5 rounded-full blur-3xl"></div>
             </div>
             
-            {/* Outlet for nested routes */}
             <div className="relative z-10">
               <Outlet />
             </div>
@@ -42,7 +35,6 @@ const TaskLayout = () => {
         </div>
       </main>
       
-      {/* Mobile Overlay for Sidebar */}
       <div 
         className={`md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-30 transition-opacity duration-300 ${
           isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
