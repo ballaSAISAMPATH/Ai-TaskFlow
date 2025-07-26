@@ -4,7 +4,8 @@ import axios from 'axios'
 const initialData = {
   user: null,
   isAuthenticated: false,
-  isLoading: true
+  isLoading: true,
+  error: null // Added error field to initial state
 }
 
 export const register = createAsyncThunk(
@@ -65,11 +66,26 @@ export const checkAuthUser = createAsyncThunk(
 
 export const changePassword = createAsyncThunk(
   '/auth/changePassword',
-  async (formData) => {
-    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/setnewpassword`, formData)
-    console.log(response.data.payload);
-    
-    return response.data
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/setnewpassword`, formData)
+      console.log(response.data.payload);
+      
+      return response.data
+    } catch (error) {
+      // Handle axios errors properly
+      if (error.response) {
+        // Server responded with error status (400, 404, 500, etc.)
+        const message = error.response.data?.message || 'An error occurred';
+        return rejectWithValue(message);
+      } else if (error.request) {
+        // Network error - request was made but no response
+        return rejectWithValue('Network error - please check your connection');
+      } else {
+        // Something else happened
+        return rejectWithValue(error.message || 'An unexpected error occurred');
+      }
+    }
   }
 )
 
@@ -90,6 +106,7 @@ export const verifyOtp = createAsyncThunk(
     return response.data
   }
 ) 
+
 export const googleLogin = createAsyncThunk(
   'auth/googleLogin',
   async (userData, { rejectWithValue }) => {
@@ -103,6 +120,7 @@ export const googleLogin = createAsyncThunk(
     }
   }
 );
+
 export const deleteAccountAction = createAsyncThunk(
   "auth/deleteAccount",
   async (userId, { rejectWithValue }) => {
@@ -127,42 +145,55 @@ export const deleteAccountAction = createAsyncThunk(
     }
   }
 );
+
 const authSlice = createSlice({
   name: "auth",
   initialState: initialData,
   reducers: {
+    clearError: (state) => {
+      state.error = null;
+    }
   },
   extraReducers: (builder) => {
     builder
+      // Register cases
       .addCase(register.pending, (state) => {
         state.isLoading = true;
+        state.error = null;
       })
-      .addCase(register.rejected, (state) => {
+      .addCase(register.rejected, (state, action) => {
         state.isAuthenticated = false;
         state.user = null;
         state.isLoading = false;
+        state.error = action.error.message || 'Registration failed';
       })
       .addCase(register.fulfilled, (state, action) => {
         state.isAuthenticated = false;
         state.user = action.payload.user;
         state.isLoading = false;
+        state.error = null;
       })
 
+      // Login cases
       .addCase(login.pending, (state) => {
         state.isLoading = true;
+        state.error = null;
       })
-      .addCase(login.rejected, (state) => {
+      .addCase(login.rejected, (state, action) => {
         state.isAuthenticated = false;
         state.user = null;
         state.isLoading = false;
+        state.error = action.error.message || 'Login failed';
       })
       .addCase(login.fulfilled, (state, action) => {
         console.log(action);
-
         state.isLoading = false;
         state.user = action.payload.success ? action.payload.user : null;
         state.isAuthenticated = action.payload.success;
+        state.error = null;
       })
+
+      // Check auth cases
       .addCase(checkAuthUser.pending, (state) => {
         state.isLoading = true;
       })
@@ -176,11 +207,69 @@ const authSlice = createSlice({
         state.user = null;
         state.isAuthenticated = false;
       })
+
+      // Logout cases
+      .addCase(logoutUser.pending, (state) => {
+        state.isLoading = true;
+      })
       .addCase(logoutUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;
-      }) .addCase(googleLogin.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message || 'Logout failed';
+      })
+
+      // Change password cases
+      .addCase(changePassword.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(changePassword.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        // Password changed successfully, keep user authenticated
+      })
+      .addCase(changePassword.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message || 'Password change failed';
+      })
+
+      // Send OTP cases
+      .addCase(sendOtp.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(sendOtp.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        // OTP sent successfully
+      })
+      .addCase(sendOtp.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message || 'Failed to send OTP';
+      })
+
+      // Verify OTP cases
+      .addCase(verifyOtp.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(verifyOtp.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        // OTP verified successfully
+      })
+      .addCase(verifyOtp.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message || 'OTP verification failed';
+      })
+
+      // Google login cases
+      .addCase(googleLogin.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
@@ -190,22 +279,30 @@ const authSlice = createSlice({
           state.isAuthenticated = true;
           state.user = action.payload.user;
         }
+        state.error = null;
       })
       .addCase(googleLogin.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload?.message || 'Google login failed';
-      }).addCase(deleteAccountAction.pending, (state) => {
+      })
+
+      // Delete account cases
+      .addCase(deleteAccountAction.pending, (state) => {
         state.isLoading = true;
+        state.error = null;
       })
       .addCase(deleteAccountAction.fulfilled, (state) => {
         state.isLoading = false;
         state.isAuthenticated = false;
         state.user = null;
+        state.error = null;
       })
-      .addCase(deleteAccountAction.rejected, (state) => {
+      .addCase(deleteAccountAction.rejected, (state, action) => {
         state.isLoading = false;
-      });;
+        state.error = action.payload || 'Failed to delete account';
+      });
   },
 });
 
+export const { clearError } = authSlice.actions;
 export default authSlice.reducer;
