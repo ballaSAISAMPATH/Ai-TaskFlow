@@ -313,10 +313,11 @@ const deleteAccount = async (req, res) => {
 };
 
 const changePassword = async (req, res) => {
+  console.log(req.body);
+  
   try {
     const { userId, oldPassword, newPassword } = req.body;
 
-    // Validate required fields
     if (!userId || !oldPassword || !newPassword) {
       return res.status(400).json({
         success: false,
@@ -324,7 +325,6 @@ const changePassword = async (req, res) => {
       });
     }
 
-    // Find user by ID
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({
@@ -333,35 +333,12 @@ const changePassword = async (req, res) => {
       });
     }
 
-    // Check if user uses email authentication (not Google)
-    if (user.authProvider !== 'email') {
-      return res.status(400).json({
-        success: false,
-        message: 'Password change not available for social login accounts'
-      });
-    }
 
     // Verify old password (direct comparison)
     if (oldPassword !== user.password) {
       return res.status(400).json({
         success: false,
         message: 'Current password is incorrect'
-      });
-    }
-
-    // Validate new password (add your own validation rules)
-    if (newPassword.length < 6) {
-      return res.status(400).json({
-        success: false,
-        message: 'New password must be at least 6 characters long'
-      });
-    }
-
-    // Check if new password is different from old password
-    if (newPassword === user.password) {
-      return res.status(400).json({
-        success: false,
-        message: 'New password must be different from current password'
       });
     }
 

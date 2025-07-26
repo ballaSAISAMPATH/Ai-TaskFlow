@@ -21,7 +21,6 @@ import SetNewPassword from './pages/UserPages/SetNewPassword';
 const App = () => {
   const dispatch = useDispatch();
   const { user,isAuthenticated, isLoading } = useSelector((state) => state.auth);
-  console.log(user);
   
   
   useEffect(() => {
