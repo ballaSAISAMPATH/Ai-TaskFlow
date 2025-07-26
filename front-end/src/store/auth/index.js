@@ -5,7 +5,7 @@ const initialData = {
   user: null,
   isAuthenticated: false,
   isLoading: true,
-  error: null // Added error field to initial state
+  error: null 
 }
 
 export const register = createAsyncThunk(
@@ -156,7 +156,6 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Register cases
       .addCase(register.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -174,7 +173,6 @@ const authSlice = createSlice({
         state.error = null;
       })
 
-      // Login cases
       .addCase(login.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -193,7 +191,6 @@ const authSlice = createSlice({
         state.error = null;
       })
 
-      // Check auth cases
       .addCase(checkAuthUser.pending, (state) => {
         state.isLoading = true;
       })
@@ -208,7 +205,6 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
       })
 
-      // Logout cases
       .addCase(logoutUser.pending, (state) => {
         state.isLoading = true;
       })
@@ -223,7 +219,6 @@ const authSlice = createSlice({
         state.error = action.error.message || 'Logout failed';
       })
 
-      // Change password cases
       .addCase(changePassword.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -231,14 +226,12 @@ const authSlice = createSlice({
       .addCase(changePassword.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        // Password changed successfully, keep user authenticated
       })
       .addCase(changePassword.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message || 'Password change failed';
       })
 
-      // Send OTP cases
       .addCase(sendOtp.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -246,14 +239,12 @@ const authSlice = createSlice({
       .addCase(sendOtp.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        // OTP sent successfully
       })
       .addCase(sendOtp.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message || 'Failed to send OTP';
       })
 
-      // Verify OTP cases
       .addCase(verifyOtp.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -261,14 +252,12 @@ const authSlice = createSlice({
       .addCase(verifyOtp.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        // OTP verified successfully
       })
       .addCase(verifyOtp.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message || 'OTP verification failed';
       })
 
-      // Google login cases
       .addCase(googleLogin.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -286,7 +275,6 @@ const authSlice = createSlice({
         state.error = action.payload?.message || 'Google login failed';
       })
 
-      // Delete account cases
       .addCase(deleteAccountAction.pending, (state) => {
         state.isLoading = true;
         state.error = null;
