@@ -2,7 +2,7 @@ const Goal = require('../models/Task');
 const mongoose = require('mongoose');
 const axios = require('axios');
 
-const MICROSERVICE_BASE_URL = process.env.MICROSERVICE_URL || 'http://localhost:8000';
+const MICROSERVICE_BASE_URL = process.env.MICROSERVICE_URL;
 
   const createGoal= async (req, res) => {
     try {
