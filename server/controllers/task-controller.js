@@ -1,6 +1,7 @@
 const Goal = require('../models/Task'); 
 const mongoose = require('mongoose');
 const axios = require('axios');
+const  User = require('../models/User')
 
 const MICROSERVICE_BASE_URL = process.env.MICROSERVICE_URL;
 
@@ -23,7 +24,6 @@ const MICROSERVICE_BASE_URL = process.env.MICROSERVICE_URL;
         });
       }
 
-      // Call external microservice to generate plan
       const microserviceResponse = await axios.post(`${MICROSERVICE_BASE_URL}/generate-plan`, {
         goal,
         duration
@@ -665,7 +665,92 @@ const getGoalStats = async (req, res) => {
     });
   }
 }
+const addManualTask = async (req, res) => {
+  try {
+    const {
+      goalTitle,
+      totalDays,
+      duration,
+      monthlyTasks = [],
+      weeklyTasks = [],
+      dailyTasks = [],
+      userId
+    } = req.body;
+
+    // Validation
+    if (!goalTitle || !totalDays || !duration || !userId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Goal title, total days, duration, and user ID are required'
+      });
+    }
+
+    if (monthlyTasks.length === 0 && weeklyTasks.length === 0 && dailyTasks.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'At least one task group (monthly, weekly, or daily) must be provided'
+      });
+    }
+
+    const validateTaskGroups = (taskGroups, type) => {
+      for (let i = 0; i < taskGroups.length; i++) {
+        const group = taskGroups[i];
+        if (!group.label || !group.tasks || !Array.isArray(group.tasks) || group.tasks.length === 0) {
+          throw new Error(`Invalid ${type} task group at index ${i}: label and tasks array are required`);
+        }
+      }
+    };
+
+    try {
+      validateTaskGroups(monthlyTasks, 'monthly');
+      validateTaskGroups(weeklyTasks, 'weekly');
+      validateTaskGroups(dailyTasks, 'daily');
+    } catch (validationError) {
+      return res.status(400).json({
+        success: false,
+        message: validationError.message
+      });
+    }
+
+    // Check if user exists
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Create new goal
+    const newGoal = new Goal({
+      goalTitle,
+      totalDays,
+      duration,
+      monthlyTasks,
+      weeklyTasks,
+      dailyTasks,
+      userId,
+      isCompleted: false
+    });
+
+    const savedGoal = await newGoal.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Manual task created successfully',
+      data: savedGoal
+    });
+
+  } catch (error) {
+    console.error('Error creating manual task:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: error.message
+    });
+  }
+};
 
 module.exports = {createGoal,getAllGoals,getGoalById,updateGoal,updateDailyTaskStatus,updateWeeklyTaskStatus,updateMonthlyTaskStatus,getDailyTasks
-  ,getWeeklyTasks,getMonthlyTasks,deleteGoal,getGoalStats
+  ,getWeeklyTasks,getMonthlyTasks,deleteGoal,getGoalStats,addManualTask
 };

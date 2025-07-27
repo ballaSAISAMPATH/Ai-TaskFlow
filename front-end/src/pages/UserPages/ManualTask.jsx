@@ -1,257 +1,215 @@
-import React, { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-// import { createManualGoal } from '@/store/task'
-import { toast } from 'sonner'
-import { useNavigate } from 'react-router-dom'
-import { 
-  Plus, 
-  Trash2, 
-  Target, 
-  Calendar, 
-  Clock, 
-  CheckCircle,
-  AlertCircle,
-  Lightbulb
-} from 'lucide-react'
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import {toast} from 'sonner';
+import { Plus, Trash2, CheckCircle, AlertCircle } from 'lucide-react';
+import { addManualTask } from '@/store/task';
 
 const ManualTask = () => {
-  function createManualGoal()
-  {
+  const { user } = useSelector((state) => state.auth);
 
-  }
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const { user } = useSelector((state) => state.auth)
-  const { loading } = useSelector((state) => state.task)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
     goalTitle: '',
-    durationType: '', 
-    durationValue: '',
-    totalDays: 30
-  })
+    days: 0,
+    weeks: 0,
+    months: 0
+  });
 
-  const [taskCategories, setTaskCategories] = useState({
+  const [taskGroups, setTaskGroups] = useState({
     monthly: [],
     weekly: [],
     daily: []
-  })
+  });
 
-  const [newTask, setNewTask] = useState({
-    monthly: { label: '', tasks: [''] },
-    weekly: { label: '', tasks: [''] },
-    daily: { label: '', tasks: [''] }
-  })
-
-  const [activeTab, setActiveTab] = useState('daily')
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [availableTabs, setAvailableTabs] = useState(['daily'])
-
-  const durationOptions = {
-    days: Array.from({ length: 30 }, (_, i) => i + 1),
-    weeks: Array.from({ length: 12 }, (_, i) => i + 1), 
-    months: Array.from({ length: 12 }, (_, i) => i + 1)
-  }
+  const [activeTab, setActiveTab] = useState('daily');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    let tabs = []
-    
-    switch (formData.durationType) {
-      case 'days':
-        tabs = ['daily']
-        setActiveTab('daily')
-        break
-      case 'weeks':
-        tabs = ['weekly', 'daily']
-        setActiveTab('weekly')
-        break
-      case 'months':
-        tabs = ['monthly', 'weekly', 'daily']
-        setActiveTab('monthly')
-        break
-      default:
-        tabs = ['daily']
-        setActiveTab('daily')
-    }
-    
-    setAvailableTabs(tabs)
-    
-    setTaskCategories(prev => {
-      const newCategories = { ...prev }
-      Object.keys(newCategories).forEach(category => {
-        if (!tabs.includes(category)) {
-          newCategories[category] = []
-        }
-      })
-      return newCategories
-    })
-  }, [formData.durationType])
+    const generateTaskGroups = () => {
+      const newTaskGroups = {
+        daily: [],
+        weekly: [],
+        monthly: []
+      };
+
+      const totalWeeks = formData.weeks + (formData.months * 4);
+      const totalDays = formData.days + (formData.weeks * 7) + (formData.months * 30);
+
+      for (let i = 1; i <= totalDays; i++) {
+        newTaskGroups.daily.push({
+          label: `Day-${i}`,
+          tasks: ['']
+        });
+      }
+
+      for (let i = 1; i <= totalWeeks; i++) {
+        newTaskGroups.weekly.push({
+          label: `Week-${i}`,
+          tasks: ['']
+        });
+      }
+
+      for (let i = 1; i <= formData.months; i++) {
+        newTaskGroups.monthly.push({
+          label: `Month-${i}`,
+          tasks: ['']
+        });
+      }
+
+      setTaskGroups(newTaskGroups);
+    };
+
+    generateTaskGroups();
+  }, [formData.days, formData.weeks, formData.months]);
 
   useEffect(() => {
-    if (formData.durationType && formData.durationValue) {
-      let totalDays = 0
-      const value = parseInt(formData.durationValue)
-      
-      switch (formData.durationType) {
-        case 'days':
-          totalDays = value
-          break
-        case 'weeks':
-          totalDays = value * 7
-          break
-        case 'months':
-          totalDays = value * 30 
-          break
-      }
-      
-      setFormData(prev => ({ ...prev, totalDays }))
+    const totalDays = formData.days + (formData.weeks * 7) + (formData.months * 30);
+    const totalWeeks = formData.weeks + (formData.months * 4);
+    
+    if (totalDays > 0) {
+      setActiveTab('daily');
+    } else if (totalWeeks > 0) {
+      setActiveTab('weekly');
+    } else if (formData.months > 0) {
+      setActiveTab('monthly');
     }
-  }, [formData.durationType, formData.durationValue])
+  }, [formData.days, formData.weeks, formData.months]);
 
-  const handleFormChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
+  const handleFormChange = (field, value) => {
+    if (field === 'goalTitle') {
+      setFormData(prev => ({ ...prev, [field]: value }));
+    } else {
+      const numValue = parseInt(value) || 0;
+      setFormData(prev => ({ ...prev, [field]: numValue }));
+    }
+  };
+
+  const handleTaskChange = (type, groupIndex, taskIndex, value) => {
+    setTaskGroups(prev => ({
       ...prev,
-      [name]: value
-    }))
-  }
+      [type]: prev[type].map((group, gIdx) => 
+        gIdx === groupIndex 
+          ? { 
+              ...group, 
+              tasks: group.tasks.map((task, tIdx) => 
+                tIdx === taskIndex ? value : task
+              )
+            }
+          : group
+      )
+    }));
+  };
 
-  const addTaskToGroup = (category, taskIndex) => {
-    setNewTask(prev => ({
+  const addTask = (type, groupIndex) => {
+    setTaskGroups(prev => ({
       ...prev,
-      [category]: {
-        ...prev[category],
-        tasks: [...prev[category].tasks, '']
-      }
-    }))
-  }
+      [type]: prev[type].map((group, idx) => 
+        idx === groupIndex 
+          ? { ...group, tasks: [...group.tasks, ''] }
+          : group
+      )
+    }));
+  };
 
-  const removeTaskFromGroup = (category, taskIndex) => {
-    if (newTask[category].tasks.length > 1) {
-      setNewTask(prev => ({
+  const removeTask = (type, groupIndex, taskIndex) => {
+    const group = taskGroups[type][groupIndex];
+    if (group.tasks.length > 1) {
+      setTaskGroups(prev => ({
         ...prev,
-        [category]: {
-          ...prev[category],
-          tasks: prev[category].tasks.filter((_, index) => index !== taskIndex)
-        }
-      }))
-    }
-  }
-
-  const updateTaskText = (category, taskIndex, value) => {
-    setNewTask(prev => ({
-      ...prev,
-      [category]: {
-        ...prev[category],
-        tasks: prev[category].tasks.map((task, index) => 
-          index === taskIndex ? value : task
+        [type]: prev[type].map((g, gIdx) => 
+          gIdx === groupIndex 
+            ? { ...g, tasks: g.tasks.filter((_, tIdx) => tIdx !== taskIndex) }
+            : g
         )
-      }
-    }))
-  }
+      }));
+    }
+  };
 
-  const updateTaskLabel = (category, value) => {
-    setNewTask(prev => ({
-      ...prev,
-      [category]: {
-        ...prev[category],
-        label: value
-      }
-    }))
-  }
+  const calculateTotalDays = () => {
+    return formData.days + (formData.weeks * 7) + (formData.months * 30);
+  };
 
-  const addTaskGroup = (category) => {
-    if (!newTask[category].label.trim()) {
-      toast.error('Please enter a group label')
-      return
+  const formatDuration = () => {
+    const parts = [];
+    if (formData.months > 0) parts.push(`${formData.months} month${formData.months > 1 ? 's' : ''}`);
+    if (formData.weeks > 0) parts.push(`${formData.weeks} week${formData.weeks > 1 ? 's' : ''}`);
+    if (formData.days > 0) parts.push(`${formData.days} day${formData.days > 1 ? 's' : ''}`);
+    return parts.join(', ') || '0 days';
+  };
+
+  const handleSubmit = async () => {
+    if (!formData.goalTitle.trim()) {
+      toast.error('Please enter a goal title');
+      return;
     }
 
-    const validTasks = newTask[category].tasks.filter(task => task.trim() !== '')
-    
-    if (validTasks.length === 0) {
-      toast.error('Please add at least one task')
-      return
-    }
-
-    const taskGroup = {
-      label: newTask[category].label.trim(),
-      tasks: validTasks,
-      status: false
-    }
-
-    setTaskCategories(prev => ({
-      ...prev,
-      [category]: [...prev[category], taskGroup]
-    }))
-
-    setNewTask(prev => ({
-      ...prev,
-      [category]: { label: '', tasks: [''] }
-    }))
-
-    toast.success(`${category.charAt(0).toUpperCase() + category.slice(1)} task group added!`)
-  }
-
-  const removeTaskGroup = (category, groupIndex) => {
-    setTaskCategories(prev => ({
-      ...prev,
-      [category]: prev[category].filter((_, index) => index !== groupIndex)
-    }))
-    toast.success('Task group removed')
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    
-    if (!formData.goalTitle.trim() || !formData.durationType || !formData.durationValue) {
-      toast.error('Please fill in all required fields')
-      return
-    }
-
-    const hasAnyTasks = availableTabs.some(tab => taskCategories[tab].length > 0)
-    
-    if (!hasAnyTasks) {
-      toast.error('Please add tasks to at least one category')
-      return
+    if (formData.days === 0 && formData.weeks === 0 && formData.months === 0) {
+      toast.error('Please set a duration for your goal');
+      return;
     }
 
     if (!user || !user.id) {
-      toast.error('User authentication required')
-      return
+      toast.error('User authentication required');
+      return;
     }
 
-    setIsSubmitting(true)
-    
+    const hasAnyTasks = Object.values(taskGroups).some(groups => 
+      groups.some(group => group.tasks.some(task => task.trim()))
+    );
+
+    if (!hasAnyTasks) {
+      toast.error('Please add at least one task to your goal');
+      return;
+    }
+
+    setIsSubmitting(true);
+
     try {
-      const duration = `${formData.durationValue} ${formData.durationType}`
-      
-      const result = await dispatch(createManualGoal({
+      const filteredTaskGroups = {};
+      Object.keys(taskGroups).forEach(type => {
+        filteredTaskGroups[`${type}Tasks`] = taskGroups[type].filter(group => 
+          group.tasks.some(task => task.trim())
+        ).map(group => ({
+          ...group,
+          tasks: group.tasks.filter(task => task.trim())
+        }));
+      });
+
+      const payload = {
         goalTitle: formData.goalTitle.trim(),
-        duration: duration,
-        totalDays: formData.totalDays,
-        monthlyTasks: taskCategories.monthly,
-        weeklyTasks: taskCategories.weekly,
-        dailyTasks: taskCategories.daily,
-        user: user
-      })).unwrap()
+        totalDays: calculateTotalDays(),
+        duration: formatDuration(),
+        userId: user.id,
+        ...filteredTaskGroups
+      };
+
+      console.log('Payload to send:', payload);
+
+      const result = await dispatch(addManualTask(payload)).unwrap();
       
-      const taskId = result.taskId
+      const goalId = result.data._id || result.data.id;
       
       toast.success(
         <div className="flex flex-col space-y-2">
-          <span className="font-semibold">🎉 Manual goal created successfully!</span>
+          <span className="font-semibold">🎉 Goal created successfully!</span>
           <div className="flex space-x-2">
             <button
               onClick={() => {
-                navigate(`/user/goal/${taskId}`)
-                toast.dismiss()
+                navigate(`/user/goal/${goalId}`);
+                toast.dismiss();
               }}
               className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md text-sm font-medium transition-colors"
             >
               View Goal
             </button>
             <button
-              onClick={() => navigate('/user/home')}
+              onClick={() => {
+                navigate('/user/home');
+                toast.dismiss();
+              }}
               className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded-md text-sm font-medium transition-colors"
             >
               Go to Dashboard
@@ -262,298 +220,244 @@ const ManualTask = () => {
           duration: 8000,
           dismissible: true,
         }
-      )
+      );
       
-      // Reset form
-      setFormData({ goalTitle: '', durationType: '', durationValue: '', totalDays: 30 })
-      setTaskCategories({ monthly: [], weekly: [], daily: [] })
-      setNewTask({
-        monthly: { label: '', tasks: [''] },
-        weekly: { label: '', tasks: [''] },
-        daily: { label: '', tasks: [''] }
-      })
+      setFormData({ goalTitle: '', days: 0, weeks: 0, months: 0 });
+      
+      console.log('Goal created with ID:', goalId);
       
     } catch (error) {
-      toast.error(error.message || 'Failed to create manual goal')
+      toast.error(error.message || 'Failed to create goal');
+      console.error('Failed to create goal:', error);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
-  const tabConfig = {
-    monthly: { icon: Calendar, color: 'text-green-600', bg: 'bg-green-100', label: 'Monthly Tasks' },
-    weekly: { icon: Target, color: 'text-green-500', bg: 'bg-green-50', label: 'Weekly Tasks' },
-    daily: { icon: Clock, color: 'text-green-400', bg: 'bg-green-50', label: 'Daily Tasks' }
-  }
+  const getAvailableTabs = () => {
+    const tabs = [];
+    const totalDays = formData.days + (formData.weeks * 7) + (formData.months * 30);
+    const totalWeeks = formData.weeks + (formData.months * 4);
+    
+    if (totalDays > 0) {
+      tabs.push({ key: 'daily', label: `Daily (${totalDays} days)`, count: totalDays });
+    }
+    if (totalWeeks > 0) {
+      tabs.push({ key: 'weekly', label: `Weekly (${totalWeeks} weeks)`, count: totalWeeks });
+    }
+    if (formData.months > 0) {
+      tabs.push({ key: 'monthly', label: `Monthly (${formData.months} months)`, count: formData.months });
+    }
+    return tabs;
+  };
 
-  const TaskGroupCard = ({ group, category, groupIndex }) => (
-    <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-      <div className="flex items-center justify-between mb-3">
-        <h4 className="font-semibold text-gray-800 flex items-center gap-2">
-          <CheckCircle className="w-4 h-4 text-green-500" />
-          {group.label}
-        </h4>
-        <button
-          onClick={() => removeTaskGroup(category, groupIndex)}
-          className="text-red-500 hover:text-red-600 p-1 rounded-full hover:bg-red-50 transition-colors"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
-      </div>
-      <ul className="space-y-1">
-        {group.tasks.map((task, taskIndex) => (
-          <li key={taskIndex} className="text-sm text-gray-600 flex items-start gap-2">
-            <div className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-            {task}
-          </li>
+  const renderTaskGroup = (type) => {
+    const groups = taskGroups[type];
+    
+    if (groups.length === 0) {
+      return (
+        <div className="text-center py-8 text-gray-500">
+          <p>Enter duration above to see task groups here</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-4 sm:space-y-6">
+        {groups.map((group, groupIndex) => (
+          <div key={groupIndex} className="border border-green-500 rounded-lg p-4 sm:p-6 bg-white">
+            <div className="mb-4">
+              <h3 className="text-lg font-medium text-green-500 mb-3">{group.label}</h3>
+              <p className="text-sm text-gray-500 mb-3">Add tasks for {group.label.toLowerCase()}:</p>
+            </div>
+            
+            <div className="space-y-3">
+              {group.tasks.map((task, taskIndex) => (
+                <div key={taskIndex} className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                  <span className="text-sm text-gray-400 sm:w-16 flex-shrink-0">Task {taskIndex + 1}:</span>
+                  <input
+                    type="text"
+                    placeholder={`What will you do on ${group.label.toLowerCase()}?`}
+                    value={task}
+                    onChange={(e) => handleTaskChange(type, groupIndex, taskIndex, e.target.value)}
+                    className="flex-1 px-4 py-2 border border-green-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white text-gray-900"
+                  />
+                  {group.tasks.length > 1 && (
+                    <button
+                      onClick={() => removeTask(type, groupIndex, taskIndex)}
+                      className="self-end sm:self-center p-2 text-green-500 hover:bg-green-500 hover:text-white rounded-lg transition-colors flex-shrink-0"
+                      title="Remove this task"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              ))}
+              
+              <button
+                onClick={() => addTask(type, groupIndex)}
+                className="flex items-center justify-center sm:justify-start gap-2 w-full sm:w-auto px-4 py-2 text-green-500 hover:bg-green-500 hover:text-white rounded-lg transition-colors border border-green-500"
+              >
+                <Plus className="w-4 h-4" />
+                Add Another Task
+              </button>
+            </div>
+          </div>
         ))}
-      </ul>
-    </div>
-  )
+      </div>
+    );
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Target className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Create Manual Goal
-          </h1>
-          <p className="text-gray-600">
-            Design your own goal with custom tasks and timeline
-          </p>
+    <div className="min-h-screen bg-gray-50">
+      <div className="bg-white shadow-sm border-b border-gray-200">
+        <div className="px-4 sm:px-6 lg:px-8 py-4">
+          <h1 className="text-2xl sm:text-3xl font-bold text-green-500">Create Your Goal</h1>
+          <p className="text-gray-600 text-sm sm:text-base mt-1">Set your timeline and add tasks to achieve your goal</p>
         </div>
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
-              <Lightbulb className="w-5 h-5 text-green-500" />
-              Goal Information
-            </h2>
-            
-            <div className="space-y-6">
+      <div className="flex flex-col lg:flex-row">
+        <div className="lg:w-1/3 xl:w-1/4 bg-white border-r border-gray-200 lg:sticky lg:top-0 lg:h-screen lg:self-start">
+          <div className="p-4 sm:p-6 h-full overflow-y-auto">
+            <h2 className="text-xl font-semibold text-green-500 mb-4">Goal Details</h2>
+            <div className="space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Goal Title *
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  What is your goal? *
                 </label>
                 <input
                   type="text"
-                  name="goalTitle"
+                  required
                   value={formData.goalTitle}
-                  onChange={handleFormChange}
-                  placeholder="e.g., Learn Spanish, Build a Website"
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100 transition-all"
-                  disabled={isSubmitting}
+                  onChange={(e) => handleFormChange('goalTitle', e.target.value)}
+                  className="w-full px-4 py-2 border border-green-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white text-gray-900"
+                  placeholder="Example: Learn Spanish, Lose 10kg, Read 12 books"
                 />
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Duration Type *
-                  </label>
-                  <select
-                    name="durationType"
-                    value={formData.durationType}
-                    onChange={handleFormChange}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100 transition-all"
-                    disabled={isSubmitting}
-                  >
-                    <option value="">Select duration type</option>
-                    <option value="days">Days</option>
-                    <option value="weeks">Weeks</option>
-                    <option value="months">Months</option>
-                  </select>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-4">
+                  How long will it take? Set your timeline:
+                </label>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Months</label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="12"
+                      value={formData.months}
+                      onChange={(e) => handleFormChange('months', e.target.value)}
+                      className="w-full px-4 py-2 border border-green-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white text-gray-900"
+                      placeholder="0"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Weeks</label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="52"
+                      value={formData.weeks}
+                      onChange={(e) => handleFormChange('weeks', e.target.value)}
+                      className="w-full px-4 py-2 border border-green-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white text-gray-900"
+                      placeholder="0"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Days</label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="365"
+                      value={formData.days}
+                      onChange={(e) => handleFormChange('days', e.target.value)}
+                      className="w-full px-4 py-2 border border-green-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white text-gray-900"
+                      placeholder="0"
+                    />
+                  </div>
                 </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Duration Value *
-                  </label>
-                  <select
-                    name="durationValue"
-                    value={formData.durationValue}
-                    onChange={handleFormChange}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100 transition-all"
-                    disabled={isSubmitting || !formData.durationType}
-                  >
-                    <option value="">Select {formData.durationType || 'duration'}</option>
-                    {formData.durationType && durationOptions[formData.durationType].map(value => (
-                      <option key={value} value={value}>
-                        {value} {formData.durationType}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                
+                {(formData.days > 0 || formData.weeks > 0 || formData.months > 0) && (
+                  <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <p className="text-sm text-green-700">
+                      <strong>Duration:</strong> {formatDuration()} ({calculateTotalDays()} total days)
+                    </p>
+                  </div>
+                )}
               </div>
 
-              {formData.durationType && formData.durationValue && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                  <div className="flex items-center gap-2 text-sm">
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span className="text-green-700">
-                      <strong>Total Duration:</strong> {formData.durationValue} {formData.durationType} 
-                      ({formData.totalDays} days)
-                    </span>
-                  </div>
-                  <div className="mt-2 text-xs text-green-600">
-                    Available task categories: {availableTabs.map(tab => tab.charAt(0).toUpperCase() + tab.slice(1)).join(', ')}
-                  </div>
+              {(formData.days > 0 || formData.weeks > 0 || formData.months > 0) && formData.goalTitle && (
+                <div className="pt-4 border-t border-gray-200">
+                  <button
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                    className={`w-full px-6 py-3 rounded-lg font-medium transition-colors ${
+                      isSubmitting
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-green-500 text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2'
+                    }`}
+                  >
+                    {isSubmitting ? 'Creating Your Goal...' : 'Create My Goal'}
+                  </button>
                 </div>
               )}
             </div>
           </div>
+        </div>
 
-          {formData.durationType && formData.durationValue && (
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">
-                Task Categories
-              </h2>
-
-              <div className="flex space-x-1 mb-6 bg-gray-100 p-1 rounded-lg">
-                {availableTabs.map((category) => {
-                  const { icon: Icon, label } = tabConfig[category]
-                  return (
-                    <button
-                      key={category}
-                      type="button"
-                      onClick={() => setActiveTab(category)}
-                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                        activeTab === category
-                          ? 'bg-green-500 text-white shadow-sm'
-                          : 'text-gray-600 hover:text-gray-900'
-                      }`}
-                    >
-                      <Icon className="w-4 h-4" />
-                      {label}
-                    </button>
-                  )
-                })}
-              </div>
-
-              <div className="space-y-6">
-                <div className="border-2 border-dashed border-green-300 rounded-xl p-6 bg-green-50/50">
-                  <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <Plus className="w-4 h-4 text-green-500" />
-                    Add {tabConfig[activeTab].label.replace(' Tasks', '')} Task Group
-                  </h3>
+        <div className="flex-1 flex flex-col">
+          {(formData.days > 0 || formData.weeks > 0 || formData.months > 0) && (
+            <>
+              <div className="sticky top-0 z-10 bg-white border-b border-gray-200 shadow-sm">
+                <div className="px-4 sm:px-6 py-4">
+                  <h2 className="text-xl font-semibold text-green-500 mb-2">Add Your Tasks</h2>
+                  <p className="text-gray-500 text-sm mb-4">Now add tasks for each time period:</p>
                   
-                  <div className="space-y-4">
-                    <input
-                      type="text"
-                      value={newTask[activeTab].label}
-                      onChange={(e) => updateTaskLabel(activeTab, e.target.value)}
-                      placeholder={`Task group label (e.g., '${activeTab === 'monthly' ? 'Month 1 Milestones' : activeTab === 'weekly' ? 'Week 1 Activities' : 'Daily Habits'}')`}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-green-500 transition-all"
-                      disabled={isSubmitting}
-                    />
-                    
-                    {newTask[activeTab].tasks.map((task, taskIndex) => (
-                      <div key={taskIndex} className="flex gap-2">
-                        <input
-                          type="text"
-                          value={task}
-                          onChange={(e) => updateTaskText(activeTab, taskIndex, e.target.value)}
-                          placeholder={`Task ${taskIndex + 1}`}
-                          className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-green-500 transition-all"
-                          disabled={isSubmitting}
-                        />
+                  {getAvailableTabs().length > 0 && (
+                    <div className="flex flex-wrap gap-2 overflow-x-auto">
+                      {getAvailableTabs().map((tab) => (
                         <button
-                          type="button"
-                          onClick={() => addTaskToGroup(activeTab, taskIndex)}
-                          className="px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-                          disabled={isSubmitting}
+                          key={tab.key}
+                          onClick={() => setActiveTab(tab.key)}
+                          className={`py-2 px-4 rounded-lg text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
+                            activeTab === tab.key
+                              ? 'bg-green-500 text-white shadow-sm'
+                              : 'bg-gray-100 text-gray-600 hover:bg-green-100 hover:text-green-600'
+                          }`}
                         >
-                          <Plus className="w-4 h-4" />
+                          {tab.label}
                         </button>
-                        {newTask[activeTab].tasks.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => removeTaskFromGroup(activeTab, taskIndex)}
-                            className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-                            disabled={isSubmitting}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                    
-                    <button
-                      type="button"
-                      onClick={() => addTaskGroup(activeTab)}
-                      className="w-full py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium"
-                      disabled={isSubmitting}
-                    >
-                      Add Task Group
-                    </button>
-                  </div>
-                </div>
-
-                {taskCategories[activeTab].length > 0 && (
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-4">
-                      {tabConfig[activeTab].label} ({taskCategories[activeTab].length})
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {taskCategories[activeTab].map((group, groupIndex) => (
-                        <TaskGroupCard
-                          key={groupIndex}
-                          group={group}
-                          category={activeTab}
-                          groupIndex={groupIndex}
-                        />
                       ))}
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
+              </div>
+
+              <div className="flex-1 overflow-y-auto">
+                <div className="p-4 sm:p-6">
+                  {renderTaskGroup(activeTab)}
+                </div>
+              </div>
+            </>
+          )}
+
+          {formData.days === 0 && formData.weeks === 0 && formData.months === 0 && (
+            <div className="flex-1 flex items-center justify-center p-8">
+              <div className="text-center text-gray-500">
+                <AlertCircle className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                <p className="text-lg mb-2">Ready to start planning?</p>
+                <p className="text-sm">Set your goal duration on the left to begin adding tasks</p>
               </div>
             </div>
           )}
-
-          {formData.durationType && formData.durationValue && (
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-              <button
-                type="submit"
-                disabled={isSubmitting || loading.createManualGoal}
-                className={`w-full py-4 px-6 rounded-xl font-semibold text-white transition-all duration-200 transform ${
-                  isSubmitting || loading.createManualGoal
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-green-500 hover:bg-green-600 hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl'
-                }`}
-              >
-                {isSubmitting || loading.createManualGoal ? (
-                  <div className="flex items-center justify-center space-x-2">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    <span>Creating Manual Goal...</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center space-x-2">
-                    <Target className="w-5 h-5" />
-                    <span>Create Manual Goal</span>
-                  </div>
-                )}
-              </button>
-            </div>
-          )}
-        </form>
-
-        <div className="mt-8 text-center">
-          <div className="inline-flex items-center space-x-2 text-sm text-gray-500 bg-green-50 px-4 py-2 rounded-lg">
-            <AlertCircle className="w-4 h-4 text-green-500" />
-            <span>
-              {formData.durationType === 'days' && 'Perfect for short-term goals - focus on daily tasks'}
-              {formData.durationType === 'weeks' && 'Great for medium-term goals - plan weekly milestones and daily actions'}
-              {formData.durationType === 'months' && 'Ideal for long-term goals - organize by monthly phases, weekly progress, and daily habits'}
-              {!formData.durationType && 'Select a duration to see available task categories'}
-            </span>
-          </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ManualTask
+export default ManualTask;
