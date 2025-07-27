@@ -168,12 +168,12 @@ const UserHeader = () => {
 
               <SheetContent
                 side="right"
-                className="w-[320px] sm:w-[400px] bg-gradient-to-br from-white via-white to-[#66B539]/5 border-l border-green-500 z-[70] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right data-[state=open]:duration-700 data-[state=closed]:duration-700"
+                className="w-[320px] sm:w-[400px] bg-gradient-to-br from-white via-white to-[#66B539]/5 border-l border-green-500 z-[70] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right data-[state=open]:duration-700 data-[state=closed]:duration-700 flex flex-col"
                 style={{
                   transition: 'transform 700ms cubic-bezier(0.32, 0.72, 0, 1)',
                 }}
               >
-                <SheetHeader className="pb-6 border-b border-[#66B539]/10">
+                <SheetHeader className="pb-6 border-b border-[#66B539]/10 flex-shrink-0">
                   <SheetTitle className="flex items-center space-x-3">
                     <div className="relative">
                       <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-[#8FE877] rounded-xl flex items-center justify-center transform rotate-12 shadow-lg shadow-[#66B539]/25">
@@ -185,111 +185,118 @@ const UserHeader = () => {
                   </SheetTitle>
                 </SheetHeader>
 
-                <nav className="flex flex-col gap-4 mt-6">
-                  {menuItems.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = location.pathname === item.path;
+                <div className="flex-1 overflow-y-auto">
+                  <nav className="flex flex-col gap-4 mt-6">
+                    {menuItems.map((item) => {
+                      const Icon = item.icon;
+                      const isActive = location.pathname === item.path;
 
-                    return (
-                      <button
-                        key={item.path}
-                        onClick={() => {
-                          navigate(item.path);
-                          setIsMenuOpen(false);
-                        }}
-                        className={`group flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 ${
-                          isActive
-                            ? 'bg-green-500/10 text-green-600 font-semibold'
-                            : 'text-gray-700 hover:text-green-500 hover:bg-green-500/5'
-                        }`}
-                      >
-                        <div className="p-2 bg-green-500/10 rounded-md">
-                          <Icon className={`w-5 h-5 ${isActive ? 'text-green-600' : 'text-green-500'}`} />
-                        </div>
-                        <div className="flex-1 text-left">
-                          <div className="text-sm font-medium">{item.label}</div>
-                          <div className="text-xs text-gray-500">{item.description}</div>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </nav>
-
-                <div className="mt-8 p-4 bg-gradient-to-br from-gray-50 to-green-500/5 rounded-xl border border-gray-200/50">
-                  <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center space-x-2">
-                    <Target className="w-4 h-4 text-green-500" />
-                    <span>Quick Stats</span>
-                  </h4>
-                  
-                  {statsLoading ? (
-                    <div className="space-y-2">
-                      {[...Array(3)].map((_, i) => (
-                        <div key={i} className="flex justify-between items-center">
-                          <div className="h-3 bg-gray-200 rounded w-20 animate-pulse"></div>
-                          <div className="h-3 bg-gray-200 rounded w-8 animate-pulse"></div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : stats ? (
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between text-gray-700">
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-3 h-3" />
-                          Active Goals
-                        </span>
-                        <span className="font-semibold text-green-500">{activeGoals}</span>
-                      </div>
-                      <div className="flex justify-between text-gray-700">
-                        <span className="flex items-center gap-1">
-                          <CheckCircle className="w-3 h-3" />
-                          Completed
-                        </span>
-                        <span className="font-semibold text-gray-900">{stats.completedGoals}</span>
-                      </div>
-                      <div className="flex justify-between text-gray-700">
-                        <span className="flex items-center gap-1">
-                          <TrendingUp className="w-3 h-3" />
-                          Progress
-                        </span>
-                        <span className={`font-semibold ${weeklyProgress > 0 ? 'text-[#8FE877]' : 'text-gray-500'}`}>
-                          {weeklyProgress > 0 ? `${weeklyProgress}%` : '0%'}
-                        </span>
-                      </div>
-                      
-                      {weeklyProgress > 0 && (
-                        <div className="mt-2">
-                          <div className="w-full h-1.5 bg-gray-200 rounded-full">
-                            <div 
-                              className="h-full bg-gradient-to-r from-green-500 to-[#8FE877] rounded-full transition-all duration-300"
-                              style={{ width: `${Math.min(weeklyProgress, 100)}%` }}
-                            />
+                      return (
+                        <button
+                          key={item.path}
+                          onClick={() => {
+                            navigate(item.path);
+                            setIsMenuOpen(false);
+                          }}
+                          className={`group flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 ${
+                            isActive
+                              ? 'bg-green-500/10 text-green-600 font-semibold'
+                              : 'text-gray-700 hover:text-green-500 hover:bg-green-500/5'
+                          }`}
+                        >
+                          <div className="p-2 bg-green-500/10 rounded-md">
+                            <Icon className={`w-5 h-5 ${isActive ? 'text-green-600' : 'text-green-500'}`} />
                           </div>
+                          <div className="flex-1 text-left">
+                            <div className="text-sm font-medium">{item.label}</div>
+                            <div className="text-xs text-gray-500">{item.description}</div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </nav>
+
+                  <div className="mt-8 p-4 bg-gradient-to-br from-gray-50 to-green-500/5 rounded-xl border border-gray-200/50">
+                    <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center space-x-2">
+                      <Target className="w-4 h-4 text-green-500" />
+                      <span>Quick Stats</span>
+                    </h4>
+                    
+                    {statsLoading ? (
+                      <div className="space-y-2">
+                        {[...Array(3)].map((_, i) => (
+                          <div key={i} className="flex justify-between items-center">
+                            <div className="h-3 bg-gray-200 rounded w-20 animate-pulse"></div>
+                            <div className="h-3 bg-gray-200 rounded w-8 animate-pulse"></div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : stats ? (
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between text-gray-700">
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            Active Goals
+                          </span>
+                          <span className="font-semibold text-green-500">{activeGoals}</span>
                         </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="text-center py-2">
-                      <div className="text-xs text-gray-500 mb-1">No data available</div>
-                      <button 
-                        onClick={() => {
-                          navigate('/user/add-task');
-                          setIsMenuOpen(false);
-                        }}
-                        className="text-xs text-green-500 hover:text-green-600 font-medium"
-                      >
-                        Create your first goal
-                      </button>
-                    </div>
-                  )}
+                        <div className="flex justify-between text-gray-700">
+                          <span className="flex items-center gap-1">
+                            <CheckCircle className="w-3 h-3" />
+                            Completed
+                          </span>
+                          <span className="font-semibold text-gray-900">{stats.completedGoals}</span>
+                        </div>
+                        <div className="flex justify-between text-gray-700">
+                          <span className="flex items-center gap-1">
+                            <TrendingUp className="w-3 h-3" />
+                            Progress
+                          </span>
+                          <span className={`font-semibold ${weeklyProgress > 0 ? 'text-[#8FE877]' : 'text-gray-500'}`}>
+                            {weeklyProgress > 0 ? `${weeklyProgress}%` : '0%'}
+                          </span>
+                        </div>
+                        
+                        {weeklyProgress > 0 && (
+                          <div className="mt-2">
+                            <div className="w-full h-1.5 bg-gray-200 rounded-full">
+                              <div 
+                                className="h-full bg-gradient-to-r from-green-500 to-[#8FE877] rounded-full transition-all duration-300"
+                                style={{ width: `${Math.min(weeklyProgress, 100)}%` }}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="text-center py-2">
+                        <div className="text-xs text-gray-500 mb-1">No data available</div>
+                        <button 
+                          onClick={() => {
+                            navigate('/user/add-task');
+                            setIsMenuOpen(false);
+                          }}
+                          className="text-xs text-green-500 hover:text-green-600 font-medium"
+                        >
+                          Create your first goal
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                <div className="mt-6 border-t border-gray-200 pt-4">
+                <div className="flex-shrink-0 border-t border-gray-200 pt-4">
                   <button
-                    className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 text-gray-700 hover:text-green-500 hover:bg-green-500/5"
+                    className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 text-gray-700 hover:text-red-500 hover:bg-red-50 group"
                     onClick={handleLogout}
                   >
-                    <LogOut className="w-5 h-5 text-green-500" />
-                    <span>Logout</span>
+                    <div className="p-2 bg-red-50 group-hover:bg-red-100 rounded-md transition-colors">
+                      <LogOut className="w-5 h-5 text-red-500" />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <div className="text-sm font-medium">Logout</div>
+                      <div className="text-xs text-gray-500">Sign out of your account</div>
+                    </div>
                   </button>
                 </div>
               </SheetContent>
