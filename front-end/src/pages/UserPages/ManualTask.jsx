@@ -332,7 +332,7 @@ const ManualTask = () => {
                   value={formData.goalTitle}
                   onChange={(e) => handleFormChange('goalTitle', e.target.value)}
                   className="w-full px-4 py-2 border border-green-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white text-gray-900"
-                  placeholder="Example: Learn Spanish, Lose 10kg, Read 12 books"
+                  placeholder="Example: Learn Docker"
                 />
               </div>
               
