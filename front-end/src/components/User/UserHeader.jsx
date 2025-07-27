@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Brain, Zap, TrendingUp, Home, BarChart3, User, Target, LogOut, Plus, CheckCircle, Clock } from 'lucide-react';
+import { Brain, Zap, TrendingUp, Home, BarChart3, User, Target, LogOut, Plus, CheckCircle, Clock, Edit } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -78,9 +78,15 @@ const UserHeader = () => {
     },
     {
       icon: Plus,
-      label: 'Add Task',
+      label: 'Add AI Task',
       path: '/user/add-task',
       description: 'Add new AI tasks'
+    },
+    {
+      icon: Edit,
+      label: 'Add Manual Task',
+      path: '/user/add-manual',
+      description: 'Add manual tasks'
     },
     {
       icon: BarChart3,
@@ -305,7 +311,6 @@ const UserHeader = () => {
         </div>
       </div>
 
-      {/* Custom CSS for smooth sheet animations */}
       <style jsx>{`
         @keyframes slideInFromRight {
           from {
