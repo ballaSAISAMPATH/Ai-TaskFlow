@@ -279,6 +279,33 @@ export const updateMonthlyTaskStatus = createAsyncThunk(
     }
   }
 );
+export const addManualTask = createAsyncThunk(
+  'manualTask/addManualTask',
+  async (taskData, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/add-manual`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(taskData)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return rejectWithValue(data);
+      }
+
+      return data;
+    } catch (error) {
+      return rejectWithValue({
+        success: false,
+        message: error.message || 'Network error occurred'
+      });
+    }
+  }
+);
 
 const initialState = {
   goals: [],
@@ -286,6 +313,7 @@ const initialState = {
   dailyTasks: [],
   weeklyTasks: [],
   monthlyTasks: [],
+  manualTasks: [], 
   stats: null,
   loading: {
     createGoal: false,
@@ -298,10 +326,12 @@ const initialState = {
     getMonthlyTasks: false,
     updateDailyTask: false,
     updateWeeklyTask: false,
-    updateMonthlyTask: false
+    updateMonthlyTask: false,
+    addManualTask: false 
   },
   error: null,
-  successMessage: null
+  successMessage: null,
+  success: false 
 };
 
 const taskSlice = createSlice({
@@ -321,10 +351,13 @@ const taskSlice = createSlice({
       state.dailyTasks = [];
       state.weeklyTasks = [];
       state.monthlyTasks = [];
+      state.manualTasks = []; 
+    },
+    clearSuccess: (state) => {
+      state.success = false;
     }
   },
   extraReducers: (builder) => {
-    // Create Goal
     builder
       .addCase(createGoal.pending, (state) => {
         state.loading.createGoal = true;
@@ -340,7 +373,6 @@ const taskSlice = createSlice({
         state.error = action.payload?.message || 'Failed to create goal';
       })
 
-    // Get All Goals
     builder
       .addCase(getAllGoals.pending, (state) => {
         state.loading.getAllGoals = true;
@@ -355,7 +387,6 @@ const taskSlice = createSlice({
         state.error = action.payload?.message || 'Failed to fetch goals';
       })
 
-    // Get Goal By ID
     builder
       .addCase(getGoalById.pending, (state) => {
         state.loading.getGoalById = true;
@@ -370,7 +401,6 @@ const taskSlice = createSlice({
         state.error = action.payload?.message || 'Failed to fetch goal';
       })
 
-    // Delete Goal
     builder
       .addCase(deleteGoal.pending, (state) => {
         state.loading.deleteGoal = true;
@@ -389,7 +419,6 @@ const taskSlice = createSlice({
         state.error = action.payload?.message || 'Failed to delete goal';
       })
 
-    // Get Goal Stats
     builder
       .addCase(getGoalStats.pending, (state) => {
         state.loading.getStats = true;
@@ -404,7 +433,6 @@ const taskSlice = createSlice({
         state.error = action.payload?.message || 'Failed to fetch stats';
       })
 
-    // Get Daily Tasks
     builder
       .addCase(getDailyTasks.pending, (state) => {
         state.loading.getDailyTasks = true;
@@ -419,7 +447,6 @@ const taskSlice = createSlice({
         state.error = action.payload?.message || 'Failed to fetch daily tasks';
       })
 
-    // Get Weekly Tasks
     builder
       .addCase(getWeeklyTasks.pending, (state) => {
         state.loading.getWeeklyTasks = true;
@@ -434,7 +461,6 @@ const taskSlice = createSlice({
         state.error = action.payload?.message || 'Failed to fetch weekly tasks';
       })
 
-    // Get Monthly Tasks
     builder
       .addCase(getMonthlyTasks.pending, (state) => {
         state.loading.getMonthlyTasks = true;
@@ -449,7 +475,6 @@ const taskSlice = createSlice({
         state.error = action.payload?.message || 'Failed to fetch monthly tasks';
       })
 
-    // Update Daily Task Status
     builder
       .addCase(updateDailyTaskStatus.pending, (state) => {
         state.loading.updateDailyTask = true;
@@ -468,7 +493,6 @@ const taskSlice = createSlice({
         state.error = action.payload?.message || 'Failed to update daily task';
       })
 
-    // Update Weekly Task Status
     builder
       .addCase(updateWeeklyTaskStatus.pending, (state) => {
         state.loading.updateWeeklyTask = true;
@@ -487,7 +511,6 @@ const taskSlice = createSlice({
         state.error = action.payload?.message || 'Failed to update weekly task';
       })
 
-    // Update Monthly Task Status
     builder
       .addCase(updateMonthlyTaskStatus.pending, (state) => {
         state.loading.updateMonthlyTask = true;
@@ -504,10 +527,27 @@ const taskSlice = createSlice({
       .addCase(updateMonthlyTaskStatus.rejected, (state, action) => {
         state.loading.updateMonthlyTask = false;
         state.error = action.payload?.message || 'Failed to update monthly task';
+      })
+
+    builder
+      .addCase(addManualTask.pending, (state) => {
+        state.loading.addManualTask = true; 
+        state.error = null;
+        state.success = false;
+      })
+      .addCase(addManualTask.fulfilled, (state, action) => {
+        state.loading.addManualTask = false; 
+        state.success = true;
+        state.successMessage = action.payload.message; 
+        state.goals.unshift(action.payload.data);
+      })
+      .addCase(addManualTask.rejected, (state, action) => {
+        state.loading.addManualTask = false;
+        state.error = action.payload?.message || 'Failed to add manual task';
+        state.success = false;
       });
   }
 });
 
-export const { clearError, clearSuccessMessage, clearSelectedGoal, clearTasks } = taskSlice.actions;
-
+export const { clearError, clearSuccessMessage, clearSelectedGoal, clearTasks, clearSuccess } = taskSlice.actions;
 export default taskSlice.reducer;
