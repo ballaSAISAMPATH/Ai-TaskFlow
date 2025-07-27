@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { Brain, Menu, Zap } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useNavigate } from 'react-router-dom';
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
 
   return (
     <header className="fixed top-0 w-full bg-white/95 backdrop-blur-md border-b border-gray-200 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
-          <div className="flex items-center space-x-3" onClick={()=>navigate('/')}>
+          <div className="flex items-center space-x-3 cursor-pointer" onClick={()=>navigate('/')}>
             <div className="relative">
               <div className="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center transform rotate-12">
                 <Brain className="w-6 h-6 text-white" />
@@ -54,13 +54,16 @@ const Header = () => {
               </SheetTrigger>
               <SheetContent 
                 side="right" 
-                className="w-[320px] sm:w-[400px] bg-gradient-to-br from-white via-white to-[#66B539]/5 border-l border-green-500 z-[70]"
+                className="w-[320px] sm:w-[400px] bg-gradient-to-br from-white via-white to-[#66B539]/5 border-l border-green-500 z-[70] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right data-[state=open]:duration-700 data-[state=closed]:duration-700"
+                style={{
+                  transition: 'transform 700ms cubic-bezier(0.32, 0.72, 0, 1)',
+                }}
               >
                 <SheetHeader className="pb-6 border-b border-[#66B539]/10">
                   <SheetTitle className="flex items-center space-x-3 justify-start">
                     <div className="relative">
                       <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-[#8FE877] rounded-xl flex items-center justify-center transform rotate-12 shadow-lg shadow-[#66B539]/25">
-                        <Brain className="w-5 h-5 text-green-500" />
+                        <Brain className="w-5 h-5 text-white" />
                       </div>
                       <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-br from-green-500 to-[#66B539] rounded-full animate-pulse shadow-sm"></div>
                     </div>
@@ -95,13 +98,50 @@ const Header = () => {
                     <Zap className="w-5 h-5 text-green-500 group-hover:text-[#66B539] transition-colors duration-300" />
                     <span>Try Demo</span>
                   </a>
-              
                 </nav>
               </SheetContent>
             </Sheet>
           </div>
         </div>
       </div>
+
+      {/* Custom CSS for smooth sheet animations */}
+      <style jsx>{`
+        @keyframes slideInFromRight {
+          from {
+            transform: translateX(100%);
+          }
+          to {
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes slideOutToRight {
+          from {
+            transform: translateX(0);
+          }
+          to {
+            transform: translateX(100%);
+          }
+        }
+
+        .slide-in-from-right {
+          animation: slideInFromRight 700ms cubic-bezier(0.32, 0.72, 0, 1);
+        }
+
+        .slide-out-to-right {
+          animation: slideOutToRight 700ms cubic-bezier(0.32, 0.72, 0, 1);
+        }
+
+        /* Override any conflicting styles */
+        [data-state="open"] {
+          animation: slideInFromRight 700ms cubic-bezier(0.32, 0.72, 0, 1) !important;
+        }
+
+        [data-state="closed"] {
+          animation: slideOutToRight 700ms cubic-bezier(0.32, 0.72, 0, 1) !important;
+        }
+      `}</style>
     </header>
   );
 };
