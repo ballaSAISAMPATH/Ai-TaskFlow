@@ -119,7 +119,7 @@ const AuthLayout = () => {
           </div>
         </div>
 
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
+        <div className="w-full lg:w-1/2 flex items-center justify-center">
           <div className="w-full max-w-md">
             <Outlet />
           </div>
