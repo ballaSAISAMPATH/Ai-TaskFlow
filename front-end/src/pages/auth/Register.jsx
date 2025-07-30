@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Eye, EyeOff, Mail, Lock, User, CheckCircle, UserPlus } from 'lucide-react'
-import { register } from '../../store/auth'; // adjust path if needed
+import { register } from '../../store/auth'; 
 import { toast } from 'sonner';
 import { useDispatch } from 'react-redux';
+import ContinueWithGoogle from '@/components/Auth/ContinueWithGoogle'
 const Register = () => {
   const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
@@ -56,7 +57,7 @@ const Register = () => {
       toast.success(data.payload.message);
       navigate('/auth/login');
     } else {
-      toast.error(data.payload.message); // ❗ Show error toast for failure
+      toast.error(data.payload.message);
     }
   } catch (err) {
     toast.error(err?.message || "Something went wrong!");
@@ -81,19 +82,27 @@ const Register = () => {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto mb-[12rem]">
-      {/* Header */}
-      <div className="text-center mb-8">
+    <div className="w-full max-w-md mx-auto mt-[-7rem]">
+      <div className="text-center ">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h2>
         <p className="text-gray-600">
           Join the AI productivity revolution
         </p>
       </div>
-
-      {/* Registration Form */}
+      <br />
+        <ContinueWithGoogle />
+        <br />
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-200" />
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-4 bg-white text-gray-500">Or</span>
+          </div>
+        </div>
+        
       <form className="space-y-6" onSubmit={handleRegister}>
         <div className="space-y-5">
-          {/* Full Name Field */}
           <div>
             <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
               Full Name
@@ -116,7 +125,6 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Email Field */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
               Email Address
@@ -138,7 +146,6 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Password Field */}
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
               Password
@@ -188,7 +195,6 @@ const Register = () => {
             )}
           </div>
 
-          {/* Confirm Password Field */}
           <div>
             <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
               Confirm Password
@@ -220,7 +226,6 @@ const Register = () => {
               </button>
             </div>
             
-            {/* Password Match Indicator */}
             {formData.confirmPassword && (
               <div className="mt-2">
                 {formData.password === formData.confirmPassword ? (
@@ -238,7 +243,6 @@ const Register = () => {
           </div>
         </div>
 
-        {/* Terms and Conditions */}
         <div className="flex items-start">
           <input
             id="terms"
@@ -259,7 +263,6 @@ const Register = () => {
           </label>
         </div>
 
-        {/* Register Button */}
         <div>
           <Button
             type="submit"
@@ -279,8 +282,7 @@ const Register = () => {
             )}
           </Button>
         </div>
-
-        {/* Divider */}
+    
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-200" />
@@ -290,7 +292,6 @@ const Register = () => {
           </div>
         </div>
 
-        {/* Sign In Button */}
         <div>
           <Button
             type="button"
@@ -302,7 +303,6 @@ const Register = () => {
         </div>
       </form>
 
-      {/* Benefits */}
       <div className="mt-8 p-4 bg-green-50 rounded-lg border border-green-200">
         <div className="text-center">
           <p className="text-sm font-semibold text-green-600 mb-1">
