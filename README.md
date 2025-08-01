@@ -46,8 +46,8 @@ Before running this application, make sure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
-cd ai-task-flow
+git clone https://github.com/Prasadraogorle/Ai-TaskFlow.git
+cd Ai-TaskFlow
 ```
 
 ### 2. Frontend Setup
