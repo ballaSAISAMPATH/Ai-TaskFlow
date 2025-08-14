@@ -1,4 +1,4 @@
-const Goal = require('../models/Task'); 
+const Goal = require('../models/goal'); 
 const mongoose = require('mongoose');
 const axios = require('axios');
 const  User = require('../models/User')
