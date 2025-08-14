@@ -50,14 +50,16 @@ const Register = () => {
   setIsLoading(true);
 
   try {
-    const data = await dispatch(register(formData));
-    await  console.log(data.payload);
-    
-    if (data.payload.success) {
-      toast.success(data.payload.message);
-      navigate('/auth/login');
-    } else {
-      toast.error(data.payload.message);
+    const data = await dispatch(register(formData));    
+    if(data)    
+    {
+      if (data.payload.success) {
+        toast.success(data.payload.message);
+        navigate('/auth/login');
+      } else {
+        toast.error(data.payload.message);
+      }
+
     }
   } catch (err) {
     toast.error(err?.message || "Something went wrong!");
@@ -82,7 +84,7 @@ const Register = () => {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-md mx-auto lg:mt-[-9rem]">
       <div className="text-center ">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h2>
         <p className="text-gray-600">
