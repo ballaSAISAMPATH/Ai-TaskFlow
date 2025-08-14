@@ -40,7 +40,7 @@ const registerUser = async (req, res) => {
       email: email,
       password: password,
       authProvider: 'email',
-      firebaseUid: undefined, // ✅ added this line
+      firebaseUid: undefined, 
     });
 
     await newUser.save();
@@ -69,9 +69,7 @@ const registerUser = async (req, res) => {
 };
 
 
-/**
- * Login with email/password
- */
+
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -125,9 +123,7 @@ const loginUser = async (req, res) => {
   }
 };
 
-/**
- * Google login
- */
+
 const googleLogin = async (req, res) => {
   const { idToken, email, name, photoURL, uid } = req.body;
 
@@ -200,9 +196,7 @@ const googleLogin = async (req, res) => {
   }
 };
 
-/**
- * Logout
- */
+
 const logoutUser = (req, res) => {
   res.clearCookie("token").json({
     success: true,
@@ -210,9 +204,7 @@ const logoutUser = (req, res) => {
   });
 };
 
-/**
- * Auth Middleware
- */
+
 const authMiddleware = async (req, res, next) => {
   const token = req.cookies.token;
 
