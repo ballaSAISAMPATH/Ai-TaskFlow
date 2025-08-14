@@ -10,7 +10,8 @@ import {
   LogOut,
   Plus,
   CheckCircle,
-  Clock
+  Clock,
+  MessageSquare
 } from 'lucide-react';
 import { logoutUser } from '@/store/auth';
 import { getGoalStats } from '@/store/task';
@@ -108,6 +109,12 @@ const UserSideBar = () => {
       label: 'Dashboard',
       path: '/user/dashboard',
       description: 'View analytics'
+    },
+    {
+      icon: MessageSquare,
+      label: 'Feedback',
+      path: '/user/feedback',
+      description: 'Share feedback'
     },
     {
       icon: User,
@@ -244,18 +251,6 @@ const UserSideBar = () => {
             </div>
           )}
         </div>
-
-        {stats && activeGoals === 0 && stats.completedGoals > 0 && (
-          <div className="mt-4">
-            <button
-              onClick={() => navigate('/user/add-task')}
-              className="w-full bg-gradient-to-r from-green-500 to-[#8FE877] text-white px-3 py-2 rounded-lg text-sm font-medium hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
-            >
-              <Plus className="w-4 h-4" />
-              New Goal
-            </button>
-          </div>
-        )}
       </div>
 
       <div className="p-6 border-t border-gray-200">
