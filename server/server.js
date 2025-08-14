@@ -6,7 +6,7 @@ require('dotenv').config();
 const cookieParser = require('cookie-parser');
 const taskRoutes = require('./routes/taskRoutes');
 const authRouter = require('./routes/auth-routes');
-
+const feedbackRouter = require('./routes/feedback-routes')
 const app = express();
 const PORT=process.env.PORT
 
@@ -22,6 +22,7 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 app.use('/api/tasks', taskRoutes);
 app.use('/api/auth', authRouter);
+app.use('/api/feedback',feedbackRouter)
 
 mongoose
   .connect(process.env.MONGO_URI)
