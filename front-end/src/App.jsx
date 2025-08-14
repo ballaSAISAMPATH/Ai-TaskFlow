@@ -44,7 +44,7 @@ const App = () => {
   return (
     <div>
       <ScrollToTop />
-      <CheckAuth isAuthenticated={isAuthenticated} >
+      <CheckAuth isAuthenticated={isAuthenticated} user={user}>
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path='privacy-policy' element={<PrivacyPolicy/>} />
