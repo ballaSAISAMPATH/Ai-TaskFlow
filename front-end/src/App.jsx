@@ -20,6 +20,7 @@ import GoalDetail from './pages/UserPages/GoalDetail';
 import SetNewPassword from './pages/UserPages/SetNewPassword';
 import TermsOfService from './components/common/TermsOfService';
 import PrivacyPolicy from './components/common/PrivacyPolicy';
+import UserFeedBack from './pages/UserPages/UserFeedBack';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -43,7 +44,7 @@ const App = () => {
   return (
     <div>
       <ScrollToTop />
-      <CheckAuth isAuthenticated={isAuthenticated} >
+      <CheckAuth isAuthenticated={isAuthenticated} user={user}>
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path='privacy-policy' element={<PrivacyPolicy/>} />
@@ -60,6 +61,7 @@ const App = () => {
             <Route path='add-manual' element={<ManualTask/>} />
             <Route path="goal/:goalId" element={<GoalDetail />} />
             <Route path='set-new-password' element={<SetNewPassword/>} />
+            <Route path='feedback' element={<UserFeedBack/>} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
