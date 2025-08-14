@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const crypto = require('crypto');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -22,9 +23,14 @@ const userSchema = new mongoose.Schema({
   },
   firebaseUid: {
     type: String,
-    default: null,
     unique: true,
-    sparse: true
+    sparse: true,
+    default: function() {
+      if (this.authProvider === 'email') {
+        return `email_${crypto.randomBytes(16).toString('hex')}`;
+      }
+      return undefined; 
+    }
   },
   authProvider: {
     type: String,
