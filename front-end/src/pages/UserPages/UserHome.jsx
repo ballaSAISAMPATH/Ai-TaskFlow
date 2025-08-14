@@ -6,6 +6,17 @@ import { Plus, Target, Clock, Trash2, Calendar, CheckCircle, XCircle } from 'luc
 import { useNavigate } from 'react-router-dom'
 import { getGoalById } from '@/store/task'
 import { deleteGoal } from '@/store/task'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 const UserHome = () => {
     const dispatch = useDispatch()
@@ -34,20 +45,16 @@ const UserHome = () => {
         toast.info('Happy to see your initiation')
     }
 
-    const handleDeleteGoal = (e, goalId, goalTitle) => {
-        e.stopPropagation(); 
-        
-        if (window.confirm(`Are you sure you want to delete "${goalTitle}"? This action cannot be undone.`)) {
-            dispatch(deleteGoal({ goalId, user }))
-                .unwrap()
-                .then(() => {
-                    toast.success('Goal deleted successfully')
-                    dispatch(getAllGoals({ user }))
-                })
-                .catch((error) => {
-                    toast.error(error?.message || 'Failed to delete goal')
-                })
-        }
+    const handleDeleteGoal = (goalId) => {
+        dispatch(deleteGoal({ goalId, user }))
+            .unwrap()
+            .then(() => {
+                toast.success('Goal deleted successfully')
+                dispatch(getAllGoals({ user }))
+            })
+            .catch((error) => {
+                toast.error(error?.message || 'Failed to delete goal')
+            })
     }
 
     const formatDate = (dateString) => {
@@ -120,13 +127,38 @@ const UserHome = () => {
                                 onClick={() => handleGoalClick(goal._id)}
                                 className="bg-white border border-gray-200 rounded-lg p-6 hover:border-green-500 hover:shadow-lg transition-all duration-200 cursor-pointer group min-h-[240px] flex flex-col relative"
                             >
-                                <button
-                                    onClick={(e) => handleDeleteGoal(e, goal._id, goal.goalTitle)}
-                                    className="absolute top-4 right-4 w-8 h-8 bg-red-50 hover:bg-red-100 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 z-10"
-                                    title="Delete Goal"
-                                >
-                                    <Trash2 className="w-4 h-4 text-red-500 hover:text-red-600" />
-                                </button>
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <button
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="absolute top-4 right-4 w-8 h-8 bg-red-50 hover:bg-red-100 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 z-10"
+                                            title="Delete Goal"
+                                        >
+                                            <Trash2 className="w-4 h-4 text-red-500 hover:text-red-600" />
+                                        </button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent 
+                                        className="z-[100] bg-white"
+                                        onPointerDownOutside={(e) => e.preventDefault()}
+                                        onInteractOutside={(e) => e.preventDefault()}
+                                    >
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Delete Goal</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                Are you sure you want to delete "{goal.goalTitle}"? This action cannot be undone.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction
+                                                onClick={() => handleDeleteGoal(goal._id)}
+                                                className="bg-red-500 hover:bg-red-600 focus:ring-red-500"
+                                            >
+                                                Delete
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
 
                                 <div className="flex-1">
                                     <div className="flex items-start justify-between mb-4 pr-8">

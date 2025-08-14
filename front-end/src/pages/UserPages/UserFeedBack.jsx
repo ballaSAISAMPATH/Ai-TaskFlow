@@ -278,7 +278,7 @@ const UserFeedBack = () => {
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </AlertDialogTrigger>
-                    <AlertDialogContent>
+                    <AlertDialogContent className="z-[100] bg-white">
                       <AlertDialogHeader>
                         <AlertDialogTitle>Delete Feedback</AlertDialogTitle>
                         <AlertDialogDescription>
