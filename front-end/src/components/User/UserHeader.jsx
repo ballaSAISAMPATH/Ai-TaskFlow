@@ -122,6 +122,13 @@ const UserHeader = () => {
     }
   };
 
+  const handleNavigation = (path) => {
+    setIsMenuOpen(false);
+    setTimeout(() => {
+      navigate(path);
+    }, 100);
+  };
+
   const isAITaskActive = location.pathname === '/user/add-task';
   const isManualTaskActive = location.pathname === '/user/add-manual';
 
@@ -180,18 +187,15 @@ const UserHeader = () => {
 
               <SheetContent
                 side="right"
-                className="w-[320px] sm:w-[400px] bg-gradient-to-br from-white via-white to-[#66B539]/5 border-l border-green-500 z-[70] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right data-[state=open]:duration-700 data-[state=closed]:duration-700 flex flex-col"
-                style={{
-                  transition: 'transform 700ms cubic-bezier(0.32, 0.72, 0, 1)',
-                }}
+                className="w-[320px] sm:w-[400px] bg-white border-l border-green-100 z-[70] flex flex-col data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-right-full data-[state=open]:duration-300 data-[state=closed]:duration-300"
               >
-                <SheetHeader className="pb-6 border-b border-[#66B539]/10 flex-shrink-0">
+                <SheetHeader className="pb-6 border-b border-green-100 flex-shrink-0">
                   <SheetTitle className="flex items-center space-x-3">
                     <div className="relative">
-                      <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-[#8FE877] rounded-xl flex items-center justify-center transform rotate-12 shadow-lg shadow-[#66B539]/25">
+                      <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-400 rounded-xl flex items-center justify-center transform rotate-12 shadow-lg">
                         <Brain className="w-5 h-5 text-white" />
                       </div>
-                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-br from-green-500 to-[#66B539] rounded-full animate-pulse shadow-sm"></div>
+                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-sm"></div>
                     </div>
                     <span className="text-xl font-bold text-gray-900">{user && user.userName}</span>
                   </SheetTitle>
@@ -206,10 +210,7 @@ const UserHeader = () => {
                       return (
                         <button
                           key={item.path}
-                          onClick={() => {
-                            navigate(item.path);
-                            setIsMenuOpen(false);
-                          }}
+                          onClick={() => handleNavigation(item.path)}
                           className={`group flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 ${
                             isActive
                               ? 'bg-green-500/10 text-green-600 font-semibold'
@@ -228,7 +229,7 @@ const UserHeader = () => {
                     })}
                   </nav>
 
-                  <div className="mt-8 p-4 bg-gradient-to-br from-gray-50 to-green-500/5 rounded-xl border border-gray-200/50">
+                  <div className="mt-8 p-4 bg-green-50 rounded-xl border border-green-100">
                     <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center space-x-2">
                       <Target className="w-4 h-4 text-green-500" />
                       <span>Quick Stats</span>
@@ -264,7 +265,7 @@ const UserHeader = () => {
                             <TrendingUp className="w-3 h-3" />
                             Progress
                           </span>
-                          <span className={`font-semibold ${weeklyProgress > 0 ? 'text-[#8FE877]' : 'text-gray-500'}`}>
+                          <span className={`font-semibold ${weeklyProgress > 0 ? 'text-green-500' : 'text-gray-500'}`}>
                             {weeklyProgress > 0 ? `${weeklyProgress}%` : '0%'}
                           </span>
                         </div>
@@ -273,7 +274,7 @@ const UserHeader = () => {
                           <div className="mt-2">
                             <div className="w-full h-1.5 bg-gray-200 rounded-full">
                               <div 
-                                className="h-full bg-gradient-to-r from-green-500 to-[#8FE877] rounded-full transition-all duration-300"
+                                className="h-full bg-gradient-to-r from-green-500 to-green-400 rounded-full transition-all duration-300"
                                 style={{ width: `${Math.min(weeklyProgress, 100)}%` }}
                               />
                             </div>
@@ -284,10 +285,7 @@ const UserHeader = () => {
                       <div className="text-center py-2">
                         <div className="text-xs text-gray-500 mb-1">No data available</div>
                         <button 
-                          onClick={() => {
-                            navigate('/user/add-task');
-                            setIsMenuOpen(false);
-                          }}
+                          onClick={() => handleNavigation('/user/add-task')}
                           className="text-xs text-green-500 hover:text-green-600 font-medium"
                         >
                           Create your first goal
@@ -297,7 +295,7 @@ const UserHeader = () => {
                   </div>
                 </div>
 
-                <div className="flex-shrink-0 border-t border-gray-200 pt-4">
+                <div className="flex-shrink-0 border-t border-green-100 pt-4">
                   <button
                     className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 text-gray-700 hover:text-red-500 hover:bg-red-50 group"
                     onClick={handleLogout}
@@ -316,43 +314,6 @@ const UserHeader = () => {
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes slideInFromRight {
-          from {
-            transform: translateX(100%);
-          }
-          to {
-            transform: translateX(0);
-          }
-        }
-
-        @keyframes slideOutToRight {
-          from {
-            transform: translateX(0);
-          }
-          to {
-            transform: translateX(100%);
-          }
-        }
-
-        .slide-in-from-right {
-          animation: slideInFromRight 700ms cubic-bezier(0.32, 0.72, 0, 1);
-        }
-
-        .slide-out-to-right {
-          animation: slideOutToRight 700ms cubic-bezier(0.32, 0.72, 0, 1);
-        }
-
-        /* Override any conflicting styles */
-        [data-state="open"] {
-          animation: slideInFromRight 700ms cubic-bezier(0.32, 0.72, 0, 1) !important;
-        }
-
-        [data-state="closed"] {
-          animation: slideOutToRight 700ms cubic-bezier(0.32, 0.72, 0, 1) !important;
-        }
-      `}</style>
     </header>
   );
 };
