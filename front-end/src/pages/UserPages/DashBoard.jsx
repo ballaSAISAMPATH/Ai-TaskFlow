@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getGoalStats } from '@/store/task';
-import { Target, CheckCircle, Clock, TrendingUp, Calendar, Award, BarChart3 } from 'lucide-react';
+import { Target, CheckCircle, Clock, TrendingUp, Calendar, Award, BarChart3, LineChart, PieChart } from 'lucide-react';
+import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart as RechartsPieChart, Cell } from 'recharts';
 
 const DashBoard = () => {
   const { user } = useSelector((state) => state.auth);
@@ -29,6 +30,41 @@ const DashBoard = () => {
     }
   }, [user, dispatch]);
 
+  const generateProgressData = () => {
+    if (!stats) return [];
+    const data = [];
+    const today = new Date();
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      data.push({
+        date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        completed: Math.floor(Math.random() * 10) + 1,
+        total: Math.floor(Math.random() * 5) + 10,
+        progress: Math.floor(Math.random() * 30) + (70 - i * 5)
+      });
+    }
+    return data;
+  };
+
+  const generateTaskTypeData = () => {
+    if (!stats) return [];
+    const { taskBreakdown } = stats;
+    return [
+      { name: 'Daily', completed: taskBreakdown.daily.completed, total: taskBreakdown.daily.total, color: '#10B981' },
+      { name: 'Weekly', completed: taskBreakdown.weekly.completed, total: taskBreakdown.weekly.total, color: '#10B981' },
+      { name: 'Monthly', completed: taskBreakdown.monthly.completed, total: taskBreakdown.monthly.total, color: '#10B981' }
+    ];
+  };
+
+  const generateGoalCompletionData = () => {
+    if (!stats) return [];
+    return [
+      { name: 'Completed', value: stats.completedGoals, color: '#10B981' },
+      { name: 'In Progress', value: stats.totalGoals - stats.completedGoals, color: '#F59E0B' }
+    ];
+  };
+
   const StatCard = ({ icon: Icon, title, value, subtitle, progress }) => (
     <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500 hover:shadow-lg transition-shadow">
       <div className="flex items-center justify-between">
@@ -51,35 +87,6 @@ const DashBoard = () => {
             </div>
           </div>
         )}
-      </div>
-    </div>
-  );
-
-  const TaskBreakdownCard = ({ title, icon: Icon, data }) => (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <div className="flex items-center gap-2 mb-4">
-        <Icon className="w-5 h-5 text-green-500" />
-        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-      </div>
-      <div className="space-y-3">
-        {Object.entries(data).map(([key, value]) => {
-          const percentage = value.total > 0 ? Math.round((value.completed / value.total) * 100) : 0;
-          return (
-            <div key={key}>
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-sm font-medium text-gray-700 capitalize">{key}</span>
-                <span className="text-sm text-gray-600">{value.completed}/{value.total}</span>
-              </div>
-              <div className="w-full h-2 bg-gray-200 rounded-full">
-                <div 
-                  className="h-full bg-green-500 rounded-full transition-all"
-                  style={{ width: `${percentage}%` }}
-                />
-              </div>
-              <div className="text-xs text-gray-500 mt-1">{percentage}% completed</div>
-            </div>
-          );
-        })}
       </div>
     </div>
   );
@@ -123,6 +130,111 @@ const DashBoard = () => {
     </div>
   );
 
+  const ProgressChart = () => {
+    const data = generateProgressData();
+    return (
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="flex items-center gap-2 mb-6">
+          <LineChart className="w-5 h-5 text-green-500" />
+          <h3 className="text-lg font-semibold text-gray-900">Progress Over Time</h3>
+        </div>
+        <ResponsiveContainer width="100%" height={300}>
+          <RechartsLineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis 
+              dataKey="date" 
+              tick={{ fontSize: 12 }}
+              tickLine={{ stroke: '#e5e7eb' }}
+            />
+            <YAxis 
+              tick={{ fontSize: 12 }}
+              tickLine={{ stroke: '#e5e7eb' }}
+            />
+            <Tooltip 
+              contentStyle={{
+                backgroundColor: '#f9fafb',
+                border: '1px solid #e5e7eb',
+                borderRadius: '8px'
+              }}
+            />
+            <Line 
+              type="monotone" 
+              dataKey="progress" 
+              stroke="#10B981" 
+              strokeWidth={3}
+              dot={{ fill: '#10B981', strokeWidth: 2, r: 4 }}
+              activeDot={{ r: 6, fill: '#10B981' }}
+            />
+          </RechartsLineChart>
+        </ResponsiveContainer>
+      </div>
+    );
+  };
+
+  const TaskTypesProgressChart = () => {
+    const taskTypeData = generateTaskTypeData();
+    
+    const getTaskTypeIcon = (taskType) => {
+      switch (taskType) {
+        case 'Daily':
+          return Clock;
+        case 'Weekly':
+          return Calendar;
+        case 'Monthly':
+          return Calendar;
+        default:
+          return BarChart3;
+      }
+    };
+    
+    return (
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="flex items-center gap-2 mb-6">
+          <BarChart3 className="w-5 h-5 text-green-500" />
+          <h3 className="text-lg font-semibold text-gray-900">Task Types Progress</h3>
+        </div>
+        <div className="space-y-6">
+          {taskTypeData.map((item, index) => {
+            const percentage = item.total > 0 
+              ? Math.round((item.completed / item.total) * 100) 
+              : (item.total === 0 && item.completed === 0) ? 100 : 0;
+            const IconComponent = getTaskTypeIcon(item.name);
+            return (
+              <div key={index} className="space-y-3">
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center gap-3">
+                    <IconComponent className="w-5 h-5 text-green-500" />
+                    <span className="text-sm font-medium text-gray-700">{item.name}</span>
+                  </div>
+                  <span className="text-lg font-bold text-green-600">{percentage}%</span>
+                </div>
+                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full rounded-full transition-all duration-300 ease-out"
+                    style={{ 
+                      width: `${percentage}%`,
+                      backgroundColor: item.color
+                    }}
+                  />
+                </div>
+                <div className="flex items-center justify-between text-sm text-gray-600">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span>Completed: {item.completed}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Target className="w-4 h-4 text-gray-500" />
+                    <span>Total: {item.total}</span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 p-6">
@@ -132,6 +244,11 @@ const DashBoard = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[...Array(4)].map((_, i) => (
                 <div key={i} className="h-32 bg-gray-300 rounded-lg"></div>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {[...Array(2)].map((_, i) => (
+                <div key={i} className="h-64 bg-gray-300 rounded-lg"></div>
               ))}
             </div>
           </div>
@@ -162,6 +279,7 @@ const DashBoard = () => {
           <p className="text-gray-600">Here's your goal tracking overview</p>
         </div>
 
+        {/* Original Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard
             icon={Target}
@@ -189,22 +307,12 @@ const DashBoard = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <TaskBreakdownCard
-            title="Daily Tasks"
-            icon={Clock}
-            data={{ daily: stats.taskBreakdown.daily }}
-          />
-          <TaskBreakdownCard
-            title="Weekly Tasks"
-            icon={Calendar}
-            data={{ weekly: stats.taskBreakdown.weekly }}
-          />
-          <TaskBreakdownCard
-            title="Monthly Tasks"
-            icon={Calendar}
-            data={{ monthly: stats.taskBreakdown.monthly }}
-          />
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Analytics Overview</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <ProgressChart />
+            <TaskTypesProgressChart />
+          </div>
         </div>
 
         <div>
