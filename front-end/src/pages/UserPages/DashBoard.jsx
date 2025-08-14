@@ -30,7 +30,6 @@ const DashBoard = () => {
     }
   }, [user, dispatch]);
 
-  // Generate sample data for charts - you can replace this with actual data from your API
   const generateProgressData = () => {
     if (!stats) return [];
     const data = [];
@@ -308,7 +307,6 @@ const DashBoard = () => {
           />
         </div>
 
-        {/* New Charts Section */}
         <div>
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Analytics Overview</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
@@ -317,7 +315,6 @@ const DashBoard = () => {
           </div>
         </div>
 
-        {/* Original Goals Progress Section */}
         <div>
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Goals Progress</h2>
           {stats.goalProgress.length > 0 ? (
