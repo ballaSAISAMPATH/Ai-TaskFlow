@@ -9,6 +9,17 @@ import {
   Calendar,
   Clock
 } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { 
   createFeedback,
   getFeedbackByUser,
@@ -65,12 +76,10 @@ const UserFeedBack = () => {
   };
 
   const handleDeleteFeedback = async (feedbackId) => {
-    if (window.confirm('Are you sure you want to delete this feedback?')) {
-      try {
-        await dispatch(deleteFeedback(feedbackId)).unwrap();
-      } catch (error) {
-        console.error('Failed to delete feedback:', error);
-      }
+    try {
+      await dispatch(deleteFeedback(feedbackId)).unwrap();
+    } catch (error) {
+      console.error('Failed to delete feedback:', error);
     }
   };
 
@@ -127,6 +136,7 @@ const UserFeedBack = () => {
 
   return (
     <div className="space-y-8">
+      {/* Header */}
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Feedback</h1>
@@ -144,6 +154,7 @@ const UserFeedBack = () => {
         )}
       </div>
 
+      {/* Error Message */}
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
           <div className="flex items-center justify-between">
@@ -158,11 +169,13 @@ const UserFeedBack = () => {
         </div>
       )}
 
+      {/* Feedback Form */}
       {(showFeedbackForm || userFeedbacks.length === 0) && (
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-6">Share Your Experience</h2>
           
           <form onSubmit={handleSubmitFeedback} className="space-y-6">
+            {/* Rating */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Rate Your Experience
@@ -177,6 +190,7 @@ const UserFeedBack = () => {
               )}
             </div>
 
+            {/* Message */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Tell Us More
@@ -191,6 +205,7 @@ const UserFeedBack = () => {
               />
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={createLoading || !feedbackData.message.trim() || feedbackData.rating === 0}
@@ -212,6 +227,7 @@ const UserFeedBack = () => {
         </div>
       )}
 
+      {/* Feedback History */}
       {userFeedbacks.length > 0 && (
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Your Feedback History</h2>
@@ -252,14 +268,34 @@ const UserFeedBack = () => {
                     </div>
                   </div>
                   
-                  <button
-                    onClick={() => handleDeleteFeedback(feedback._id)}
-                    disabled={deleteLoading}
-                    className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded disabled:opacity-50"
-                    title="Delete feedback"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <button
+                        disabled={deleteLoading}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded disabled:opacity-50"
+                        title="Delete feedback"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Feedback</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you sure you want to delete this feedback? This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => handleDeleteFeedback(feedback._id)}
+                          className="bg-red-500 hover:bg-red-600 focus:ring-red-500"
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
 
                 <div className="bg-gray-50 rounded p-4 border-l-4 border-green-500">
@@ -271,6 +307,7 @@ const UserFeedBack = () => {
         </div>
       )}
 
+      {/* Empty State */}
       {userFeedbacks.length === 0 && !showFeedbackForm && !loading && (
         <div className="text-center py-16">
           <MessageCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
