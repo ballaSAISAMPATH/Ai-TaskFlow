@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Brain, Zap, TrendingUp, Home, BarChart3, User, Target, LogOut, Plus, CheckCircle, Clock, Edit } from 'lucide-react';
+import { Brain, Zap, TrendingUp, Home, BarChart3, User, Target, LogOut, Plus, CheckCircle, Clock, Edit, MessageSquare } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -93,6 +93,12 @@ const UserHeader = () => {
       label: 'Dashboard',
       path: '/user/dashboard',
       description: 'View analytics'
+    },
+    {
+      icon: MessageSquare,
+      label: 'Feedback',
+      path: '/user/feedback',
+      description: 'Share your thoughts'
     },
     {
       icon: User,
