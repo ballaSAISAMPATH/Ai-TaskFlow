@@ -44,8 +44,8 @@ const UserFeedBack = () => {
     message: '',
     rating: 0
   });
-
-  const userId = user.id; 
+  
+  const userId = user?user.id:null; 
 
   useEffect(() => {
     if (userId) {
@@ -136,7 +136,6 @@ const UserFeedBack = () => {
 
   return (
     <div className="px-4 sm:px-6 lg:px-0 space-y-6 sm:space-y-8">
-      {/* Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Your Feedback</h1>
@@ -154,7 +153,6 @@ const UserFeedBack = () => {
         )}
       </div>
 
-      {/* Error Section */}
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-3 sm:p-4">
           <div className="flex items-center justify-between">
@@ -169,7 +167,6 @@ const UserFeedBack = () => {
         </div>
       )}
 
-      {/* Feedback Form */}
       {(showFeedbackForm || userFeedbacks.length === 0) && (
         <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
           <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">Share Your Experience</h2>
@@ -236,7 +233,6 @@ const UserFeedBack = () => {
         </div>
       )}
 
-      {/* Feedback History */}
       {userFeedbacks.map((feedback, index) => (
   <div
     key={feedback._id}
