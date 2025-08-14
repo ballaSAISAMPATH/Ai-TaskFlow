@@ -7,6 +7,8 @@ import { toast } from 'sonner'
 const SetNewPassword = () => {
     const dispatch = useDispatch()
     const { user, loading } = useSelector((state) => state.auth)
+    console.log(user);
+    
     
     const [formData, setFormData] = useState({
         oldPassword: '',
@@ -96,8 +98,6 @@ const handleSubmit = async (e) => {
         })
         
     } catch (error) {
-        // Now this will properly show "Current password is incorrect" 
-        // when that's the error from your backend
         console.log('Error caught:', error);
         toast.error(error || 'An error occurred while changing password');
     }
@@ -105,13 +105,11 @@ const handleSubmit = async (e) => {
 
     return (
         <div className="w-full px-6 py-8">
-            {/* Header Section */}
             <div className="mb-8">
                 <h2 className="text-2xl font-bold text-green-500 mb-2">Change Password</h2>
                 <p className="text-gray-600">Update your account password</p>
             </div>
 
-            {/* Card Section */}
             <div className="w-full bg-white rounded-lg shadow-lg p-8">
                 <div className="space-y-6">
                     <div>
