@@ -17,6 +17,11 @@ const feedbackSchema = new mongoose.Schema({
     max: 5,
     default: null
   },
+  reply: { 
+    type: String,
+    trim: true,
+    default: null
+  },
   createdAt: {
     type: Date,
     default: Date.now
