@@ -24,6 +24,7 @@ import UserFeedBack from './pages/UserPages/UserFeedBack';
 import AdminLayout from './components/admin/AdminLayout';
 import AdminDashBoard from './pages/AdminPages/AdminDashBoard';
 import Reviews from './pages/AdminPages/Reviews';
+import AdminProfile from './pages/AdminPages/AdminProfile';
 const App = () => {
   const dispatch = useDispatch();
   const { user, isAuthenticated, isLoading } = useSelector((state) => state.auth);  
@@ -69,6 +70,7 @@ const App = () => {
           <Route path='/admin' element={<AdminLayout/>}>
               <Route path='reviews' element={<Reviews/>} />
               <Route path='dashboard' element={<AdminDashBoard/>} />
+              <Route path='profile' element={<AdminProfile/>} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
