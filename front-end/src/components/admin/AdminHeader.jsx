@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { Brain, LayoutDashboard, Star, UserCog, LogOut } from 'lucide-react';
+import { Brain, LayoutDashboard, Star, UserCog, LogOut,Users } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser } from '@/store/auth';
 import { toast } from 'sonner';
-
 const AdminHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -13,27 +12,32 @@ const AdminHeader = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
-  const menuItems = [
-    {
-      icon: LayoutDashboard,
-      label: 'Dashboard',
-      path: '/admin/dashboard',
-      description: 'View analytics'
-    },
-    {
-      icon: Star,
-      label: 'Reviews',
-      path: '/admin/reviews',
-      description: 'User feedback'
-    },
-    {
-      icon: UserCog,
-      label: 'Profile',
-      path: '/admin/profile',
-      description: 'Manage account'
-    }
-  ];
-
+   const menuItems = [
+     {
+       icon: LayoutDashboard,
+       label: 'Dashboard',
+       path: '/admin/dashboard',
+       description: 'View analytics'
+     },
+     {
+       icon: Users,
+       label: 'Users',
+       path: '/admin/users',
+       description: 'user wise statistics'
+     },
+     {
+       icon: Star,
+       label: 'Reviews',
+       path: '/admin/reviews',
+       description: 'User feedback'
+     },
+     {
+       icon: UserCog,
+       label: 'Profile',
+       path: '/admin/profile',
+       description: 'Manage account'
+     }
+   ];
   const handleLogout = async () => {
     try {
       const data = await dispatch(logoutUser());
