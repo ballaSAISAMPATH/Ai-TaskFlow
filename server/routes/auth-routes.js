@@ -51,6 +51,7 @@ router.get("/check-auth", authMiddleware, async (req, res) => {
         userName: user.name,
         profilePicture: user.profilePicture,
         authProvider: user.authProvider,
+        role:user.role
       },
     });
   } catch (error) {
