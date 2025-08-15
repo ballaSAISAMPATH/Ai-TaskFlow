@@ -21,11 +21,14 @@ import SetNewPassword from './pages/UserPages/SetNewPassword';
 import TermsOfService from './components/common/TermsOfService';
 import PrivacyPolicy from './components/common/PrivacyPolicy';
 import UserFeedBack from './pages/UserPages/UserFeedBack';
-
+import AdminLayout from './components/admin/AdminLayout';
+import AdminDashBoard from './pages/AdminPages/AdminDashBoard';
+import Reviews from './pages/AdminPages/Reviews';
 const App = () => {
   const dispatch = useDispatch();
-  const { user, isAuthenticated, isLoading } = useSelector((state) => state.auth);
-  
+  const { user, isAuthenticated, isLoading } = useSelector((state) => state.auth);  
+    console.log(user);
+    
   useEffect(() => {
     const checkAuth = async () => {
       await dispatch(checkAuthUser());
@@ -62,6 +65,10 @@ const App = () => {
             <Route path="goal/:goalId" element={<GoalDetail />} />
             <Route path='set-new-password' element={<SetNewPassword/>} />
             <Route path='feedback' element={<UserFeedBack/>} />
+          </Route>
+          <Route path='/admin' element={<AdminLayout/>}>
+              <Route path='reviews' element={<Reviews/>} />
+              <Route path='dashboard' element={<AdminDashBoard/>} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
