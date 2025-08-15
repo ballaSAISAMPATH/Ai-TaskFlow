@@ -81,7 +81,7 @@ const AdminHeader = () => {
           <nav className="hidden md:flex items-center space-x-8 relative">
             <button
               className="bg-gradient-to-br from-green-500 to-green-600 hover:from-[#8FE877] hover:to-green-500 text-white font-bold w-10 h-10 rounded-full transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105 ring-2 ring-white/20"
-              onClick={() => navigate('/user/profile')}
+              onClick={() => navigate('/admin/profile')}
             >
               {user && user.userName?.[0]?.toUpperCase()}
             </button>
