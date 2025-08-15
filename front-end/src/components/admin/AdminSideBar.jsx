@@ -5,7 +5,7 @@ import {
   LayoutDashboard,
   Star,
   UserCog,
-  LogOut
+  LogOut,Users
 } from 'lucide-react';
 import { logoutUser } from '@/store/auth';
 import { toast } from 'sonner';
@@ -37,6 +37,12 @@ const AdminSideBar = () => {
       label: 'Dashboard',
       path: '/admin/dashboard',
       description: 'View analytics'
+    },
+    {
+      icon: Users,
+      label: 'Users',
+      path: '/admin/users',
+      description: 'user wise statistics'
     },
     {
       icon: Star,

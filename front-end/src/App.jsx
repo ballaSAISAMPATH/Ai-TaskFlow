@@ -25,6 +25,7 @@ import AdminLayout from './components/admin/AdminLayout';
 import AdminDashBoard from './pages/AdminPages/AdminDashBoard';
 import Reviews from './pages/AdminPages/Reviews';
 import AdminProfile from './pages/AdminPages/AdminProfile';
+import UsersTaskStatistics from './pages/AdminPages/UsersTaskStatistics';
 const App = () => {
   const dispatch = useDispatch();
   const { user, isAuthenticated, isLoading } = useSelector((state) => state.auth);  
@@ -68,8 +69,9 @@ const App = () => {
             <Route path='feedback' element={<UserFeedBack/>} />
           </Route>
           <Route path='/admin' element={<AdminLayout/>}>
-              <Route path='reviews' element={<Reviews/>} />
               <Route path='dashboard' element={<AdminDashBoard/>} />
+              <Route path='users' element={<UsersTaskStatistics/>} />
+              <Route path='reviews' element={<Reviews/>} />
               <Route path='profile' element={<AdminProfile/>} />
               <Route path='set-new-password' element={<SetNewPassword/>}/>
           </Route>
