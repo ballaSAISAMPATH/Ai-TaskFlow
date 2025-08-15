@@ -71,6 +71,7 @@ const App = () => {
               <Route path='reviews' element={<Reviews/>} />
               <Route path='dashboard' element={<AdminDashBoard/>} />
               <Route path='profile' element={<AdminProfile/>} />
+              <Route path='set-new-password' element={<SetNewPassword/>}/>
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
