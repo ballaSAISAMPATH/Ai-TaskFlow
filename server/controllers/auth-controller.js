@@ -75,6 +75,8 @@ const loginUser = async (req, res) => {
 
   try {
     const checkUser = await User.findOne({ email });
+    console.log(checkUser);
+    
     if (checkUser) {
       if (checkUser.password === password) {
         const token = jwt.sign(
@@ -82,6 +84,7 @@ const loginUser = async (req, res) => {
             id: checkUser._id,
             email: checkUser.email,
             userName: checkUser.name,
+            role:checkUser.role
           },
           process.env.JWT_SECRET_KEY,
           { expiresIn: "60m" }
@@ -101,6 +104,7 @@ const loginUser = async (req, res) => {
             profilePicture: checkUser.profilePicture,
             authProvider: checkUser.authProvider,
             role:checkUser.role
+
           },
         });
       } else {
@@ -230,47 +234,7 @@ const authMiddleware = async (req, res, next) => {
 };
 
 
-const checkAuth = async (req, res) => {
-  const token = req.cookies.token;
 
-  if (!token) {
-    return res.status(401).json({
-      success: false,
-      message: "No token. Unauthorized.",
-    });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-
-    const user = await User.findById(decoded.id);
-
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "User not found.",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: "Authenticated",
-      user: {
-        id: user._id,
-        email: user.email,
-        userName: user.name,
-        profilePicture: user.profilePicture,
-        authProvider: user.authProvider,
-      },
-    });
-
-  } catch (err) {
-    return res.status(401).json({
-      success: false,
-      message: "Invalid or expired token",
-    });
-  }
-};
 const deleteAccount = async (req, res) => {
   try {
     const { userId } = req.body; 
@@ -362,7 +326,6 @@ module.exports = {
   logoutUser,
   authMiddleware,
   googleLogin,
-  checkAuth,
   deleteAccount,
   changePassword
 };
