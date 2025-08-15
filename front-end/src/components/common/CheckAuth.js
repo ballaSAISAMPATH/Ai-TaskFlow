@@ -51,7 +51,7 @@ const CheckAuth = ({ isAuthenticated, user, isLoading, children }) => {
       isAuthenticated &&
       user &&
       user.authProvider === 'google' &&
-      path === '/user/set-new-password'
+      (path === '/user/set-new-password' || path === '/admin/set-new-password')
     ) {
       toast.error('Password change is not available for Google authenticated accounts');
       navigate(getHomePath());
