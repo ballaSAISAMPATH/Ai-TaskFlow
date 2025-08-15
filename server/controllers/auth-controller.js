@@ -100,6 +100,7 @@ const loginUser = async (req, res) => {
             userName: checkUser.name,
             profilePicture: checkUser.profilePicture,
             authProvider: checkUser.authProvider,
+            role:checkUser.role
           },
         });
       } else {
@@ -184,6 +185,7 @@ const googleLogin = async (req, res) => {
         userName: user.name,
         profilePicture: user.profilePicture,
         authProvider: user.authProvider,
+        role:user.role
       },
     });
 
