@@ -1,7 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { MessageSquare, Star, Send, User, Calendar } from 'lucide-react';
-import { fetchAllFeedback, replyToFeedback, setActiveReplyId } from '@/store/admin';
+import { MessageSquare, Star, Send, User, Calendar, Trash2 } from 'lucide-react';
+import { fetchAllFeedback, replyToFeedback, setActiveReplyId, deleteFeedback } from '@/store/admin';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 const Reviews = () => {
   const dispatch = useDispatch();
@@ -9,6 +20,8 @@ const Reviews = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [replyText, setReplyText] = useState('');
   const [selectedFeedback, setSelectedFeedback] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [feedbackToDelete, setFeedbackToDelete] = useState(null);
 
   useEffect(() => {
     dispatch(fetchAllFeedback({ page: currentPage, limit: 10 }));
@@ -24,6 +37,28 @@ const Reviews = () => {
     } catch (error) {
       console.error('Error replying to feedback:', error);
     }
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!feedbackToDelete) return;
+    
+    try {
+      await dispatch(deleteFeedback(feedbackToDelete._id)).unwrap();
+      setDeleteDialogOpen(false);
+      setFeedbackToDelete(null);
+    } catch (error) {
+      console.error('Error deleting feedback:', error);
+    }
+  };
+
+  const openDeleteDialog = (feedback) => {
+    setFeedbackToDelete(feedback);
+    setDeleteDialogOpen(true);
+  };
+
+  const closeDeleteDialog = () => {
+    setDeleteDialogOpen(false);
+    setFeedbackToDelete(null);
   };
 
   const startReply = (feedback) => {
@@ -93,7 +128,6 @@ const Reviews = () => {
 
   return (
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-6 min-h-screen">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center space-x-3">
           <MessageSquare className="h-6 w-6 sm:h-8 sm:w-8 text-green-500 flex-shrink-0" />
@@ -106,7 +140,6 @@ const Reviews = () => {
         </div>
       </div>
 
-      {/* Reviews List */}
       <div className="space-y-4">
         {feedback.length === 0 ? (
           <div className="bg-white rounded-lg shadow-md p-6 sm:p-8 text-center border border-gray-200">
@@ -117,7 +150,6 @@ const Reviews = () => {
         ) : (
           feedback.map((review) => (
             <div key={review._id} className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
-              {/* Review Header */}
               <div className="p-4 sm:p-6 border-b border-gray-200">
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                   <div className="flex items-start space-x-3 sm:space-x-4 flex-1">
@@ -147,26 +179,33 @@ const Reviews = () => {
                         {renderStars(review.rating)}
                       </div>
                     )}
-                    {!review.reply && (
+                    <div className="flex items-center space-x-2">
+                      {!review.reply && (
+                        <button
+                          onClick={() => startReply(review)}
+                          className="px-3 py-1.5 text-xs sm:text-sm bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors flex-shrink-0"
+                        >
+                          Reply
+                        </button>
+                      )}
                       <button
-                        onClick={() => startReply(review)}
-                        className="px-3 py-1.5 text-xs sm:text-sm bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors flex-shrink-0"
+                        onClick={() => openDeleteDialog(review)}
+                        className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors flex-shrink-0"
+                        title="Delete feedback"
                       >
-                        Reply
+                        <Trash2 className="h-4 w-4" />
                       </button>
-                    )}
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Review Content */}
               <div className="p-4 sm:p-6">
                 <p className="text-gray-700 leading-relaxed text-sm sm:text-base break-words">
                   {review.message}
                 </p>
               </div>
 
-              {/* Admin Reply */}
               {review.reply && (
                 <div className="p-4 sm:p-6 bg-green-50 border-t border-green-200">
                   <div className="flex items-start space-x-3">
@@ -191,7 +230,6 @@ const Reviews = () => {
                 </div>
               )}
 
-              {/* Reply Form */}
               {selectedFeedback?._id === review._id && (
                 <div className="p-4 sm:p-6 bg-gray-50 border-t border-gray-200">
                   <div className="space-y-4">
@@ -229,7 +267,6 @@ const Reviews = () => {
         )}
       </div>
 
-      {/* Pagination */}
       {feedbackPagination && feedbackPagination.totalPages > 1 && (
         <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-2">
           <button
@@ -278,6 +315,30 @@ const Reviews = () => {
           </button>
         </div>
       )}
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent className="bg-white/95 backdrop-blur-sm border-2">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Feedback</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this feedback from{' '}
+              <span className="font-semibold">
+                {feedbackToDelete?.userId?.name || 'Anonymous User'}
+              </span>
+              ? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={closeDeleteDialog}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfirm}
+              className="bg-red-500 hover:bg-red-600 focus:ring-red-500"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
