@@ -39,17 +39,6 @@ export const getFeedbackByUser = createAsyncThunk(
   }
 );
 
-export const deleteFeedback = createAsyncThunk(
-  'feedback/deleteFeedback',
-  async (feedbackId, { rejectWithValue }) => {
-    try {
-      const response = await axios.delete(`${API_BASE_URL}/deleteFeedback/${feedbackId}`);
-      return { ...response.data, deletedId: feedbackId };
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message || error.message);
-    }
-  }
-);
 
 const initialState = {
   feedbacks: [],
@@ -114,21 +103,6 @@ const feedbackSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
-      .addCase(deleteFeedback.pending, (state) => {
-        state.deleteLoading = true;
-        state.error = null;
-      })
-      .addCase(deleteFeedback.fulfilled, (state, action) => {
-        state.deleteLoading = false;
-        const deletedId = action.payload.deletedId;
-        state.feedbacks = state.feedbacks.filter(feedback => feedback._id !== deletedId);
-        state.userFeedbacks = state.userFeedbacks.filter(feedback => feedback._id !== deletedId);
-      })
-      .addCase(deleteFeedback.rejected, (state, action) => {
-        state.deleteLoading = false;
-        state.error = action.payload;
-      });
   },
 });
 

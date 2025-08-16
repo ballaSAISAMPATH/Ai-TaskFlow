@@ -3,7 +3,6 @@ import axios from 'axios';
 
 const API_BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
-// Async thunks for API calls
 export const fetchDashboardStats = createAsyncThunk(
   'admin/fetchDashboardStats',
   async (_, { rejectWithValue }) => {
@@ -74,27 +73,34 @@ export const deleteUser = createAsyncThunk(
   }
 );
 
+export const deleteFeedback = createAsyncThunk(
+  'feedback/deleteFeedback',
+  async (feedbackId, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(`${API_BASE_URL}/feedback/deleteFeedback/${feedbackId}`);
+      return { ...response.data, deletedId: feedbackId };
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
 const adminSlice = createSlice({
   name: 'admin',
   initialState: {
-    // Dashboard state
     dashboardStats: null,
     dashboardLoading: false,
     dashboardError: null,
     
-    // Feedback state
     feedback: [],
     feedbackPagination: null,
     feedbackLoading: false,
     feedbackError: null,
     
-    // Users state
     users: [],
     usersPagination: null,
     usersLoading: false,
     usersError: null,
     
-    // UI state
     activeReplyId: null,
   },
   reducers: {
@@ -116,7 +122,6 @@ const adminSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Dashboard stats
       .addCase(fetchDashboardStats.pending, (state) => {
         state.dashboardLoading = true;
         state.dashboardError = null;
@@ -130,7 +135,6 @@ const adminSlice = createSlice({
         state.dashboardError = action.payload;
       })
       
-      // Feedback
       .addCase(fetchAllFeedback.pending, (state) => {
         state.feedbackLoading = true;
         state.feedbackError = null;
@@ -145,7 +149,6 @@ const adminSlice = createSlice({
         state.feedbackError = action.payload;
       })
       
-      // Reply to feedback
       .addCase(replyToFeedback.fulfilled, (state, action) => {
         const updatedFeedback = action.payload;
         const index = state.feedback.findIndex(f => f._id === updatedFeedback._id);
@@ -155,7 +158,6 @@ const adminSlice = createSlice({
         state.activeReplyId = null;
       })
       
-      // User statistics
       .addCase(fetchUserStatistics.pending, (state) => {
         state.usersLoading = true;
         state.usersError = null;
@@ -170,10 +172,24 @@ const adminSlice = createSlice({
         state.usersError = action.payload;
       })
       
-      // Delete user
       .addCase(deleteUser.fulfilled, (state, action) => {
         const deletedUserId = action.payload;
         state.users = state.users.filter(user => user._id !== deletedUserId);
+      }).addCase(deleteFeedback.pending, (state) => {
+        state.deleteLoading = true;
+        state.error = null;
+      })
+      .addCase(deleteFeedback.fulfilled, (state, action) => {
+        state.deleteLoading = false;
+        const deletedId = action.payload.deletedId;
+        state.feedback = state.feedback.filter(feedback => feedback._id !== deletedId);
+        if (state.feedbackPagination) {
+          state.feedbackPagination.totalFeedback = Math.max(0, (state.feedbackPagination.totalFeedback || 0) - 1);
+        }
+      })
+      .addCase(deleteFeedback.rejected, (state, action) => {
+        state.deleteLoading = false;
+        state.error = action.payload;
       });
   }
 });
