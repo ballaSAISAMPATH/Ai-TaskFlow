@@ -75,7 +75,6 @@ const loginUser = async (req, res) => {
 
   try {
     const checkUser = await User.findOne({ email });
-    console.log(checkUser);
     
     if (checkUser) {
       if (checkUser.password === password) {
