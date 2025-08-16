@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import LoadingSpinner from '@/utilities/LoadingSpinner';
 import { 
   Trash2, 
   Star, 
@@ -121,8 +122,7 @@ const UserFeedBack = () => {
     return (
       <div className="flex items-center justify-center py-16 sm:py-20">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-4 border-green-200 border-t-green-500 mx-auto mb-4"></div>
-          <p className="text-green-600 font-medium text-sm sm:text-base">Loading your feedback...</p>
+          <LoadingSpinner />
         </div>
       </div>
     );
