@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { MessageSquare, Star, Send, User, Calendar } from 'lucide-react';
-import { fetchAllFeedback, replyToFeedback, setActiveReplyId } from '@/store/admin';
+import { MessageSquare, Star, Send, User, Calendar, Trash2 } from 'lucide-react';
+import { fetchAllFeedback, replyToFeedback, setActiveReplyId, deleteFeedback } from '@/store/admin';
 
 const Reviews = () => {
   const dispatch = useDispatch();
@@ -23,6 +23,16 @@ const Reviews = () => {
       setSelectedFeedback(null);
     } catch (error) {
       console.error('Error replying to feedback:', error);
+    }
+  };
+
+  const handleDelete = async (feedbackId) => {
+    if (window.confirm('Are you sure you want to delete this feedback?')) {
+      try {
+        await dispatch(deleteFeedback(feedbackId)).unwrap();
+      } catch (error) {
+        console.error('Error deleting feedback:', error);
+      }
     }
   };
 
@@ -147,14 +157,23 @@ const Reviews = () => {
                         {renderStars(review.rating)}
                       </div>
                     )}
-                    {!review.reply && (
+                    <div className="flex items-center space-x-2">
+                      {!review.reply && (
+                        <button
+                          onClick={() => startReply(review)}
+                          className="px-3 py-1.5 text-xs sm:text-sm bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors flex-shrink-0"
+                        >
+                          Reply
+                        </button>
+                      )}
                       <button
-                        onClick={() => startReply(review)}
-                        className="px-3 py-1.5 text-xs sm:text-sm bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors flex-shrink-0"
+                        onClick={() => handleDelete(review._id)}
+                        className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors flex-shrink-0"
+                        title="Delete feedback"
                       >
-                        Reply
+                        <Trash2 className="h-4 w-4" />
                       </button>
-                    )}
+                    </div>
                   </div>
                 </div>
               </div>
