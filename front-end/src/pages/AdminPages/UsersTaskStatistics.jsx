@@ -14,7 +14,7 @@ import {
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
-
+import LoadingSpinner from '@/utilities/LoadingSpinner';
 const UsersTaskStatistics = () => {
   const dispatch = useDispatch();
   const { users, usersPagination, usersLoading, usersError } = useSelector(state => state.admin);
@@ -82,9 +82,7 @@ const UsersTaskStatistics = () => {
 
   if (usersLoading && currentPage === 1) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-green-500"></div>
-      </div>
+     <LoadingSpinner />
     );
   }
 
