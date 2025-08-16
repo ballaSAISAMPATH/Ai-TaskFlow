@@ -175,15 +175,17 @@ const adminSlice = createSlice({
       .addCase(deleteUser.fulfilled, (state, action) => {
         const deletedUserId = action.payload;
         state.users = state.users.filter(user => user._id !== deletedUserId);
-      })      .addCase(deleteFeedback.pending, (state) => {
+      }).addCase(deleteFeedback.pending, (state) => {
         state.deleteLoading = true;
         state.error = null;
       })
       .addCase(deleteFeedback.fulfilled, (state, action) => {
         state.deleteLoading = false;
         const deletedId = action.payload.deletedId;
-        state.feedbacks = state.feedbacks.filter(feedback => feedback._id !== deletedId);
-        state.userFeedbacks = state.userFeedbacks.filter(feedback => feedback._id !== deletedId);
+        state.feedback = state.feedback.filter(feedback => feedback._id !== deletedId);
+        if (state.feedbackPagination) {
+          state.feedbackPagination.totalFeedback = Math.max(0, (state.feedbackPagination.totalFeedback || 0) - 1);
+        }
       })
       .addCase(deleteFeedback.rejected, (state, action) => {
         state.deleteLoading = false;
