@@ -24,7 +24,6 @@ import {
 import { 
   createFeedback,
   getFeedbackByUser,
-  deleteFeedback,
   selectUserFeedbacks,
   selectFeedbackLoading,
   selectFeedbackError,
@@ -76,13 +75,7 @@ const UserFeedBack = () => {
     }
   };
 
-  const handleDeleteFeedback = async (feedbackId) => {
-    try {
-      await dispatch(deleteFeedback(feedbackId)).unwrap();
-    } catch (error) {
-      console.error('Failed to delete feedback:', error);
-    }
-  };
+
 
   const handleRatingClick = (rating) => {
     setFeedbackData(prev => ({ ...prev, rating }));
@@ -270,34 +263,7 @@ const UserFeedBack = () => {
         </div>
       </div>
 
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <button
-            disabled={deleteLoading}
-            className="absolute top-2 right-2 sm:static text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded disabled:opacity-50"
-            title="Delete feedback"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
-        </AlertDialogTrigger>
-        <AlertDialogContent className="z-[100] bg-white mx-4 sm:mx-0 w-[calc(100vw-2rem)] sm:w-full max-w-lg">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Feedback</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this feedback? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
-            <AlertDialogCancel className="w-full sm:w-auto">Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => handleDeleteFeedback(feedback._id)}
-              className="w-full sm:w-auto bg-red-500 hover:bg-red-600 focus:ring-red-500"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+
     </div>
 
     <div className="space-y-4">
