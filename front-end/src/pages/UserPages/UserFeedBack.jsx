@@ -7,7 +7,8 @@ import {
   Send, 
   Plus,
   Calendar,
-  Clock
+  Clock,
+  Reply
 } from 'lucide-react';
 import {
   AlertDialog,
@@ -299,12 +300,23 @@ const UserFeedBack = () => {
       </AlertDialog>
     </div>
 
-    <div className="bg-gray-50 rounded p-3 sm:p-4 border-l-4 border-green-500">
-      <p className="text-gray-700 text-sm sm:text-base leading-relaxed">{feedback.message}</p>
+    <div className="space-y-4">
+      <div className="bg-gray-50 rounded p-3 sm:p-4 border-l-4 border-green-500">
+        <p className="text-gray-700 text-sm sm:text-base leading-relaxed">{feedback.message}</p>
+      </div>
+
+      {feedback.reply && (
+        <div className="bg-blue-50 rounded p-3 sm:p-4 border-l-4 border-blue-500">
+          <div className="flex items-center space-x-2 mb-2">
+            <Reply className="w-4 h-4 text-blue-600" />
+            <span className="text-sm font-medium text-blue-700">Admin Reply</span>
+          </div>
+          <p className="text-blue-800 text-sm sm:text-base leading-relaxed">{feedback.reply}</p>
+        </div>
+      )}
     </div>
   </div>
 ))}
-
 
       {userFeedbacks.length === 0 && !showFeedbackForm && !loading && (
         <div className="text-center py-12 sm:py-16">
