@@ -26,6 +26,7 @@ import AdminDashBoard from './pages/AdminPages/AdminDashBoard';
 import Reviews from './pages/AdminPages/Reviews';
 import AdminProfile from './pages/AdminPages/AdminProfile';
 import UsersTaskStatistics from './pages/AdminPages/UsersTaskStatistics';
+import LoadingSpinner from './utilities/LoadingSpinner';
 const App = () => {
   const dispatch = useDispatch();
   const { user, isAuthenticated, isLoading } = useSelector((state) => state.auth);  
@@ -39,9 +40,7 @@ const App = () => {
 
   if (isLoading) {
     return (
-      <div className="h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-4 border-green-200 border-t-green-500"></div>
-      </div>
+      <LoadingSpinner />
     );
   }
 

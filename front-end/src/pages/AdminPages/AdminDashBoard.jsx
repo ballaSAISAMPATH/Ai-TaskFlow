@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchDashboardStats } from '@/store/admin';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, PieChart, Pie, Cell, RadialBarChart, RadialBar } from 'recharts';
 import { Users, Target, MessageSquare, TrendingUp, Calendar, CheckCircle, ArrowUpRight, ArrowDownRight, Activity } from 'lucide-react';
-
+import LoadingSpinner from '@/utilities/LoadingSpinner';
 const AdminDashboard = () => {
   const dispatch = useDispatch();
   const { dashboardStats, dashboardLoading, dashboardError } = useSelector(state => state.admin);
@@ -14,9 +14,7 @@ const AdminDashboard = () => {
 
   if (dashboardLoading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
-      </div>
+      <LoadingSpinner />
     );
   }
 
