@@ -17,7 +17,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-
+import LoadingSpinner from '@/utilities/LoadingSpinner'
 const UserHome = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -85,9 +85,7 @@ const UserHome = () => {
 
     if (loading.getAllGoals) {
         return (
-            <div className="min-h-screen bg-white flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
-            </div>
+          <LoadingSpinner />
         )
     }
 
