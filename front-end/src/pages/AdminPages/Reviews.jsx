@@ -13,6 +13,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import LoadingSpinner from '@/utilities/LoadingSpinner';
 
 const Reviews = () => {
   const dispatch = useDispatch();
@@ -112,9 +113,7 @@ const Reviews = () => {
 
   if (feedbackLoading && currentPage === 1) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
-      </div>
+      <LoadingSpinner />
     );
   }
 
