@@ -55,18 +55,12 @@ const SetNewPassword = () => {
         
         if (!formData.newPassword) {
             newErrors.newPassword = 'New password is required'
-        } else if (formData.newPassword.length < 6) {
-            newErrors.newPassword = 'Password must be at least 6 characters'
         }
         
         if (!formData.confirmPassword) {
             newErrors.confirmPassword = 'Please confirm your password'
         } else if (formData.newPassword !== formData.confirmPassword) {
             newErrors.confirmPassword = 'Passwords do not match'
-        }
-        
-        if (formData.oldPassword && formData.newPassword && formData.oldPassword === formData.newPassword) {
-            newErrors.newPassword = 'New password must be different from current password'
         }
         
         setErrors(newErrors)
@@ -217,15 +211,6 @@ const handleSubmit = async (e) => {
                             'Change Password'
                         )}
                     </button>
-
-                    <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                        <h4 className="text-sm font-medium text-green-700 mb-2">Password Requirements:</h4>
-                        <ul className="text-xs text-green-600 space-y-1">
-                            <li>• At least 6 characters long</li>
-                            <li>• Different from your current password</li>
-                            <li>• Should be unique and secure</li>
-                        </ul>
-                    </div>
                 </div>
             </div>
         </div>
