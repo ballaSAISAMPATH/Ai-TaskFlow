@@ -271,8 +271,6 @@ const deleteAccount = async (req, res) => {
 };
 
 const changePassword = async (req, res) => {
-w
-
   try {
     const { userId, oldPassword, newPassword } = req.body;
 
