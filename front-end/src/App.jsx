@@ -29,7 +29,6 @@ import UsersTaskStatistics from './pages/AdminPages/UsersTaskStatistics';
 const App = () => {
   const dispatch = useDispatch();
   const { user, isAuthenticated, isLoading } = useSelector((state) => state.auth);  
-    console.log(user);
     
   useEffect(() => {
     const checkAuth = async () => {
