@@ -8,6 +8,7 @@ const taskRoutes = require('./routes/taskRoutes');
 const authRouter = require('./routes/auth-routes');
 const feedbackRouter = require('./routes/feedback-routes')
 const adminRouter = require('./routes/admin-routes')
+const landingPageRouter = require('./routes/landingpage-routes')
 const app = express();
 const PORT=process.env.PORT
 
@@ -25,6 +26,7 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/auth', authRouter);
 app.use('/api/feedback',feedbackRouter)
 app.use('/api/admin',adminRouter)
+app.use('/api/landing-page',landingPageRouter)
 
 mongoose
   .connect(process.env.MONGO_URI)
