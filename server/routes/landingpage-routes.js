@@ -1,5 +1,5 @@
 const express = require('express');
-const { getLandingStats } = require('../controllers/statsController');
+const { getLandingStats } = require('../controllers/landingpage-controller');
 
 const router = express.Router();
 
