@@ -341,25 +341,25 @@ const LandingPage = () => {
             </div>
           ) : (
             <div className={`grid grid-cols-1 md:grid-cols-4 gap-8 text-center ${visibleSections['stats'] ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'}`}>
-              <div className="p-8">
+              <div className="p-8 border border-gray-200 rounded-lg hover:border-green-500 transition-colors duration-300">
                 <div className="text-4xl md:text-5xl font-bold text-green-500 mb-2">
                   {totalUsers.toLocaleString()}+
                 </div>
                 <div className="text-gray-600">Active Users</div>
               </div>
-              <div className="p-8">
+              <div className="p-8 border border-gray-200 rounded-lg hover:border-green-500 transition-colors duration-300">
                 <div className="text-4xl md:text-5xl font-bold text-green-500 mb-2">
                   {totalGoals.toLocaleString()}+
                 </div>
                 <div className="text-gray-600">Goals Created</div>
               </div>
-              <div className="p-8">
+              <div className="p-8 border border-gray-200 rounded-lg hover:border-green-500 transition-colors duration-300">
                 <div className="text-4xl md:text-5xl font-bold text-green-500 mb-2">
                   {completedGoals.toLocaleString()}+
                 </div>
                 <div className="text-gray-600">Goals Completed</div>
               </div>
-              <div className="p-8">
+              <div className="p-8 border border-gray-200 rounded-lg hover:border-green-500 transition-colors duration-300">
                 <div className="text-4xl md:text-5xl font-bold text-green-500 mb-2">
                   {successRate}%
                 </div>
