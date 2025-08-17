@@ -1,4 +1,4 @@
-const Goal = require('../models/Goal');
+const Goal = require('../models/goal');
 const User = require('../models/User');
 
 const getLandingStats = async (req, res) => {
