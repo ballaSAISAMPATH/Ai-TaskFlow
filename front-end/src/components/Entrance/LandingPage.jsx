@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Brain, Zap, Calendar, Target, CheckCircle, Tag } from 'lucide-react';
 import Header from './Header';
 import Footer from './Footer';
 import TestimonialsComponent from './TestimonialsComponent';
+import { fetchLandingStats } from '@/store/landing-page';
+
 const AIDemo = () => {
   const [userInput, setUserInput] = useState("Finish my React project by next week");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -128,6 +131,9 @@ const AIDemo = () => {
 };
 
 const LandingPage = () => {
+  const dispatch = useDispatch();
+  const { totalUsers, totalGoals, completedGoals, successRate, loading, error } = useSelector(state => state.stats);
+  
   const [currentFeature, setCurrentFeature] = useState(0);
   const [visibleSections, setVisibleSections] = useState({});
   
@@ -158,7 +164,9 @@ const LandingPage = () => {
     }
   ];
 
-  
+  useEffect(() => {
+    dispatch(fetchLandingStats());
+  }, [dispatch]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -318,23 +326,47 @@ const LandingPage = () => {
       <div  id="reviews">
           <TestimonialsComponent />
       </div>
+      
       {/* Stats Section */}
       <section id="stats" data-scroll-animate className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 text-center ${visibleSections['stats'] ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'}`}>
-            <div className="p-8">
-              <div className="text-4xl md:text-5xl font-bold text-green-500 mb-2">10K+</div>
-              <div className="text-gray-600">AI-Powered Teams</div>
+          {loading ? (
+            <div className="text-center">
+              <div className="inline-block w-8 h-8 border-2 border-green-500/20 border-t-green-500 rounded-full animate-spin"></div>
+              <p className="text-gray-600 mt-4">Loading stats...</p>
             </div>
-            <div className="p-8">
-              <div className="text-4xl md:text-5xl font-bold text-green-500 mb-2">50M+</div>
-              <div className="text-gray-600">Tasks Auto-Organized</div>
+          ) : error ? (
+            <div className="text-center text-red-500">
+              Error loading stats: {error}
             </div>
-            <div className="p-8">
-              <div className="text-4xl md:text-5xl font-bold text-green-500 mb-2">300%</div>
-              <div className="text-gray-600">Productivity Increase</div>
+          ) : (
+            <div className={`grid grid-cols-1 md:grid-cols-4 gap-8 text-center ${visibleSections['stats'] ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'}`}>
+              <div className="p-8">
+                <div className="text-4xl md:text-5xl font-bold text-green-500 mb-2">
+                  {totalUsers.toLocaleString()}+
+                </div>
+                <div className="text-gray-600">Active Users</div>
+              </div>
+              <div className="p-8">
+                <div className="text-4xl md:text-5xl font-bold text-green-500 mb-2">
+                  {totalGoals.toLocaleString()}+
+                </div>
+                <div className="text-gray-600">Goals Created</div>
+              </div>
+              <div className="p-8">
+                <div className="text-4xl md:text-5xl font-bold text-green-500 mb-2">
+                  {completedGoals.toLocaleString()}+
+                </div>
+                <div className="text-gray-600">Goals Completed</div>
+              </div>
+              <div className="p-8">
+                <div className="text-4xl md:text-5xl font-bold text-green-500 mb-2">
+                  {successRate}%
+                </div>
+                <div className="text-gray-600">Success Rate</div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
 
@@ -398,7 +430,7 @@ const LandingPage = () => {
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">Auto-Tagging & Deadlines</h3>
                   <p className="text-gray-600">
                     AI automatically suggests relevant tags and realistic deadlines based on task context and complexity.
-                  /</p>
+                  </p>
                 </div>
               </div>
             </div>
