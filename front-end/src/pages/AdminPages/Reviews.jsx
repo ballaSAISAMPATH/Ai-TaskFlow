@@ -13,9 +13,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import LoadingSpinner from '@/utilities/LoadingSpinner';
-
-// Skeleton Loading Component
+import ScrollToTop from '@/utilities/ScrollToTop';
 const ReviewSkeleton = () => (
   <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden animate-pulse">
     <div className="p-4 sm:p-6 border-b border-gray-200">
@@ -67,6 +65,7 @@ const Reviews = () => {
 
   useEffect(() => {
     dispatch(fetchAllFeedback({ page: currentPage, limit: 10 }));
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [dispatch, currentPage]);
 
   const handleReply = async (feedbackId) => {

@@ -14,7 +14,6 @@ import {
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
-import LoadingSpinner from '@/utilities/LoadingSpinner';
 
 // Skeleton Loading Component
 const UserStatisticsSkeleton = () => (
@@ -58,6 +57,8 @@ const UsersTaskStatistics = () => {
 
   useEffect(() => {
     dispatch(fetchUserStatistics({ page: currentPage, limit: 10 }));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
   }, [dispatch, currentPage]);
 
   const handleDeleteUser = async (userId) => {
