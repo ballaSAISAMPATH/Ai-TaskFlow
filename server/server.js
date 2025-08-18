@@ -10,7 +10,7 @@ const feedbackRouter = require('./routes/feedback-routes')
 const adminRouter = require('./routes/admin-routes')
 const landingPageRouter = require('./routes/landingpage-routes')
 const app = express();
-const PORT=process.env.PORT
+const PORT = process.env.PORT || 5000; 
 
 app.use(cors({
   origin: process.env.CLIENT_ORIGIN, 
