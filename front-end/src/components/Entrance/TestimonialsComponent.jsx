@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Star, Quote } from 'lucide-react';
 
 const TestimonialsComponent = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
   const testimonials = [
     {
       id: 1,
@@ -61,6 +63,18 @@ const TestimonialsComponent = () => {
 
   const duplicatedTestimonials = [...testimonials, ...testimonials];
 
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <section className="py-16 bg-gradient-to-br from-white via-green-50/30 to-green-100/20 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
@@ -78,52 +92,103 @@ const TestimonialsComponent = () => {
         <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white via-green-50/30 to-transparent z-10 pointer-events-none"></div>
         <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white via-green-50/30 to-transparent z-10 pointer-events-none"></div>
 
-        <div className="flex animate-scroll space-x-6 w-max hover:pause-animation">
-          {duplicatedTestimonials.map((testimonial, index) => (
-            <div
-              key={`${testimonial.id}-${index}`}
-              className="w-80 bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-green-100/50 group"
-            >
-              <div className="flex justify-between items-start mb-4">
-                <Quote className="w-8 h-8 text-green-500/30 group-hover:text-green-500/50 transition-colors duration-300" />
-                
-                <div className="flex space-x-1">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="w-4 h-4 fill-green-500 text-green-500"
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <blockquote className="text-gray-700 mb-6 leading-relaxed">
-                "{testimonial.content}"
-              </blockquote>
-
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-sm">
-                    {testimonial.avatar}
-                  </span>
-                </div>
-                <div>
-                  <div className="font-semibold text-gray-900">
-                    {testimonial.name}
+        {isMobile ? (
+          <div className="overflow-x-auto px-4">
+            <div className="flex space-x-6 w-max pb-4">
+              {testimonials.map((testimonial) => (
+                <div
+                  key={testimonial.id}
+                  className="w-80 bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-green-100/50 group flex-shrink-0"
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <Quote className="w-8 h-8 text-green-500/30 group-hover:text-green-500/50 transition-colors duration-300" />
+                    
+                    <div className="flex space-x-1">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className="w-4 h-4 fill-green-500 text-green-500"
+                        />
+                      ))}
+                    </div>
                   </div>
-                  <div className="text-sm text-gray-600">
-                    {testimonial.role}
-                  </div>
-                  <div className="text-xs text-green-600 font-medium">
-                    {testimonial.company}
-                  </div>
-                </div>
-              </div>
 
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-green-500/5 to-green-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                  <blockquote className="text-gray-700 mb-6 leading-relaxed">
+                    "{testimonial.content}"
+                  </blockquote>
+
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg">
+                      <span className="text-white font-bold text-sm">
+                        {testimonial.avatar}
+                      </span>
+                    </div>
+                    <div>
+                      <div className="font-semibold text-gray-900">
+                        {testimonial.name}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        {testimonial.role}
+                      </div>
+                      <div className="text-xs text-green-600 font-medium">
+                        {testimonial.company}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-green-500/5 to-green-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        ) : (
+          <div className={`flex space-x-6 w-max ${!isMobile ? 'animate-scroll hover:pause-animation' : ''}`}>
+            {duplicatedTestimonials.map((testimonial, index) => (
+              <div
+                key={`${testimonial.id}-${index}`}
+                className="w-80 bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-green-100/50 group"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <Quote className="w-8 h-8 text-green-500/30 group-hover:text-green-500/50 transition-colors duration-300" />
+                  
+                  <div className="flex space-x-1">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className="w-4 h-4 fill-green-500 text-green-500"
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <blockquote className="text-gray-700 mb-6 leading-relaxed">
+                  "{testimonial.content}"
+                </blockquote>
+
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg">
+                    <span className="text-white font-bold text-sm">
+                      {testimonial.avatar}
+                    </span>
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900">
+                      {testimonial.name}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {testimonial.role}
+                    </div>
+                    <div className="text-xs text-green-600 font-medium">
+                      {testimonial.company}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-green-500/5 to-green-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <style jsx>{`
