@@ -54,12 +54,12 @@ const Header = () => {
               </SheetTrigger>
               <SheetContent 
                 side="right" 
-                className="w-[320px] sm:w-[400px] bg-gradient-to-br from-white via-white to-[#66B539]/5 border-l border-green-500 z-[70] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right data-[state=open]:duration-700 data-[state=closed]:duration-700"
+                className="w-[320px] sm:w-[400px] bg-white border-l border-green-500 z-[70] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right data-[state=open]:duration-700 data-[state=closed]:duration-700"
                 style={{
                   transition: 'transform 700ms cubic-bezier(0.32, 0.72, 0, 1)',
                 }}
               >
-                <SheetHeader className="pb-6 border-b border-[#66B539]/10">
+                <SheetHeader className="pb-6 border-b border-gray-200">
                   <SheetTitle className="flex items-center space-x-3 justify-start">
                     <div className="relative">
                       <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-[#8FE877] rounded-xl flex items-center justify-center transform rotate-12 shadow-lg shadow-[#66B539]/25">
@@ -76,7 +76,7 @@ const Header = () => {
                 <nav className="flex flex-col space-y-4 mt-8">
                   <a 
                     href="#reviews" 
-                    className="group flex items-center space-x-3 text-gray-700 hover:text-green-500 transition-all duration-300 text-lg font-medium py-3 px-4 rounded-lg hover:bg-[#66B539]/5 hover:translate-x-1"
+                    className="group flex items-center space-x-3 text-gray-700 hover:text-green-500 transition-all duration-300 text-lg font-medium py-3 px-4 rounded-lg hover:bg-green-50 hover:translate-x-1"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <Brain className="w-5 h-5 text-green-500 group-hover:text-[#66B539] transition-colors duration-300" />
@@ -84,7 +84,7 @@ const Header = () => {
                   </a>
                   <a 
                     href="#features" 
-                    className="group flex items-center space-x-3 text-gray-700 hover:text-green-500 transition-all duration-300 text-lg font-medium py-3 px-4 rounded-lg hover:bg-[#66B539]/5 hover:translate-x-1"
+                    className="group flex items-center space-x-3 text-gray-700 hover:text-green-500 transition-all duration-300 text-lg font-medium py-3 px-4 rounded-lg hover:bg-green-50 hover:translate-x-1"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <Brain className="w-5 h-5 text-green-500 group-hover:text-[#66B539] transition-colors duration-300" />
@@ -92,7 +92,7 @@ const Header = () => {
                   </a>
                   <a 
                     href="#demo" 
-                    className="group flex items-center space-x-3 text-gray-700 hover:text-[#66B539] transition-all duration-300 text-lg font-medium py-3 px-4 rounded-lg hover:bg-[#66B539]/5 hover:translate-x-1"
+                    className="group flex items-center space-x-3 text-gray-700 hover:text-[#66B539] transition-all duration-300 text-lg font-medium py-3 px-4 rounded-lg hover:bg-green-50 hover:translate-x-1"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <Zap className="w-5 h-5 text-green-500 group-hover:text-[#66B539] transition-colors duration-300" />
