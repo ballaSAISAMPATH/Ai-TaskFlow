@@ -3,7 +3,72 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchDashboardStats } from '@/store/admin';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, PieChart, Pie, Cell, RadialBarChart, RadialBar } from 'recharts';
 import { Users, Target, MessageSquare, TrendingUp, Calendar, CheckCircle, ArrowUpRight, ArrowDownRight, Activity } from 'lucide-react';
-import LoadingSpinner from '@/utilities/LoadingSpinner';
+
+const SkeletonBase = ({ className = '', width, height, rounded = false }) => (
+  <div
+    className={`bg-gray-200 animate-pulse ${rounded ? 'rounded-full' : 'rounded'} ${className}`}
+    style={{ width, height }}
+  />
+);
+
+const SkeletonText = ({ lines = 1, className = '' }) => (
+  <div className={`space-y-2 ${className}`}>
+    {Array.from({ length: lines }).map((_, i) => (
+      <SkeletonBase
+        key={i}
+        className="h-4"
+        width={i === lines - 1 ? '75%' : '100%'}
+      />
+    ))}
+  </div>
+);
+
+const SkeletonMetric = ({ className = '' }) => (
+  <div className={`bg-white rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 ${className}`}>
+    <div className="flex items-center justify-between">
+      <div className="flex-1">
+        <SkeletonBase className="h-4 mb-2" width="60%" />
+        <SkeletonBase className="h-6 mb-2" width="80%" />
+        <SkeletonBase className="h-4" width="40%" />
+      </div>
+      <div className="bg-gray-200 p-3 rounded-xl">
+        <SkeletonBase className="h-5 w-5 sm:h-6 sm:w-6" />
+      </div>
+    </div>
+  </div>
+);
+
+const SkeletonChart = ({ className = '', height = 300 }) => (
+  <div className={`bg-white rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 ${className}`}>
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
+      <SkeletonBase className="h-6 mb-2 sm:mb-0" width="200px" />
+      <SkeletonBase className="h-4" width="150px" />
+    </div>
+    <div className="flex items-end space-x-2" style={{ height }}>
+      {Array.from({ length: 8 }).map((_, i) => (
+        <SkeletonBase
+          key={i}
+          className="flex-1 rounded-t"
+          height={`${Math.random() * 80 + 20}%`}
+        />
+      ))}
+    </div>
+  </div>
+);
+
+const SkeletonRadialChart = ({ className = '' }) => (
+  <div className={`bg-white rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 ${className}`}>
+    <SkeletonBase className="h-6 mb-4" width="150px" />
+    <div className="flex flex-col items-center">
+      <div className="w-48 h-48 mb-4 flex items-center justify-center">
+        <SkeletonBase className="w-32 h-32" rounded={true} />
+      </div>
+      <SkeletonBase className="h-8 mb-2" width="80px" />
+      <SkeletonBase className="h-4" width="120px" />
+    </div>
+  </div>
+);
+
 const AdminDashboard = () => {
   const dispatch = useDispatch();
   const { dashboardStats, dashboardLoading, dashboardError } = useSelector(state => state.admin);
@@ -12,21 +77,64 @@ const AdminDashboard = () => {
     dispatch(fetchDashboardStats());
   }, [dispatch]);
 
-  if (dashboardLoading) {
-    return (
-      <LoadingSpinner />
-    );
-  }
-
   if (dashboardError) {
     return (
-      <div className="bg-white border border-green-500 rounded-lg p-4">
-        <p className="text-green-500">Error: {dashboardError}</p>
+      <div className="min-h-screen bg-white p-2 sm:p-4 lg:p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-white border border-red-500 rounded-lg p-4">
+            <p className="text-red-500">Error: {dashboardError}</p>
+          </div>
+        </div>
       </div>
     );
   }
 
-  if (!dashboardStats) return null;
+  if (dashboardLoading || !dashboardStats) {
+    return (
+      <div className="min-h-screen bg-white p-2 sm:p-4 lg:p-6">
+        <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <SkeletonBase className="h-8 mb-2" width="250px" />
+              <SkeletonBase className="h-4" width="350px" />
+            </div>
+            <div className="bg-gray-200 rounded-lg p-4 animate-pulse">
+              <SkeletonBase className="h-3 mb-1" width="80px" />
+              <SkeletonBase className="h-4" width="120px" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <SkeletonMetric key={index} />
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
+            <SkeletonChart className="xl:col-span-2" />
+            <SkeletonRadialChart />
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+            <SkeletonChart height={280} />
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6">
+              <SkeletonBase className="h-6 mb-4 sm:mb-6" width="150px" />
+              <div className="flex flex-col items-center justify-center h-64">
+                <SkeletonBase className="h-16 mb-4" width="120px" />
+                <SkeletonBase className="h-4 mb-4" width="80px" />
+                <div className="flex justify-center space-x-1 mb-4">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <SkeletonBase key={star} className="w-6 h-6" />
+                  ))}
+                </div>
+                <SkeletonBase className="h-4" width="150px" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const {
     totalUsers,

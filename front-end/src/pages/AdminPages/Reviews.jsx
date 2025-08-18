@@ -15,6 +15,47 @@ import {
 } from '@/components/ui/alert-dialog';
 import LoadingSpinner from '@/utilities/LoadingSpinner';
 
+// Skeleton Loading Component
+const ReviewSkeleton = () => (
+  <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden animate-pulse">
+    <div className="p-4 sm:p-6 border-b border-gray-200">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+        <div className="flex items-start space-x-3 sm:space-x-4 flex-1">
+          <div className="flex-shrink-0">
+            <div className="h-10 w-10 sm:h-12 sm:w-12 bg-gray-200 rounded-full"></div>
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="h-4 sm:h-5 bg-gray-200 rounded w-32 mb-2"></div>
+            <div className="h-3 bg-gray-200 rounded w-48 mb-2"></div>
+            <div className="flex items-center space-x-2">
+              <div className="h-3 w-3 sm:h-4 sm:w-4 bg-gray-200 rounded"></div>
+              <div className="h-3 bg-gray-200 rounded w-24"></div>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-row sm:flex-col items-start sm:items-end justify-between sm:justify-start space-x-4 sm:space-x-0 sm:space-y-2">
+          <div className="flex space-x-1">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <div key={star} className="w-4 h-4 bg-gray-200 rounded"></div>
+            ))}
+          </div>
+          <div className="flex items-center space-x-2">
+            <div className="h-6 sm:h-7 bg-gray-200 rounded w-12"></div>
+            <div className="h-6 w-6 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div className="p-4 sm:p-6">
+      <div className="space-y-2">
+        <div className="h-4 bg-gray-200 rounded w-full"></div>
+        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+      </div>
+    </div>
+  </div>
+);
+
 const Reviews = () => {
   const dispatch = useDispatch();
   const { feedback, feedbackPagination, feedbackLoading, feedbackError, activeReplyId } = useSelector(state => state.admin);
@@ -113,7 +154,23 @@ const Reviews = () => {
 
   if (feedbackLoading && currentPage === 1) {
     return (
-      <LoadingSpinner />
+      <div className="p-3 sm:p-6 space-y-4 sm:space-y-6 min-h-screen">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center space-x-3">
+            <MessageSquare className="h-6 w-6 sm:h-8 sm:w-8 text-green-500 flex-shrink-0" />
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 leading-tight">
+              User Reviews & Feedback
+            </h1>
+          </div>
+          <div className="h-6 bg-gray-200 rounded-full w-32 animate-pulse"></div>
+        </div>
+
+        <div className="space-y-4">
+          {[...Array(5)].map((_, index) => (
+            <ReviewSkeleton key={index} />
+          ))}
+        </div>
+      </div>
     );
   }
 

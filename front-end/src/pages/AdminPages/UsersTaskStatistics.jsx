@@ -15,6 +15,39 @@ import {
   ChevronUp
 } from 'lucide-react';
 import LoadingSpinner from '@/utilities/LoadingSpinner';
+
+// Skeleton Loading Component
+const UserStatisticsSkeleton = () => (
+  <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden animate-pulse">
+    <div className="p-3 sm:p-4 lg:p-6">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
+          <div className="flex-shrink-0">
+            <div className="h-10 w-10 sm:h-12 sm:w-12 lg:h-16 lg:w-16 bg-gray-200 rounded-full"></div>
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="h-4 sm:h-5 lg:h-6 bg-gray-200 rounded w-32 mb-2"></div>
+            <div className="h-3 sm:h-4 bg-gray-200 rounded w-48 mb-1"></div>
+            <div className="hidden sm:flex items-center space-x-2 mt-1">
+              <div className="h-3 w-3 sm:h-4 sm:w-4 bg-gray-200 rounded"></div>
+              <div className="h-3 bg-gray-200 rounded w-24"></div>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center space-x-1 sm:space-x-3 flex-shrink-0">
+          <div className="h-6 w-6 sm:h-8 sm:w-8 bg-gray-200 rounded"></div>
+          <div className="h-6 w-6 sm:h-8 sm:w-8 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+      
+      <div className="sm:hidden mt-2 flex items-center space-x-2">
+        <div className="h-3 w-3 bg-gray-200 rounded"></div>
+        <div className="h-3 bg-gray-200 rounded w-20"></div>
+      </div>
+    </div>
+  </div>
+);
+
 const UsersTaskStatistics = () => {
   const dispatch = useDispatch();
   const { users, usersPagination, usersLoading, usersError } = useSelector(state => state.admin);
@@ -82,7 +115,28 @@ const UsersTaskStatistics = () => {
 
   if (usersLoading && currentPage === 1) {
     return (
-     <LoadingSpinner />
+      <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 max-w-full overflow-hidden">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <Users className="h-6 w-6 sm:h-8 sm:w-8 text-green-500 flex-shrink-0" />
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">User Statistics</h1>
+          </div>
+          <div className="h-5 bg-gray-200 rounded w-24 animate-pulse"></div>
+        </div>
+
+        {/* Search Bar Skeleton */}
+        <div className="bg-white rounded-lg shadow-md p-1 sm:p-2 border border-gray-200">
+          <div className="w-full p-2 sm:p-3 h-10 sm:h-12 bg-gray-200 rounded-md animate-pulse"></div>
+        </div>
+
+        {/* User Cards Skeletons */}
+        <div className="space-y-3 sm:space-y-4">
+          {[...Array(5)].map((_, index) => (
+            <UserStatisticsSkeleton key={index} />
+          ))}
+        </div>
+      </div>
     );
   }
 
