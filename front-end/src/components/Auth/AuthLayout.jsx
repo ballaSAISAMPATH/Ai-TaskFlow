@@ -1,10 +1,18 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import { Brain, CheckCircle, Target, Calendar, Clock, Zap, Users, TrendingUp } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { fetchLandingStats } from '@/store/landing-page'
 
 const AuthLayout = () => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const { totalUsers, successRate, loading } = useSelector(state => state.stats)
+  
+  useEffect(() => {
+    dispatch(fetchLandingStats())
+  }, [dispatch])
   
   return (
     <div className="min-h-screen bg-white">
@@ -23,11 +31,23 @@ const AuthLayout = () => {
             <div className="hidden md:flex items-center space-x-6">
               <div className="flex items-center space-x-2 text-green-500">
                 <Users className="w-5 h-5" />
-                <span className="text-sm font-medium">10K+ Users</span>
+                <span className="text-sm font-medium">
+                  {loading ? (
+                    <div className="inline-block w-4 h-4 border border-green-500/20 border-t-green-500 rounded-full animate-spin"></div>
+                  ) : (
+                    `${totalUsers.toLocaleString()}+ Users`
+                  )}
+                </span>
               </div>
               <div className="flex items-center space-x-2 text-green-500">
                 <TrendingUp className="w-5 h-5" />
-                <span className="text-sm font-medium">98% Productivity Boost</span>
+                <span className="text-sm font-medium">
+                  {loading ? (
+                    <div className="inline-block w-4 h-4 border border-green-500/20 border-t-green-500 rounded-full animate-spin"></div>
+                  ) : (
+                    `${successRate}% Productivity Boost`
+                  )}
+                </span>
               </div>
             </div>
           </div>
