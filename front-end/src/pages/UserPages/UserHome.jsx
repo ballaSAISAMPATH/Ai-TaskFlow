@@ -17,7 +17,41 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import LoadingSpinner from '@/utilities/LoadingSpinner'
+
+const SkeletonCard = () => (
+    <div className="bg-white border border-gray-200 rounded-lg p-6 min-h-[240px] flex flex-col animate-pulse">
+        <div className="flex items-start justify-between mb-4">
+            <div className="w-10 h-10 bg-gray-200 rounded-lg"></div>
+            <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+        </div>
+        
+        <div className="flex-1">
+            <div className="h-5 bg-gray-200 rounded mb-3 w-3/4"></div>
+            
+            <div className="flex items-center mb-2">
+                <div className="w-4 h-4 bg-gray-200 rounded mr-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-20"></div>
+            </div>
+
+            <div className="flex items-center mb-2">
+                <div className="w-16 h-6 bg-gray-200 rounded-full"></div>
+            </div>
+
+            <div className="flex items-center">
+                <div className="w-3 h-3 bg-gray-200 rounded mr-1"></div>
+                <div className="h-3 bg-gray-200 rounded w-24"></div>
+            </div>
+        </div>
+        
+        <div className="mt-4 pt-4 border-t border-gray-100">
+            <div className="flex items-center justify-between">
+                <div className="h-3 bg-gray-200 rounded w-32"></div>
+                <div className="w-2 h-2 bg-gray-200 rounded-full"></div>
+            </div>
+        </div>
+    </div>
+)
+
 const UserHome = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -85,7 +119,26 @@ const UserHome = () => {
 
     if (loading.getAllGoals) {
         return (
-          <LoadingSpinner />
+            <div className="min-h-screen bg-white p-4 md:p-6 lg:p-8">
+                <div className="max-w-7xl mx-auto">
+                    <div className="mb-8">
+                        <div className="h-8 bg-gray-200 rounded mb-2 w-64 animate-pulse"></div>
+                        <div className="h-4 bg-gray-200 rounded w-48 animate-pulse"></div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <div className="bg-white border-2 border-dashed border-gray-200 rounded-lg p-6 min-h-[240px] flex flex-col items-center justify-center animate-pulse">
+                            <div className="w-12 h-12 bg-gray-200 rounded-full mb-4"></div>
+                            <div className="h-5 bg-gray-200 rounded mb-2 w-32"></div>
+                            <div className="h-4 bg-gray-200 rounded w-48"></div>
+                        </div>
+                        
+                        {[...Array(8)].map((_, index) => (
+                            <SkeletonCard key={index} />
+                        ))}
+                    </div>
+                </div>
+            </div>
         )
     }
 
