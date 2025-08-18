@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import LoadingSpinner from '@/utilities/LoadingSpinner';
 import { 
   Trash2, 
   Star, 
@@ -31,6 +30,71 @@ import {
   selectCreateLoading,
   selectDeleteLoading,
   clearError  } from '@/store/feedback';
+
+const SkeletonLoader = () => {
+  return (
+    <div className="px-4 sm:px-6 lg:px-0 space-y-6 sm:space-y-8 animate-pulse">
+      {/* Header Skeleton */}
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+        <div>
+          <div className="h-8 bg-gray-300 rounded w-48 mb-2"></div>
+          <div className="h-4 bg-gray-200 rounded w-64"></div>
+        </div>
+        <div className="h-10 bg-gray-300 rounded w-32"></div>
+      </div>
+
+      {/* Feedback Cards Skeleton */}
+      {[1, 2, 3].map((item) => (
+        <div key={item} className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-4">
+            <div className="flex-1">
+              <div className="flex items-center space-x-2 mb-2">
+                {/* Stars skeleton */}
+                {[...Array(5)].map((_, index) => (
+                  <div key={index} className="w-4 h-4 sm:w-5 sm:h-5 bg-gray-300 rounded"></div>
+                ))}
+                <div className="h-4 bg-gray-300 rounded w-16"></div>
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                <div className="flex items-center space-x-1">
+                  <div className="w-3 h-3 sm:w-4 sm:h-4 bg-gray-300 rounded"></div>
+                  <div className="h-3 bg-gray-300 rounded w-20"></div>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <div className="w-3 h-3 sm:w-4 sm:h-4 bg-gray-300 rounded"></div>
+                  <div className="h-3 bg-gray-300 rounded w-16"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="bg-gray-50 rounded p-3 sm:p-4 border-l-4 border-gray-300">
+              <div className="space-y-2">
+                <div className="h-4 bg-gray-300 rounded w-full"></div>
+                <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+              </div>
+            </div>
+
+            {item === 1 && (
+              <div className="bg-blue-50 rounded p-3 sm:p-4 border-l-4 border-gray-300">
+                <div className="flex items-center space-x-2 mb-2">
+                  <div className="w-4 h-4 bg-gray-300 rounded"></div>
+                  <div className="h-4 bg-gray-300 rounded w-20"></div>
+                </div>
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-300 rounded w-full"></div>
+                  <div className="h-4 bg-gray-300 rounded w-2/3"></div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 const UserFeedBack = () => {
   const dispatch = useDispatch();
@@ -119,13 +183,7 @@ const UserFeedBack = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-16 sm:py-20">
-        <div className="text-center">
-          <LoadingSpinner />
-        </div>
-      </div>
-    );
+    return <SkeletonLoader />;
   }
 
   return (
