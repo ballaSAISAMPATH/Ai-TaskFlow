@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchDashboardStats } from '@/store/admin';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, PieChart, Pie, Cell, RadialBarChart, RadialBar } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, PieChart, Pie, Cell } from 'recharts';
 import { Users, Target, MessageSquare, TrendingUp, Calendar, CheckCircle, ArrowUpRight, ArrowDownRight, Activity } from 'lucide-react';
 
 const SkeletonBase = ({ className = '', width, height, rounded = false }) => (
@@ -217,7 +217,12 @@ const AdminDashboard = () => {
   ];
 
   const completionRate = totalGoals > 0 ? (completedGoals / totalGoals) * 100 : 0;
-  const radialData = [{ name: 'Completion', value: completionRate, fill: '#10b981' }];
+  const pieData = [
+    { name: 'Completed', value: completedGoals, fill: '#10b981' },
+    { name: 'In Progress', value: totalGoals - completedGoals, fill: '#d1fae5' }
+  ];
+
+  const COLORS = ['#10b981', '#d1fae5'];
 
   return (
     <div className="min-h-screen bg-white p-2 sm:p-4 lg:p-6">
@@ -302,14 +307,57 @@ const AdminDashboard = () => {
           <div className="bg-white rounded-2xl shadow-sm border border-green-500 p-4 sm:p-6">
             <h3 className="text-lg font-semibold text-green-500 mb-4">Goal Completion</h3>
             <div className="flex flex-col items-center">
-              <ResponsiveContainer width="100%" height={200}>
-                <RadialBarChart cx="50%" cy="50%" innerRadius="60%" outerRadius="90%" data={radialData}>
-                  <RadialBar dataKey="value" cornerRadius={10} fill="#10b981" />
-                </RadialBarChart>
-              </ResponsiveContainer>
-              <div className="text-center mt-4">
-                <div className="text-3xl font-bold text-green-500">{completionRate.toFixed(1)}%</div>
-                <div className="text-sm text-green-500 opacity-80">{completedGoals.toLocaleString()} of {totalGoals.toLocaleString()} goals</div>
+              <div className="relative w-48 h-48 mb-6">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={pieData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={90}
+                      startAngle={90}
+                      endAngle={-270}
+                      paddingAngle={2}
+                      dataKey="value"
+                    >
+                      {pieData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'white', 
+                        border: '1px solid #10b981', 
+                        borderRadius: '12px', 
+                        boxShadow: '0 4px 6px -1px rgb(16 185 129 / 0.1)',
+                        color: '#10b981'
+                      }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-600">{completionRate.toFixed(1)}%</div>
+                    <div className="text-xs text-green-600 opacity-80">Complete</div>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-3 w-full">
+                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                  <div className="flex items-center">
+                    <div className="w-3 h-3 bg-green-600 rounded-full mr-3"></div>
+                    <span className="text-sm font-medium text-green-700">Completed</span>
+                  </div>
+                  <span className="text-sm font-bold text-green-700">{completedGoals.toLocaleString()}</span>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                  <div className="flex items-center">
+                    <div className="w-3 h-3 bg-green-200 rounded-full mr-3"></div>
+                    <span className="text-sm font-medium text-green-700">In Progress</span>
+                  </div>
+                  <span className="text-sm font-bold text-green-700">{(totalGoals - completedGoals).toLocaleString()}</span>
+                </div>
               </div>
             </div>
           </div>
