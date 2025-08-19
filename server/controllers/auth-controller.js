@@ -86,7 +86,7 @@ const loginUser = async (req, res) => {
             role:checkUser.role
           },
           process.env.JWT_SECRET_KEY,
-          { expiresIn: "60m" }
+          { expiresIn: "90d" } 
         );
 
         res.cookie("token", token, {
@@ -172,7 +172,7 @@ const googleLogin = async (req, res) => {
         firebaseUid: uid,
       },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: "60m" }
+      { expiresIn: "90d" } 
     );
 
     res.cookie("token", token, {
