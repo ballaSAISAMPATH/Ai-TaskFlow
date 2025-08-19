@@ -19,15 +19,28 @@ admin.initializeApp({
   }),
 });
 
+// Generate Tokens
+const generateTokens = (user) => {
+  const accessToken = jwt.sign(
+    { id: user._id, email: user.email, role: user.role },
+    process.env.JWT_SECRET_KEY,
+    { expiresIn: "15m" } // short-lived access token
+  );
+
+  const refreshToken = jwt.sign(
+    { id: user._id, email: user.email, role: user.role },
+    process.env.JWT_REFRESH_SECRET_KEY,
+    { expiresIn: "7d" } // long-lived refresh token
+  );
+
+  return { accessToken, refreshToken };
+};
 
 const registerUser = async (req, res) => {
-
   const { userName, email, password } = req.body;
-
 
   try {
     const check = await User.findOne({ email });
-    
     if (check) {
       return res.status(200).json({
         success: false,
@@ -37,173 +50,131 @@ const registerUser = async (req, res) => {
 
     const newUser = new User({
       name: userName,
-      email: email,
-      password: password,
+      email,
+      password,
       authProvider: 'email',
-      firebaseUid: undefined, 
     });
 
     await newUser.save();
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       message: "Successfully registered",
-      user: {
-        id: newUser._id,
-        email: newUser.email,
-        userName: newUser.name,
-        profilePicture: newUser.profilePicture,
-        authProvider: newUser.authProvider,
-      },
     });
-
   } catch (error) {
     console.error("Register User error:", error);
-
-    res.status(500).json({
-      success: false,
-      message: "Some error occurred",
-      error: error.message,
-    });
+    res.status(500).json({ success: false, message: "Some error occurred" });
   }
 };
-
-
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const checkUser = await User.findOne({ email });
-    
-    if (checkUser) {
-      if (checkUser.password === password) {
-        const token = jwt.sign(
-          {
-            id: checkUser._id,
-            email: checkUser.email,
-            userName: checkUser.name,
-            role:checkUser.role
-          },
-          process.env.JWT_SECRET_KEY,
-          { expiresIn: "90d" } 
-        );
+    const user = await User.findOne({ email });
 
-        res.cookie("token", token, {
-          httpOnly: true,
-          secure: true,
-          sameSite: 'None',
-        }).json({
-          success: true,
-          message: "Logged in successfully",
-          user: {
-            id: checkUser._id,
-            email: checkUser.email,
-            userName: checkUser.name,
-            profilePicture: checkUser.profilePicture,
-            authProvider: checkUser.authProvider,
-            role:checkUser.role
-
-          },
-        });
-      } else {
-        return res.json({
-          success: false,
-          message: "Invalid Password. Try again!",
-        });
-      }
-    } else {
-      return res.json({
-        success: false,
-        message: "User doesn't exist!",
-      });
+    if (!user || user.password !== password) {
+      return res.json({ success: false, message: "Invalid credentials" });
     }
+
+    const { accessToken, refreshToken } = generateTokens(user);
+
+    res
+      .cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      })
+      .json({
+        success: true,
+        message: "Logged in successfully",
+        accessToken,
+        user: {
+          id: user._id,
+          email: user.email,
+          userName: user.name,
+          profilePicture: user.profilePicture,
+          authProvider: user.authProvider,
+          role: user.role,
+        },
+      });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Some error occurred",
-      error,
-    });
+    res.status(500).json({ success: false, message: "Some error occurred" });
   }
 };
-
 
 const googleLogin = async (req, res) => {
   const { idToken, email, name, photoURL, uid } = req.body;
 
   try {
     const decodedToken = await admin.auth().verifyIdToken(idToken);
-
     if (decodedToken.uid !== uid) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid token",
-      });
+      return res.status(401).json({ success: false, message: "Invalid token" });
     }
 
     let user = await User.findOne({ email });
-
     if (!user) {
       user = new User({
-        name: name,
-        email: email,
-        password: 'GOOGLE_AUTH',
+        name,
+        email,
+        password: "GOOGLE_AUTH",
         firebaseUid: uid,
         profilePicture: photoURL,
-        authProvider: 'google',
+        authProvider: "google",
       });
       await user.save();
-    } else {
-      if (!user.firebaseUid) {
-        user.firebaseUid = uid;
-        user.authProvider = 'google';
-        if (photoURL && !user.profilePicture) {
-          user.profilePicture = photoURL;
-        }
-        await user.save();
-      }
     }
 
-    const token = jwt.sign(
-      {
-        id: user._id,
-        email: user.email,
-        userName: user.name,
-        firebaseUid: uid,
-      },
-      process.env.JWT_SECRET_KEY,
-      { expiresIn: "90d" } 
-    );
+    const { accessToken, refreshToken } = generateTokens(user);
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'None',
-    }).json({
-      success: true,
-      message: "Logged in successfully with Google",
-      user: {
-        id: user._id,
-        email: user.email,
-        userName: user.name,
-        profilePicture: user.profilePicture,
-        authProvider: user.authProvider,
-        role:user.role
-      },
-    });
-
+    res
+      .cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
+      .json({
+        success: true,
+        message: "Logged in with Google",
+        accessToken,
+        user: {
+          id: user._id,
+          email: user.email,
+          userName: user.name,
+          profilePicture: user.profilePicture,
+          authProvider: user.authProvider,
+          role: user.role,
+        },
+      });
   } catch (error) {
-    console.error('Google login error:', error);
-    res.status(500).json({
-      success: false,
-      message: "Google authentication failed",
-    });
+    res.status(500).json({ success: false, message: "Google login failed" });
   }
 };
 
+const refreshAccessToken = (req, res) => {
+  const token = req.cookies.refreshToken;
+  if (!token) {
+    return res.status(401).json({ success: false, message: "No refresh token" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET_KEY);
+    const accessToken = jwt.sign(
+      { id: decoded.id, email: decoded.email, role: decoded.role },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: "15m" }
+    );
+
+    res.json({ success: true, accessToken });
+  } catch (error) {
+    return res.status(403).json({ success: false, message: "Invalid refresh token" });
+  }
+};
 
 const logoutUser = (req, res) => {
-  res.clearCookie("token", {
+  res.clearCookie("refreshToken", {
     httpOnly: true,
     secure: true,
     sameSite: "None",
@@ -213,30 +184,20 @@ const logoutUser = (req, res) => {
   });
 };
 
+const authMiddleware = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
 
-const authMiddleware = async (req, res, next) => {
-  const token = req.cookies.token;
-
-  if (!token) {
-    return res.status(401).json({
-      success: false,
-      message: "Unauthorized user!",
-    });
-  }
+  if (!token) return res.status(401).json({ success: false, message: "Unauthorized" });
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(401).json({
-      success: false,
-      message: "Unauthorized user!",
-    });
+    res.status(403).json({ success: false, message: "Invalid or expired token" });
   }
 };
-
-
 
 const deleteAccount = async (req, res) => {
   try {
@@ -328,5 +289,6 @@ module.exports = {
   authMiddleware,
   googleLogin,
   deleteAccount,
-  changePassword
+  changePassword,
+  refreshAccessToken
 };
