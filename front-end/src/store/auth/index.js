@@ -20,6 +20,19 @@ export const register = createAsyncThunk(
   }   
 )
 
+export const googleLogin = createAsyncThunk(
+  'auth/googleLogin',
+  async (userData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/google-login`, userData, {
+        withCredentials: true
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || { message: 'Google login failed' });
+    }
+  }
+);
 export const login = createAsyncThunk(
   '/auth/login',
   async (formData) => {
@@ -107,19 +120,6 @@ export const verifyOtp = createAsyncThunk(
   }
 ) 
 
-export const googleLogin = createAsyncThunk(
-  'auth/googleLogin',
-  async (userData, { rejectWithValue }) => {
-    try {
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/google-login`, userData, {
-        withCredentials: true
-      });
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'Google login failed' });
-    }
-  }
-);
 
 export const deleteAccountAction = createAsyncThunk(
   "auth/deleteAccount",
