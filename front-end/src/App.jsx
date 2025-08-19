@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import ScrollToTop from './utilities/ScrollToTop';
 import { Toaster } from "@/components/ui/sonner";
-import { checkAuthUser } from './store/auth';
 import AuthLayout from './components/Auth/AuthLayout';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
@@ -15,7 +14,7 @@ import UserProfile from './pages/UserPages/UserProfile';
 import AddTask from './pages/UserPages/AddTask';
 import ManualTask from './pages/UserPages/ManualTask';
 import NotFound from './pages/auth/NotFound';
-import UserHome from './pages/UserPages/UserHome'
+import UserHome from './pages/UserPages/UserHome';
 import GoalDetail from './pages/UserPages/GoalDetail';
 import SetNewPassword from './pages/UserPages/SetNewPassword';
 import TermsOfService from './components/common/TermsOfService';
@@ -27,21 +26,14 @@ import Reviews from './pages/AdminPages/Reviews';
 import AdminProfile from './pages/AdminPages/AdminProfile';
 import UsersTaskStatistics from './pages/AdminPages/UsersTaskStatistics';
 import LoadingSpinner from './utilities/LoadingSpinner';
-const App = () => {
-  const dispatch = useDispatch();
-  const { user, isAuthenticated, isLoading } = useSelector((state) => state.auth);  
-    
-  useEffect(() => {
-    const checkAuth = async () => {
-      await dispatch(checkAuthUser());
-    };
-    checkAuth();
-  }, [dispatch]);
+import { useAuthInitialize } from './utilities/hooks/useAuthInitialize';
 
-  if (isLoading) {
-    return (
-      <LoadingSpinner />
-    );
+const App = () => {
+  const { isLoading: authInitLoading } = useAuthInitialize();
+  const { user, isAuthenticated, isLoading } = useSelector((state) => state.auth);
+
+  if (authInitLoading || isLoading) {
+    return <LoadingSpinner />;
   }
 
   return (
