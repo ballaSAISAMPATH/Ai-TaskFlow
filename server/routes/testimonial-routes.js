@@ -1,5 +1,5 @@
-import express from "express";
-import {
+const express = require("express");
+const {
   getAllTestimonials,
   getTestimonialById,
   createTestimonial,
@@ -7,8 +7,7 @@ import {
   deleteTestimonial,
   bulkCreateTestimonials,
   getTestimonialsWithPagination
-} from "../controllers/feedback-controller";
-
+} = require("../controllers/testimonials-controller.js");
 
 const router = express.Router();
 
@@ -21,4 +20,4 @@ router.put("/:id",  updateTestimonial);
 router.delete("/:id",  deleteTestimonial);
 router.post("/bulk",  bulkCreateTestimonials);
 
-export default router;
+module.exports = router
