@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Star, Quote, Loader2, AlertCircle } from 'lucide-react';
 
 import { fetchAllTestimonials } from '@/store/testimonials.js';
+
 const TestimonialsComponent = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [expandedCards, setExpandedCards] = useState(new Set());
@@ -10,12 +11,13 @@ const TestimonialsComponent = () => {
   
   const { testimonials, loading, error, pagination } = useSelector(state => state.testimonials);
 
-  const toggleExpanded = (testimonialId) => {
+  // Use unique key instead of just testimonial._id
+  const toggleExpanded = (uniqueKey) => {
     const newExpanded = new Set(expandedCards);
-    if (newExpanded.has(testimonialId)) {
-      newExpanded.delete(testimonialId);
+    if (newExpanded.has(uniqueKey)) {
+      newExpanded.delete(uniqueKey);
     } else {
-      newExpanded.add(testimonialId);
+      newExpanded.add(uniqueKey);
     }
     setExpandedCards(newExpanded);
   };
@@ -37,7 +39,10 @@ const TestimonialsComponent = () => {
   };
 
   const formattedTestimonials = formatTestimonials(testimonials || []);
-  const duplicatedTestimonials = [...formattedTestimonials, ...formattedTestimonials];
+  const duplicatedTestimonials = [
+    ...formattedTestimonials.map((t, i) => ({ ...t, uniqueId: `first-${i}` })),
+    ...formattedTestimonials.map((t, i) => ({ ...t, uniqueId: `second-${i}` }))
+  ];
 
   useEffect(() => {
     const checkMobile = () => {
@@ -152,13 +157,15 @@ const TestimonialsComponent = () => {
   }
 
   const renderTestimonialCard = (testimonial, index) => {
-    const isExpanded = expandedCards.has(testimonial._id);
+    // Create unique key for each card instance
+    const uniqueKey = testimonial.uniqueId || `${testimonial._id || 'testimonial'}-${index}`;
+    const isExpanded = expandedCards.has(uniqueKey);
     const shouldTruncate = testimonial.content.length > 120;
     
     return (
       <div
-        key={`${testimonial._id || 'testimonial'}-${index}`}   
-        className="w-80 bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-green-100/50 group flex flex-col"
+        key={uniqueKey}
+        className="w-80 bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-green-100/50 group flex flex-col relative"
         style={{ minHeight: '280px' }} 
       >
         <div className="flex justify-between items-start mb-4">
@@ -181,7 +188,7 @@ const TestimonialsComponent = () => {
           
           {shouldTruncate && (
             <button
-              onClick={() => toggleExpanded(testimonial._id)}
+              onClick={() => toggleExpanded(uniqueKey)}
               className="text-green-600 hover:text-green-700 text-sm font-medium mt-2 transition-colors duration-200"
             >
               {isExpanded ? 'Show less' : 'Read more'}
@@ -252,7 +259,7 @@ const TestimonialsComponent = () => {
         }
         
         .animate-scroll {
-          animation: scroll 20s linear infinite;
+          animation: scroll 10s linear infinite;
         }
         
         .animate-scroll:hover {
