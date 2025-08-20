@@ -6,10 +6,10 @@ const {
   googleLogin,
   authMiddleware,
   deleteAccount,
-  changePassword
+  changePassword,
+  refreshAccessToken
 } = require("../controllers/auth-controller");
 const User = require('../models/User');
-const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
@@ -17,23 +17,14 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
 router.post("/google-login", googleLogin);
-router.delete('/delete-account',deleteAccount)
-router.post("/setnewpassword", changePassword);
+router.delete("/delete-account", authMiddleware, deleteAccount);
+router.post("/setnewpassword", authMiddleware, changePassword);
+
+router.post("/refresh", refreshAccessToken);
 
 router.get("/check-auth", authMiddleware, async (req, res) => {
   try {
-    const token = req.cookies.token;
-
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "No token. Unauthorized.",
-      });
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-
-    const user = await User.findById(decoded.id);
+    const user = await User.findById(req.user.id);
 
     if (!user) {
       return res.status(401).json({
@@ -51,7 +42,7 @@ router.get("/check-auth", authMiddleware, async (req, res) => {
         userName: user.name,
         profilePicture: user.profilePicture,
         authProvider: user.authProvider,
-        role:user.role
+        role: user.role,
       },
     });
   } catch (error) {
