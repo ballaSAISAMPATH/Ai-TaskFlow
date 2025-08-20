@@ -1,5 +1,5 @@
-import Testimonial from "../models/tetstimonials";
-export const getAllTestimonials = async (req, res) => {
+const Testimonial = require("../models/tetstimonials");
+ const getAllTestimonials = async (req, res) => {
   try {
     const testimonials = await Testimonial.find()
       .sort({ createdAt: -1 })
@@ -20,7 +20,7 @@ export const getAllTestimonials = async (req, res) => {
 };
 
 // Get single testimonial by ID
-export const getTestimonialById = async (req, res) => {
+ const getTestimonialById = async (req, res) => {
   try {
     const testimonial = await Testimonial.findById(req.params.id);
     
@@ -45,7 +45,7 @@ export const getTestimonialById = async (req, res) => {
 };
 
 // Create new testimonial (admin only)
-export const createTestimonial = async (req, res) => {
+ const createTestimonial = async (req, res) => {
   try {
     const { name, content, rating } = req.body;
     
@@ -94,7 +94,7 @@ export const createTestimonial = async (req, res) => {
 };
 
 // Update testimonial (admin only)
-export const updateTestimonial = async (req, res) => {
+ const updateTestimonial = async (req, res) => {
   try {
     const { name, content, rating } = req.body;
     const testimonialId = req.params.id;
@@ -155,7 +155,7 @@ export const updateTestimonial = async (req, res) => {
 };
 
 // Delete testimonial (admin only)
-export const deleteTestimonial = async (req, res) => {
+ const deleteTestimonial = async (req, res) => {
   try {
     const testimonial = await Testimonial.findById(req.params.id);
     
@@ -182,7 +182,7 @@ export const deleteTestimonial = async (req, res) => {
 };
 
 // Bulk create testimonials (admin only)
-export const bulkCreateTestimonials = async (req, res) => {
+ const bulkCreateTestimonials = async (req, res) => {
   try {
     const { testimonials } = req.body;
     
@@ -226,7 +226,7 @@ export const bulkCreateTestimonials = async (req, res) => {
 };
 
 // Get testimonials with pagination (public route)
-export const getTestimonialsWithPagination = async (req, res) => {
+ const getTestimonialsWithPagination = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -260,3 +260,5 @@ export const getTestimonialsWithPagination = async (req, res) => {
     });
   }
 };
+
+module.exports = {getAllTestimonials,createTestimonial, getTestimonialById, updateTestimonial,deleteTestimonial,bulkCreateTestimonials,getTestimonialsWithPagination }
