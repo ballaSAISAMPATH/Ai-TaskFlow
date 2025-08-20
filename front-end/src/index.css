@@ -2,3 +2,14 @@
 html {
   scroll-behavior: smooth;
 }
+html {
+  scroll-padding-top: 80px;
+}
+
+[id]::before {
+  content: '';
+  display: block;
+  height: 80px;
+  margin-top: -80px;
+  visibility: hidden;
+}
