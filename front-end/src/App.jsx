@@ -27,6 +27,7 @@ import Reviews from './pages/AdminPages/Reviews';
 import AdminProfile from './pages/AdminPages/AdminProfile';
 import UsersTaskStatistics from './pages/AdminPages/UsersTaskStatistics';
 import LoadingSpinner from './utilities/LoadingSpinner';
+import AdminTestimonials from './pages/AdminPages/AdminTestimonials';
 const App = () => {
   const dispatch = useDispatch();
   const { user, isAuthenticated, isLoading } = useSelector((state) => state.auth);  
@@ -70,7 +71,9 @@ const App = () => {
               <Route path='dashboard' element={<AdminDashBoard/>} />
               <Route path='users' element={<UsersTaskStatistics/>} />
               <Route path='reviews' element={<Reviews/>} />
+              <Route path='set-testimonials' element={<AdminTestimonials/>} />
               <Route path='profile' element={<AdminProfile/>} />
+              <Route />
               <Route path='set-new-password' element={<SetNewPassword/>}/>
           </Route>
           <Route path="*" element={<NotFound />} />
