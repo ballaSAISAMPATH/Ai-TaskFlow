@@ -26,6 +26,8 @@ import Reviews from './pages/AdminPages/Reviews';
 import AdminProfile from './pages/AdminPages/AdminProfile';
 import UsersTaskStatistics from './pages/AdminPages/UsersTaskStatistics';
 import LoadingSpinner from './utilities/LoadingSpinner';
+import { useAuthInitialize } from './utilities/hooks/useAuthInitialize';
+import AdminTestimonials from './pages/AdminPages/AdminTestimonials';
 const App = () => {
   const { isLoading: authInitLoading } = useAuthInitialize();
   const { user, isAuthenticated, isLoading } = useSelector((state) => state.auth);
@@ -56,7 +58,7 @@ const App = () => {
             <Route path='set-new-password' element={<SetNewPassword/>} />
             <Route path='feedback' element={<UserFeedBack/>} />
           </Route>
-          <Route path='/admin' element={<AdminLayout/>}>
+            <Route path='/admin' element={<AdminLayout/>}>
               <Route path='dashboard' element={<AdminDashBoard/>} />
               <Route path='users' element={<UsersTaskStatistics/>} />
               <Route path='reviews' element={<Reviews/>} />
@@ -74,3 +76,4 @@ const App = () => {
 };
 
 export default App;
+          
