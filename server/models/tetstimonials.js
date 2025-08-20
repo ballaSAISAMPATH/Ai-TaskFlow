@@ -1,17 +1,9 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const testimonialSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    trim: true
-  },
-  role: {
-    type: String,
-    trim: true
-  },
-  company: {
-    type: String,
     trim: true
   },
   content: {
@@ -25,9 +17,10 @@ const testimonialSchema = new mongoose.Schema({
     max: 5,
     default: 5
   },
-  avatar: {
-    type: String,
-    trim: true
+  feedbackId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Feedback',
+    default: null
   },
   createdAt: {
     type: Date,
@@ -35,5 +28,7 @@ const testimonialSchema = new mongoose.Schema({
   }
 });
 
+testimonialSchema.index({ feedbackId: 1 }, { unique: true, sparse: true });
+
 const Testimonial = mongoose.model("Testimonial", testimonialSchema);
-export default Testimonial;
+module.exports = Testimonial;
