@@ -329,6 +329,9 @@ const LandingPage = () => {
       
       {/* Stats Section */}
       <section id="stats" data-scroll-animate className="py-20">
+        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 text-center">
+            Users Statistics
+          </h2>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {loading ? (
             <div className="text-center">
