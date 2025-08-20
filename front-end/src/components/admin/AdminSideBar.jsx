@@ -5,11 +5,10 @@ import {
   LayoutDashboard,
   Star,
   UserCog,
-  LogOut,Users
+  LogOut,Users,Presentation
 } from 'lucide-react';
 import { logoutUser } from '@/store/auth';
 import { toast } from 'sonner';
-
 const AdminSideBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -50,6 +49,12 @@ const AdminSideBar = () => {
       path: '/admin/reviews',
       description: 'User feedback'
     },
+      {
+        icon: Presentation,
+        label: 'Testimonials',
+        path: '/admin/set-testimonials',
+        description: 'update testimonials'
+      },
     {
       icon: UserCog,
       label: 'Profile',
