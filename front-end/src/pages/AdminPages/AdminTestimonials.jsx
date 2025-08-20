@@ -11,6 +11,69 @@ import {
   setCurrentPage 
 } from '@/store/testimonials.js';
 
+// Skeleton Loading Components
+const TestimonialSkeleton = () => (
+  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 animate-pulse">
+    <div className="flex justify-between items-start mb-4">
+      <div className="flex-1">
+        <div className="h-5 bg-gray-200 rounded w-32 mb-2"></div>
+        <div className="flex space-x-1">
+          {Array(5).fill(0).map((_, i) => (
+            <div key={i} className="w-4 h-4 bg-gray-200 rounded"></div>
+          ))}
+        </div>
+      </div>
+      <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+    </div>
+    
+    <div className="space-y-2 mb-4">
+      <div className="h-3 bg-gray-200 rounded w-full"></div>
+      <div className="h-3 bg-gray-200 rounded w-5/6"></div>
+      <div className="h-3 bg-gray-200 rounded w-4/6"></div>
+    </div>
+    
+    <div className="border-t border-gray-100 pt-3">
+      <div className="h-3 bg-gray-200 rounded w-24"></div>
+    </div>
+  </div>
+);
+
+const FeedbackSkeleton = () => (
+  <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 animate-pulse">
+    <div className="flex justify-between items-start">
+      <div className="flex-1">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+            <div>
+              <div className="h-4 bg-gray-200 rounded w-32 mb-1"></div>
+              <div className="h-3 bg-gray-200 rounded w-40"></div>
+            </div>
+          </div>
+          <div className="flex space-x-1">
+            {Array(5).fill(0).map((_, i) => (
+              <div key={i} className="w-4 h-4 bg-gray-200 rounded"></div>
+            ))}
+          </div>
+        </div>
+        
+        <div className="bg-white p-4 rounded-lg border-l-4 border-gray-200 mb-4">
+          <div className="space-y-2">
+            <div className="h-3 bg-gray-200 rounded w-full"></div>
+            <div className="h-3 bg-gray-200 rounded w-4/5"></div>
+            <div className="h-3 bg-gray-200 rounded w-3/5"></div>
+          </div>
+        </div>
+        
+        <div className="flex justify-between items-center">
+          <div className="h-3 bg-gray-200 rounded w-24"></div>
+          <div className="h-8 bg-gray-200 rounded w-32"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 const AdminTestimonials = () => {
   const dispatch = useDispatch();
   const { 
@@ -21,7 +84,7 @@ const AdminTestimonials = () => {
     successMessage 
   } = useSelector(state => state.testimonials);
   
-  const { feedback } = useSelector(state => state.admin);
+  const { feedback, loading: feedbackLoading } = useSelector(state => state.admin);
 
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -151,7 +214,7 @@ const AdminTestimonials = () => {
           </div>
           <button
             onClick={() => setShowFeedbackModal(true)}
-            className="flex items-center space-x-2 bg-green-500 hover:bg-green-700 hover:cursor-pointer   text-white px-6 py-3 rounded-lg transition-colors shadow-lg"
+            className="flex items-center space-x-2 bg-green-500 hover:bg-green-700 hover:cursor-pointer text-white px-6 py-3 rounded-lg transition-colors shadow-lg"
           >
             <Plus size={20} />
             <span>Select from Feedbacks</span>
@@ -177,15 +240,18 @@ const AdminTestimonials = () => {
             <h2 className="text-2xl font-semibold text-gray-900">
               Current Testimonials
             </h2>
-            <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">
-              {testimonials.length} testimonials
-            </span>
+            {!loading && (
+              <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">
+                {testimonials.length} testimonials
+              </span>
+            )}
           </div>
           
           {loading ? (
-            <div className="text-center py-12 bg-white rounded-xl shadow-sm">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-emerald-500 border-t-transparent"></div>
-              <p className="mt-4 text-gray-600">Loading testimonials...</p>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {Array(6).fill(0).map((_, index) => (
+                <TestimonialSkeleton key={index} />
+              ))}
             </div>
           ) : testimonials.length === 0 ? (
             <div className="text-center py-16 bg-white rounded-xl shadow-sm border-2 border-dashed border-gray-200">
@@ -237,7 +303,7 @@ const AdminTestimonials = () => {
             </div>
           )}
 
-          {pagination.totalPages > 1 && (
+          {!loading && pagination.totalPages > 1 && (
             <div className="flex justify-center mt-8 space-x-1">
               <button
                 onClick={() => handlePageChange(pagination.currentPage - 1)}
@@ -278,7 +344,16 @@ const AdminTestimonials = () => {
           title="Select Feedbacks to Display as Testimonials"
         >
           <div className="flex-1 overflow-y-auto">
-            {feedback && feedback.length > 0 ? (
+            {feedbackLoading ? (
+              <div className="space-y-4">
+                <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400 animate-pulse">
+                  <div className="h-4 bg-blue-200 rounded w-3/4"></div>
+                </div>
+                {Array(4).fill(0).map((_, index) => (
+                  <FeedbackSkeleton key={index} />
+                ))}
+              </div>
+            ) : feedback && feedback.length > 0 ? (
               <div className="space-y-4">
                 <p className="text-sm text-gray-600 mb-6 bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
                   💡 Choose which user feedbacks should be displayed as testimonials on your landing page. 
