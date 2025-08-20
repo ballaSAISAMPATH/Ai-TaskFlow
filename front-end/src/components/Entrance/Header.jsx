@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import { Brain, Menu, Zap } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-
+import { useNavigate } from 'react-router-dom';
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const navigate = (path) => {
-    console.log(`Navigating to: ${path}`);
-  };
+  const navigate = useNavigate()
 
   return (
     <header className="fixed top-0 w-full bg-white/95 backdrop-blur-md border-b border-gray-200 z-50">
