@@ -80,14 +80,15 @@ const Footer = () => {
         <div className="border-t border-gray-200 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm">
-              © 2025 AI TaskFlow. All rights reserved. Powered by advanced AI technology.
+              © 2025 Praveen Gamini. All rights reserved.
             </p>
             <div className="flex items-center mt-4 md:mt-0 space-x-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <p className="text-green-500 text-sm font-medium">AI Status: Online</p>
+              <p className="text-green-500 text-sm font-medium">Available for Collaboration</p>
             </div>
           </div>
         </div>
+
       </div>
     </footer>
   );
