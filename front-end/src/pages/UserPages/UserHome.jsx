@@ -70,8 +70,12 @@ const UserHome = () => {
         }
     }, [error])
 
-    const handleGoalClick = (goalId) => {
-      navigate(`/user/goal/${goalId}`)
+    const handleGoalClick = (goalId, event) => {
+        // Prevent navigation if clicking on delete button area
+        if (event.target.closest('[data-delete-button]')) {
+            return
+        }
+        navigate(`/user/goal/${goalId}`)
     }
 
     const handleCreateNew = () => {
@@ -79,7 +83,8 @@ const UserHome = () => {
         toast.info('Happy to see your initiation')
     }
 
-    const handleDeleteGoal = (goalId) => {
+    const handleDeleteGoal = (goalId, event) => {
+        event.stopPropagation()
         dispatch(deleteGoal({ goalId, user }))
             .unwrap()
             .then(() => {
@@ -175,24 +180,22 @@ const UserHome = () => {
                         return (
                             <div 
                                 key={goal._id}
-                                onClick={() => handleGoalClick(goal._id)}
+                                onClick={(e) => handleGoalClick(goal._id, e)}
                                 className="bg-white border border-gray-200 rounded-lg p-6 hover:border-green-500 hover:shadow-lg transition-all duration-200 cursor-pointer group min-h-[240px] flex flex-col relative"
                             >
+                                {/* Delete Button */}
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
                                         <button
-                                            onClick={(e) => e.stopPropagation()}
-                                            className="absolute top-4 right-4 w-8 h-8 bg-red-50 hover:bg-red-100 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 z-10"
+                                            data-delete-button="true"
+                                            className="absolute top-4 right-4 w-8 h-8 bg-red-50 hover:bg-red-100 rounded-full flex items-center justify-center transition-all duration-200 z-10 opacity-70 sm:opacity-0 group-hover:opacity-100"
                                             title="Delete Goal"
+                                            onClick={(e) => e.stopPropagation()}
                                         >
                                             <Trash2 className="w-4 h-4 text-red-500 hover:text-red-600" />
                                         </button>
                                     </AlertDialogTrigger>
-                                    <AlertDialogContent 
-                                        className="z-[100] bg-white"
-                                        onPointerDownOutside={(e) => e.preventDefault()}
-                                        onInteractOutside={(e) => e.preventDefault()}
-                                    >
+                                    <AlertDialogContent className="z-[100] bg-white">
                                         <AlertDialogHeader>
                                             <AlertDialogTitle>Delete Goal</AlertDialogTitle>
                                             <AlertDialogDescription>
@@ -200,9 +203,9 @@ const UserHome = () => {
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
-                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogCancel onClick={(e) => e.stopPropagation()}>Cancel</AlertDialogCancel>
                                             <AlertDialogAction
-                                                onClick={() => handleDeleteGoal(goal._id)}
+                                                onClick={(e) => handleDeleteGoal(goal._id, e)}
                                                 className="bg-red-500 hover:bg-red-600 focus:ring-red-500"
                                             >
                                                 Delete
