@@ -1,15 +1,23 @@
 const express = require("express");
-const { 
-  getTasksCompletedLast7Days, 
-  getGoalsCompletedLast7Days 
+const {
+    getDashboardAnalytics,
+    getDashboardSummary,
+    getGoalsOverview,
+    getTaskCategoryAnalytics
 } = require("../controllers/userDashboard-controller");
 
 const router = express.Router();
 
-// GET /api/dashboard/tasks/:userId
-router.get("/tasks/:userId", getTasksCompletedLast7Days);
+// 1. 7-day analytics for graphs (your existing route)
+router.get('/dashboard/analytics/:userId', getDashboardAnalytics);
 
-// GET /api/dashboard/goals/:userId
-router.get("/goals/:userId", getGoalsCompletedLast7Days);
+// 2. Overall summary statistics
+router.get('/dashboard/summary/:userId', getDashboardSummary);
+
+// 3. Goals overview with task progress
+router.get('/dashboard/goals/:userId', getGoalsOverview);
+
+// 4. Task performance by category (monthly/weekly/daily)
+router.get('/dashboard/tasks/categories/:userId', getTaskCategoryAnalytics);
 
 module.exports = router;
