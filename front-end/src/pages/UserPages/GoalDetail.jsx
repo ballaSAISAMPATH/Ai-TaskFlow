@@ -12,6 +12,13 @@ const GoalDetail = () => {
     const { user } = useSelector((state) => state.auth)
     const { selectedGoal, loading, error } = useSelector((state) => state.task)
     const [activeTab, setActiveTab] = useState('daily')
+    
+    // Local state to track individual task completion
+    const [taskStates, setTaskStates] = useState({
+        daily: {},
+        weekly: {},
+        monthly: {}
+    })
 
     useEffect(() => {
         if (user && goalId) {
@@ -19,47 +26,104 @@ const GoalDetail = () => {
         }
     }, [dispatch, user, goalId])
 
+    // Initialize task states when goal data is loaded
+    useEffect(() => {
+        if (selectedGoal) {
+            const initializeTaskStates = (taskGroups, taskType) => {
+                const states = {}
+                taskGroups?.forEach((group, groupIndex) => {
+                    states[groupIndex] = {}
+                    group.tasks?.forEach((_, taskIndex) => {
+                        states[groupIndex][taskIndex] = group.status || false
+                    })
+                })
+                return states
+            }
+
+            setTaskStates({
+                daily: initializeTaskStates(selectedGoal.dailyTasks, 'daily'),
+                weekly: initializeTaskStates(selectedGoal.weeklyTasks, 'weekly'),
+                monthly: initializeTaskStates(selectedGoal.monthlyTasks, 'monthly')
+            })
+        }
+    }, [selectedGoal])
+
     useEffect(() => {
         if (error) {
             toast.error(error)
         }
         console.log(error);
-        
     }, [error])
 
-    const handleTaskStatusUpdate = async (taskType, groupIndex, taskIndex, currentStatus) => {
-        const newStatus = !currentStatus
-        
+    const handleIndividualTaskToggle = (taskType, groupIndex, taskIndex) => {
+        setTaskStates(prevStates => {
+            const newStates = { ...prevStates }
+            const currentTaskState = newStates[taskType][groupIndex][taskIndex]
+            newStates[taskType][groupIndex][taskIndex] = !currentTaskState
+
+            // Check if all tasks in this group are now completed
+            const groupTasks = newStates[taskType][groupIndex]
+            const allTasksCompleted = Object.values(groupTasks).every(status => status === true)
+            const anyTaskCompleted = Object.values(groupTasks).some(status => status === true)
+
+            // If all tasks are completed, update the backend
+            if (allTasksCompleted && !currentTaskState) {
+                handleGroupStatusUpdate(taskType, groupIndex, true)
+            }
+            // If this was the last completed task being unchecked, update backend to incomplete
+            else if (!anyTaskCompleted && currentTaskState) {
+                handleGroupStatusUpdate(taskType, groupIndex, false)
+            }
+
+            return newStates
+        })
+    }
+
+    const handleGroupStatusUpdate = async (taskType, groupIndex, status) => {
         try {
             if (taskType === 'daily') {
                 await dispatch(updateDailyTaskStatus({ 
                     goalId, 
                     taskIndex: groupIndex,
-                    status: newStatus, 
+                    status, 
                     user 
                 })).unwrap()
             } else if (taskType === 'weekly') {
                 await dispatch(updateWeeklyTaskStatus({ 
                     goalId, 
                     taskIndex: groupIndex,
-                    status: newStatus, 
+                    status, 
                     user 
                 })).unwrap()
             } else if (taskType === 'monthly') {
                 await dispatch(updateMonthlyTaskStatus({ 
                     goalId, 
                     taskIndex: groupIndex,
-                    status: newStatus, 
+                    status, 
                     user 
                 })).unwrap()
             }
             
             await dispatch(getGoalById({ goalId, user }))
             
-            toast.success(`Task ${newStatus ? 'completed' : 'marked as incomplete'}!`)
+            toast.success(`Task group ${status ? 'completed' : 'marked as incomplete'}!`)
         } catch (error) {
             toast.error('Failed to update task status')
         }
+    }
+
+    const getTaskCompletionCount = (taskType, groupIndex) => {
+        if (!taskStates[taskType][groupIndex]) return { completed: 0, total: 0 }
+        
+        const groupTasks = taskStates[taskType][groupIndex]
+        const completed = Object.values(groupTasks).filter(status => status === true).length
+        const total = Object.keys(groupTasks).length
+        
+        return { completed, total }
+    }
+
+    const isTaskCompleted = (taskType, groupIndex, taskIndex) => {
+        return taskStates[taskType][groupIndex]?.[taskIndex] || false
     }
 
     const renderTaskList = (taskGroups, taskType) => {
@@ -76,51 +140,71 @@ const GoalDetail = () => {
 
         return (
             <div className="space-y-4 sm:space-y-6">
-                {taskGroups.map((group, groupIndex) => (
-                    <div key={groupIndex} className="bg-gray-50 rounded-lg p-3 sm:p-4">
-                        <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 flex flex-col sm:flex-row sm:items-center">
-                            <span className="bg-green-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm mb-2 sm:mb-0 sm:mr-3 inline-block w-fit">
-                                {group.label}
-                            </span>
-                            <span className="text-xs sm:text-sm text-gray-600">
-                                ({group.status ? 1 : 0}/1 completed)
-                            </span>
-                        </h3>
-                        
-                        {group.tasks && group.tasks.length > 0 ? (
-                            <div className="space-y-2 sm:space-y-3">
-                                {group.tasks.map((taskContent, taskIndex) => (
-                                    <div 
-                                        key={taskIndex}
-                                        className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 hover:border-green-500 transition-all duration-200"
-                                    >
-                                        <div className="flex items-start space-x-3">
-                                            <button
-                                                onClick={() => handleTaskStatusUpdate(taskType, groupIndex, taskIndex, group.status)}
-                                                className="mt-0.5 sm:mt-1 flex-shrink-0 p-1"
+                {taskGroups.map((group, groupIndex) => {
+                    const { completed, total } = getTaskCompletionCount(taskType, groupIndex)
+                    const isGroupCompleted = completed === total && total > 0
+                    
+                    return (
+                        <div key={groupIndex} className="bg-gray-50 rounded-lg p-3 sm:p-4">
+                            <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 flex flex-col sm:flex-row sm:items-center">
+                                <span className="bg-green-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm mb-2 sm:mb-0 sm:mr-3 inline-block w-fit">
+                                    {group.label}
+                                </span>
+                                <span className="text-xs sm:text-sm text-gray-600">
+                                    ({completed}/{total} completed)
+                                </span>
+                                {isGroupCompleted && (
+                                    <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 ml-2" />
+                                )}
+                            </h3>
+                            
+                            {group.tasks && group.tasks.length > 0 ? (
+                                <div className="space-y-2 sm:space-y-3">
+                                    {group.tasks.map((taskContent, taskIndex) => {
+                                        const isCompleted = isTaskCompleted(taskType, groupIndex, taskIndex)
+                                        
+                                        return (
+                                            <div 
+                                                key={taskIndex}
+                                                className={`bg-white border rounded-lg p-3 sm:p-4 transition-all duration-200 ${
+                                                    isCompleted 
+                                                        ? 'border-green-300 bg-green-50' 
+                                                        : 'border-gray-200 hover:border-green-300'
+                                                }`}
                                             >
-                                                {group.status ? (
-                                                    <CheckCircle2 className="w-5 h-5 text-green-500" />
-                                                ) : (
-                                                    <Circle className="w-5 h-5 text-gray-400 hover:text-green-500 transition-colors" />
-                                                )}
-                                            </button>
-                                            <div className="flex-1 min-w-0">
-                                                <p className={`text-sm sm:text-base text-gray-800 leading-relaxed ${group.status ? 'line-through text-gray-500' : ''}`}>
-                                                    {taskContent}
-                                                </p>
+                                                <div className="flex items-start space-x-3">
+                                                    <button
+                                                        onClick={() => handleIndividualTaskToggle(taskType, groupIndex, taskIndex)}
+                                                        className="mt-0.5 sm:mt-1 flex-shrink-0 p-1"
+                                                    >
+                                                        {isCompleted ? (
+                                                            <CheckCircle2 className="w-5 h-5 text-green-500" />
+                                                        ) : (
+                                                            <Circle className="w-5 h-5 text-gray-400 hover:text-blue-500 transition-colors" />
+                                                        )}
+                                                    </button>
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className={`text-sm sm:text-base leading-relaxed ${
+                                                            isCompleted 
+                                                                ? 'line-through text-gray-500' 
+                                                                : 'text-gray-800'
+                                                        }`}>
+                                                            {taskContent}
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="text-center py-4">
-                                <p className="text-gray-500 text-sm">No tasks in this group</p>
-                            </div>
-                        )}
-                    </div>
-                ))}
+                                        )
+                                    })}
+                                </div>
+                            ) : (
+                                <div className="text-center py-4">
+                                    <p className="text-gray-500 text-sm">No tasks in this group</p>
+                                </div>
+                            )}
+                        </div>
+                    )
+                })}
             </div>
         )
     }
