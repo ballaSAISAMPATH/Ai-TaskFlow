@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getGoalStats } from '@/store/task';
-import { Target, CheckCircle, Clock, TrendingUp, Calendar, Award, BarChart3, LineChart, PieChart } from 'lucide-react';
-import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart as RechartsPieChart, Cell } from 'recharts';
+import { fetchDashboardAnalytics, selectDashboardAnalytics } from '@/store/user-dashboard';
+import { Target, CheckCircle, Clock, TrendingUp, Calendar, Award, BarChart3, LineChart } from 'lucide-react';
+import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const DashBoard = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  
+  const analytics = useSelector(selectDashboardAnalytics);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -17,6 +20,9 @@ const DashBoard = () => {
         const response = await dispatch(getGoalStats({ user }));
         if (response.payload.success) {
           setStats(response.payload.data);
+        }
+        if (user?.id) {
+          dispatch(fetchDashboardAnalytics(user.id));
         }
       } catch (error) {
         console.error('Error fetching stats:', error);
@@ -30,38 +36,46 @@ const DashBoard = () => {
     }
   }, [user, dispatch]);
 
-  const generateProgressData = () => {
-    if (!stats) return [];
-    const data = [];
-    const today = new Date();
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(date.getDate() - i);
-      data.push({
-        date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        completed: Math.floor(Math.random() * 10) + 1,
-        total: Math.floor(Math.random() * 5) + 10,
-        progress: Math.floor(Math.random() * 30) + (70 - i * 5)
-      });
-    }
-    return data;
-  };
+const getProgressChartData = () => {
+  
+  let analyticsData = null;
+  
+  if (analytics?.data?.dailyAnalytics) {
+    analyticsData = analytics.data.dailyAnalytics;
+  } else if (analytics?.data && Array.isArray(analytics.data)) {
+    analyticsData = analytics.data;
+  } else if (analytics?.dailyAnalytics) {
+    analyticsData = analytics.dailyAnalytics;
+  } else if (Array.isArray(analytics)) {
+    analyticsData = analytics;
+  }
+  
+  
+  if (!analyticsData || analyticsData.length === 0) {
+    console.log('No analytics data found');
+    return [];
+  }
+  
+  return analyticsData.map(day => {
+    const shiftedDate = new Date(day.date);
+    shiftedDate.setDate(shiftedDate.getDate() + 1); // 👈 put one day forward
 
-  const generateTaskTypeData = () => {
+    return {
+      date: shiftedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      completed: day.completedTasks, 
+      goals: day.completedGoals,
+      tasks: day.completedTasks
+    };
+  });
+};
+
+  const getTaskTypeData = () => {
     if (!stats) return [];
     const { taskBreakdown } = stats;
     return [
       { name: 'Daily', completed: taskBreakdown.daily.completed, total: taskBreakdown.daily.total, color: '#10B981' },
       { name: 'Weekly', completed: taskBreakdown.weekly.completed, total: taskBreakdown.weekly.total, color: '#10B981' },
       { name: 'Monthly', completed: taskBreakdown.monthly.completed, total: taskBreakdown.monthly.total, color: '#10B981' }
-    ];
-  };
-
-  const generateGoalCompletionData = () => {
-    if (!stats) return [];
-    return [
-      { name: 'Completed', value: stats.completedGoals, color: '#10B981' },
-      { name: 'In Progress', value: stats.totalGoals - stats.completedGoals, color: '#F59E0B' }
     ];
   };
 
@@ -131,7 +145,28 @@ const DashBoard = () => {
   );
 
   const ProgressChart = () => {
-    const data = generateProgressData();
+    const data = getProgressChartData();
+    
+    
+    if (data.length === 0) {
+      return (
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="flex items-center gap-2 mb-6">
+            <LineChart className="w-5 h-5 text-green-500" />
+            <h3 className="text-lg font-semibold text-gray-900">Progress Over Time</h3>
+          </div>
+          <div className="h-64 flex items-center justify-center text-gray-500">
+            <div className="text-center">
+              <BarChart3 className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+              <p>No progress data available</p>
+              <p className="text-sm mt-1">Analytics loading state: {analytics.loading ? 'Loading...' : 'Loaded'}</p>
+              <p className="text-sm">Analytics error: {analytics.error || 'None'}</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="flex items-center gap-2 mb-6">
@@ -159,11 +194,12 @@ const DashBoard = () => {
             />
             <Line 
               type="monotone" 
-              dataKey="progress" 
+              dataKey="completed" 
               stroke="#10B981" 
               strokeWidth={3}
               dot={{ fill: '#10B981', strokeWidth: 2, r: 4 }}
               activeDot={{ r: 6, fill: '#10B981' }}
+              name="Completed Tasks"
             />
           </RechartsLineChart>
         </ResponsiveContainer>
@@ -172,7 +208,24 @@ const DashBoard = () => {
   };
 
   const TaskTypesProgressChart = () => {
-    const taskTypeData = generateTaskTypeData();
+    const taskTypeData = getTaskTypeData();
+    
+    if (taskTypeData.length === 0) {
+      return (
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="flex items-center gap-2 mb-6">
+            <BarChart3 className="w-5 h-5 text-green-500" />
+            <h3 className="text-lg font-semibold text-gray-900">Task Types Progress</h3>
+          </div>
+          <div className="h-64 flex items-center justify-center text-gray-500">
+            <div className="text-center">
+              <BarChart3 className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+              <p>No task data available</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
     
     const getTaskTypeIcon = (taskType) => {
       switch (taskType) {
@@ -279,7 +332,7 @@ const DashBoard = () => {
           <p className="text-gray-600">Here's your goal tracking overview</p>
         </div>
 
-        {/* Original Stats Cards */}
+        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard
             icon={Target}
