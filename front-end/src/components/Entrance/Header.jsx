@@ -80,6 +80,14 @@ const Header = () => {
                     <span>Reviews</span>
                   </a>
                   <a 
+                    href="#stats" 
+                    className="group flex items-center space-x-3 text-gray-700 hover:text-green-500 transition-all duration-300 text-lg font-medium py-3 px-4 rounded-lg hover:bg-green-50 hover:translate-x-1"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Brain className="w-5 h-5 text-green-500 group-hover:text-[#66B539] transition-colors duration-300" />
+                    <span>Stats</span>
+                  </a>
+                  <a 
                     href="#features" 
                     className="group flex items-center space-x-3 text-gray-700 hover:text-green-500 transition-all duration-300 text-lg font-medium py-3 px-4 rounded-lg hover:bg-green-50 hover:translate-x-1"
                     onClick={() => setIsMenuOpen(false)}
