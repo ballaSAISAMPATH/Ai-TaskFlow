@@ -149,19 +149,38 @@ const AdminTestimonials = () => {
     if (!show) return null;
     
     return (
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-t-xl sm:rounded-xl shadow-2xl w-full sm:max-w-4xl max-h-[90vh] sm:max-h-[80vh] overflow-hidden flex flex-col border border-gray-100">
-          <div className="flex justify-between items-center p-4 sm:p-6 pb-4 border-b border-gray-100">
-            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 pr-4">{title}</h3>
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center z-50">
+        <div className="bg-white rounded-t-xl sm:rounded-xl shadow-2xl w-full sm:max-w-4xl sm:m-4 max-h-[90vh] sm:max-h-[80vh] overflow-hidden flex flex-col border border-gray-100">
+          {/* Mobile header - no close button */}
+          <div className="sm:hidden p-4 border-b border-gray-100 bg-white">
+            <h3 className="text-lg font-semibold text-gray-900 text-center">{title}</h3>
+          </div>
+          
+          {/* Desktop header with close button */}
+          <div className="hidden sm:flex justify-between items-center p-6 pb-4 border-b border-gray-100">
+            <h3 className="text-xl font-semibold text-gray-900 pr-4">{title}</h3>
             <button 
               onClick={onClose}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
+              aria-label="Close modal"
             >
               <X size={20} className="text-gray-500" />
             </button>
           </div>
+          
           <div className="flex-1 overflow-y-auto p-4 sm:p-6">
             {children}
+          </div>
+          
+          {/* Mobile close button at bottom */}
+          <div className="sm:hidden p-4 border-t border-gray-100 bg-white">
+            <button 
+              onClick={onClose}
+              className="w-full py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors font-medium flex items-center justify-center space-x-2"
+            >
+              <X size={20} />
+              <span>Close</span>
+            </button>
           </div>
         </div>
       </div>
