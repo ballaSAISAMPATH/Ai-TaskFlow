@@ -5,13 +5,16 @@ import feedbackReducer from './feedback/index.js';
 import adminReducer from './admin/index.js'
 import statsReducer from './landing-page/index.js'; 
 import testimonialReducer from './testimonials.js/index.js'
+import dashboardReducer from './user-dashboard/index.js';
+
 const rootReducer = combineReducers({
   stats: statsReducer,
   auth: authReducer,
   task:taskReducer,
   feedback: feedbackReducer,
   admin: adminReducer,
-  testimonials:testimonialReducer 
+  testimonials:testimonialReducer,
+  dashboard:dashboardReducer
 });
 
 const store = configureStore({
