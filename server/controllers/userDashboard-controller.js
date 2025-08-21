@@ -1,28 +1,25 @@
-const Goal = require('../models/goal'); // Adjust path as needed
-
+const Goal = require('../models/goal'); 
 const getDashboardAnalytics = async (req, res) => {
   try {
-    const { userId } = req.params; // or get from req.user if using auth middleware
+    const { userId } = req.params;
     
-    // Calculate date range for last 7 days
     const endDate = new Date();
-    endDate.setHours(23, 59, 59, 999); // End of today
+    endDate.setHours(23, 59, 59, 999); 
     
     const startDate = new Date();
-    startDate.setDate(startDate.getDate() - 6); // 7 days ago (including today)
-    startDate.setHours(0, 0, 0, 0); // Start of that day
+    startDate.setDate(startDate.getDate() - 6); 
+    startDate.setHours(0, 0, 0, 0); 
     
-    // Fetch goals updated in the last 7 days for the user
+    console.log(`Date range: ${startDate.toISOString().split('T')[0]} to ${endDate.toISOString().split('T')[0]}`);
+    
     const goals = await Goal.find({
-      userId: userId,
-      updatedAt: {
-        $gte: startDate,
-        $lte: endDate
-      }
-    }).select('isCompleted monthlyTasks weeklyTasks dailyTasks updatedAt');
+      userId: userId
+    }).select('goalTitle isCompleted monthlyTasks weeklyTasks dailyTasks updatedAt createdAt');
     
-    // Initialize data structure for 7 days
+    console.log(`Found ${goals.length} goals for user ${userId}`);
+    
     const analyticsData = [];
+    const today = new Date();
     
     for (let i = 6; i >= 0; i--) {
       const currentDate = new Date();
@@ -31,46 +28,101 @@ const getDashboardAnalytics = async (req, res) => {
       
       const nextDate = new Date(currentDate);
       nextDate.setDate(nextDate.getDate() + 1);
+      nextDate.setHours(0, 0, 0, 0);
       
-      // Filter goals updated on this specific day
-      const dayGoals = goals.filter(goal => {
-        const goalDate = new Date(goal.updatedAt);
-        return goalDate >= currentDate && goalDate < nextDate;
-      });
+      const isToday = currentDate.toDateString() === today.toDateString();
+      console.log(`\n=== Checking ${currentDate.toISOString().split('T')[0]} (${currentDate.toLocaleDateString('en-US', { weekday: 'short' })}) ${isToday ? '- TODAY' : ''} ===`);
       
-      // Count completed goals for this day
-      const completedGoals = dayGoals.filter(goal => goal.isCompleted).length;
-      
-      // Count completed tasks for this day
-      let completedTasks = 0;
-      dayGoals.forEach(goal => {
-        // Count completed monthly tasks
-        goal.monthlyTasks.forEach(taskGroup => {
-          if (taskGroup.status) completedTasks++;
-        });
+      // Count goals completed ON this specific day
+      const completedGoals = goals.filter(goal => {
+        if (!goal.isCompleted) return false;
         
-        // Count completed weekly tasks
-        goal.weeklyTasks.forEach(taskGroup => {
-          if (taskGroup.status) completedTasks++;
-        });
+        const completedDate = new Date(goal.updatedAt);
+        const isInRange = completedDate >= currentDate && completedDate < nextDate;
         
-        // Count completed daily tasks
-        goal.dailyTasks.forEach(taskGroup => {
-          if (taskGroup.status) completedTasks++;
-        });
+        if (isInRange) {
+          console.log(`✅ Goal completed: ${goal.goalTitle} on ${completedDate.toISOString().split('T')[0]}`);
+        }
+        
+        return isInRange;
+      }).length;
+      
+      // Count task groups completed ON this specific day
+      let completedTaskGroups = 0;
+      
+      goals.forEach(goal => {
+        console.log(`\nGoal: ${goal.goalTitle}`);
+        console.log(`  Monthly task groups: ${goal.monthlyTasks?.length || 0}`);
+        console.log(`  Weekly task groups: ${goal.weeklyTasks?.length || 0}`);
+        console.log(`  Daily task groups: ${goal.dailyTasks?.length || 0}`);
+        
+        // Check monthly task groups
+        if (goal.monthlyTasks && goal.monthlyTasks.length > 0) {
+          goal.monthlyTasks.forEach((taskGroup, groupIndex) => {
+            console.log(`  Monthly Group ${groupIndex}: ${taskGroup.label} - Status: ${taskGroup.status}`);
+            if (taskGroup.status) {
+              const taskDate = taskGroup.updatedAt || goal.updatedAt;
+              const taskDateObj = new Date(taskDate);
+              const isInRange = taskDateObj >= currentDate && taskDateObj < nextDate;
+              
+              if (isInRange) {
+                completedTaskGroups++;
+                console.log(`    ✅ Monthly task group completed: ${taskGroup.label} on ${taskDateObj.toISOString().split('T')[0]}`);
+              }
+            }
+          });
+        }
+        
+        if (goal.weeklyTasks && goal.weeklyTasks.length > 0) {
+          goal.weeklyTasks.forEach((taskGroup, groupIndex) => {
+            console.log(`  Weekly Group ${groupIndex}: ${taskGroup.label} - Status: ${taskGroup.status}`);
+            if (taskGroup.status) {
+              const taskDate = taskGroup.updatedAt || goal.updatedAt;
+              const taskDateObj = new Date(taskDate);
+              const isInRange = taskDateObj >= currentDate && taskDateObj < nextDate;
+              
+              if (isInRange) {
+                completedTaskGroups++;
+                console.log(`    ✅ Weekly task group completed: ${taskGroup.label} on ${taskDateObj.toISOString().split('T')[0]}`);
+              }
+            }
+          });
+        }
+        
+        if (goal.dailyTasks && goal.dailyTasks.length > 0) {
+          goal.dailyTasks.forEach((taskGroup, groupIndex) => {
+            console.log(`  Daily Group ${groupIndex}: ${taskGroup.label} - Status: ${taskGroup.status}`);
+            if (taskGroup.status) {
+              const taskDate = taskGroup.updatedAt || goal.updatedAt;
+              const taskDateObj = new Date(taskDate);
+              const isInRange = taskDateObj >= currentDate && taskDateObj < nextDate;
+              
+              if (isInRange) {
+                completedTaskGroups++;
+                console.log(`    ✅ Daily task group completed: ${taskGroup.label} on ${taskDateObj.toISOString().split('T')[0]}`);
+              }
+            }
+          });
+        }
       });
       
       analyticsData.push({
-        date: currentDate.toISOString().split('T')[0], // YYYY-MM-DD format
+        date: currentDate.toISOString().split('T')[0], 
         day: currentDate.toLocaleDateString('en-US', { weekday: 'short' }),
         completedGoals: completedGoals,
-        completedTasks: completedTasks
+        completedTasks: completedTaskGroups 
       });
+      
+      console.log(`Summary for ${currentDate.toISOString().split('T')[0]}: Goals: ${completedGoals}, Task Groups: ${completedTaskGroups}`);
     }
     
-    // Calculate summary statistics
+    console.log('\n=== FINAL ANALYTICS DATA ===');
+    analyticsData.forEach(day => {
+      console.log(`${day.date} (${day.day}): Goals: ${day.completedGoals}, Task Groups: ${day.completedTasks}`);
+    });
+    
     const totalCompletedGoals = analyticsData.reduce((sum, day) => sum + day.completedGoals, 0);
-    const totalCompletedTasks = analyticsData.reduce((sum, day) => sum + day.completedTasks, 0);
+    const totalCompletedTaskGroups = analyticsData.reduce((sum, day) => sum + day.completedTasks, 0);
     
     res.status(200).json({
       success: true,
@@ -78,7 +130,7 @@ const getDashboardAnalytics = async (req, res) => {
         dailyAnalytics: analyticsData,
         summary: {
           totalCompletedGoals,
-          totalCompletedTasks,
+          totalCompletedTasks: totalCompletedTaskGroups,
           dateRange: {
             start: startDate.toISOString().split('T')[0],
             end: endDate.toISOString().split('T')[0]
