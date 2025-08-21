@@ -1,5 +1,5 @@
 import React from 'react';
-import { Brain } from 'lucide-react';
+import { Brain, Mail, Phone, Globe, Linkedin, Github } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -41,12 +41,38 @@ const Footer = () => {
           </div>
           
           <div>
-            <h3 className="text-gray-900 font-semibold mb-4">Support</h3>
+            <h3 className="text-gray-900 font-semibold mb-4">Contact</h3>
             <ul className="space-y-3">
-              <li><a href="#" className="text-gray-600 hover:text-green-500 transition-colors duration-200">AI Help Center</a></li>
-              <li><a href="#" className="text-gray-600 hover:text-green-500 transition-colors duration-200">Contact AI Support</a></li>
-              <li><a href="#" className="text-gray-600 hover:text-green-500 transition-colors duration-200">Privacy Policy</a></li>
-              <li><a href="#" className="text-gray-600 hover:text-green-500 transition-colors duration-200">Terms of Service</a></li>
+              <li className="flex items-center space-x-2">
+                <Mail className="w-4 h-4 text-green-500" />
+                <a   href="https://mail.google.com/mail/u/0/?to=praveengamini009@gmail.com&fs=1&tf=cm" target="_blank" className="text-gray-600 hover:text-green-500 transition-colors duration-200">
+                  praveengamini009@gmail.com
+                </a>
+              </li>
+              <li className="flex items-center space-x-2">
+                <Phone className="w-4 h-4 text-green-500" />
+                <a href="tel:+917013268191" className="text-gray-600 hover:text-green-500 transition-colors duration-200">
+                  +91 7013268191
+                </a>
+              </li>
+              <li className="flex items-center space-x-2">
+                <Globe className="w-4 h-4 text-green-500" />
+                <a  href="https://praveengamini.netlify.app" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-green-500 transition-colors duration-200">
+                  praveengamini.netlify.app
+                </a>
+              </li>
+              <li className="flex items-center space-x-2">
+                <Linkedin className="w-4 h-4 text-green-500" />
+                <a  href="https://www.linkedin.com/in/praveen-gamini-3bb729273" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-green-500 transition-colors duration-200">
+                  LinkedIn
+                </a>
+              </li>
+              <li className="flex items-center space-x-2">
+                <Github className="w-4 h-4 text-green-500" />
+                <a  href="https://github.com/praveengamini" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-green-500 transition-colors duration-200">
+                  GitHub
+                </a>
+              </li>
             </ul>
           </div>
         </div>
