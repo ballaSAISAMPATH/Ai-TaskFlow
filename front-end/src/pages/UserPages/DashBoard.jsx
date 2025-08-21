@@ -36,35 +36,38 @@ const DashBoard = () => {
     }
   }, [user, dispatch]);
 
-  const getProgressChartData = () => {
-    console.log('Analytics data:', analytics);
-    
-    let analyticsData = null;
-    
-    if (analytics?.data?.dailyAnalytics) {
-      analyticsData = analytics.data.dailyAnalytics;
-    } else if (analytics?.data && Array.isArray(analytics.data)) {
-      analyticsData = analytics.data;
-    } else if (analytics?.dailyAnalytics) {
-      analyticsData = analytics.dailyAnalytics;
-    } else if (Array.isArray(analytics)) {
-      analyticsData = analytics;
-    }
-    
-    console.log('Processed analytics data:', analyticsData);
-    
-    if (!analyticsData || analyticsData.length === 0) {
-      console.log('No analytics data found');
-      return [];
-    }
-    
-    return analyticsData.map(day => ({
-      date: new Date(day.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+const getProgressChartData = () => {
+  
+  let analyticsData = null;
+  
+  if (analytics?.data?.dailyAnalytics) {
+    analyticsData = analytics.data.dailyAnalytics;
+  } else if (analytics?.data && Array.isArray(analytics.data)) {
+    analyticsData = analytics.data;
+  } else if (analytics?.dailyAnalytics) {
+    analyticsData = analytics.dailyAnalytics;
+  } else if (Array.isArray(analytics)) {
+    analyticsData = analytics;
+  }
+  
+  
+  if (!analyticsData || analyticsData.length === 0) {
+    console.log('No analytics data found');
+    return [];
+  }
+  
+  return analyticsData.map(day => {
+    const shiftedDate = new Date(day.date);
+    shiftedDate.setDate(shiftedDate.getDate() + 1); // 👈 put one day forward
+
+    return {
+      date: shiftedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
       completed: day.completedTasks, 
       goals: day.completedGoals,
       tasks: day.completedTasks
-    }));
-  };
+    };
+  });
+};
 
   const getTaskTypeData = () => {
     if (!stats) return [];
@@ -144,7 +147,6 @@ const DashBoard = () => {
   const ProgressChart = () => {
     const data = getProgressChartData();
     
-    console.log('Chart data:', data);
     
     if (data.length === 0) {
       return (
