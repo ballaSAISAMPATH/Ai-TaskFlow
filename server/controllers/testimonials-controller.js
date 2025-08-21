@@ -3,7 +3,6 @@ const Feedback = require("../models/feedback"); // Add this import
 
 // Get all testimonials (public route)
 const getAllTestimonials = async (req, res) => {
-  console.log(req.body);
   
   try {
     const testimonials = await Testimonial.find()
