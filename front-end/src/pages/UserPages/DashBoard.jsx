@@ -58,7 +58,7 @@ const getProgressChartData = () => {
   
   return analyticsData.map(day => {
     const shiftedDate = new Date(day.date);
-    shiftedDate.setDate(shiftedDate.getDate() + 1); // 👈 put one day forward
+    shiftedDate.setDate(shiftedDate.getDate());
 
     return {
       date: shiftedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
