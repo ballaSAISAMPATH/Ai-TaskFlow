@@ -4,7 +4,7 @@ const loginHistorySchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    default: null 
+    default: null // Nullable in case user deletes their account later
   },
   name: {
     type: String,
@@ -17,11 +17,16 @@ const loginHistorySchema = new mongoose.Schema({
   loginTime: {
     type: Date,
     default: Date.now
+  },
+  isUserDeleted: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true
 });
 
+// Index for efficient querying of recent logins
 loginHistorySchema.index({ email: 1, loginTime: -1 });
 loginHistorySchema.index({ loginTime: -1 });
 
