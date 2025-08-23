@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const jwt = require("jsonwebtoken");
 const admin = require('firebase-admin');
+const {logLoginEvent} = require('./historylogin-controller')
 require("dotenv").config();
 
 admin.initializeApp({
@@ -78,7 +79,7 @@ const loginUser = async (req, res) => {
     }
 
     const { accessToken, refreshToken } = generateTokens(user);
-
+     await logLoginEvent(user._id, user.name, user.email)
     res
       .cookie("refreshToken", refreshToken, {
         httpOnly: true,
@@ -127,7 +128,7 @@ const googleLogin = async (req, res) => {
     }
 
     const { accessToken, refreshToken } = generateTokens(user);
-
+    await logLoginEvent(user._id, user.name, user.email)
     res
       .cookie("refreshToken", refreshToken, {
         httpOnly: true,
