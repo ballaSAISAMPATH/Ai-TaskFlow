@@ -14,6 +14,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import ScrollToTop from '@/utilities/ScrollToTop';
+import { toast } from 'sonner';
 const ReviewSkeleton = () => (
   <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden animate-pulse">
     <div className="p-4 sm:p-6 border-b border-gray-200">
@@ -73,10 +74,13 @@ const Reviews = () => {
     
     try {
       await dispatch(replyToFeedback({ feedbackId, reply: replyText })).unwrap();
+      toast.success('replied  sucessfully')
+
       setReplyText('');
       setSelectedFeedback(null);
     } catch (error) {
       console.error('Error replying to feedback:', error);
+      toast.error('error occured')
     }
   };
 
@@ -85,10 +89,12 @@ const Reviews = () => {
     
     try {
       await dispatch(deleteFeedback(feedbackToDelete._id)).unwrap();
+      toast.success('review deleted sucessfully')
       setDeleteDialogOpen(false);
       setFeedbackToDelete(null);
     } catch (error) {
       console.error('Error deleting feedback:', error);
+      toast.error('error occured')
     }
   };
 

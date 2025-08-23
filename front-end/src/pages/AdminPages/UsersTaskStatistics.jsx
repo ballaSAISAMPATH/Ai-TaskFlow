@@ -14,7 +14,7 @@ import {
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
-
+import { toast } from 'sonner';
 // Skeleton Loading Component
 const UserStatisticsSkeleton = () => (
   <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden animate-pulse">
@@ -64,9 +64,11 @@ const UsersTaskStatistics = () => {
   const handleDeleteUser = async (userId) => {
     try {
       await dispatch(deleteUser(userId)).unwrap();
+      toast.success("User delted sucessfully")
       setDeleteConfirm(null);
     } catch (error) {
       console.error('Error deleting user:', error);
+      toast.error("error occured while deleting")
     }
   };
 
