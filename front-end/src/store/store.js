@@ -6,7 +6,7 @@ import adminReducer from './admin/index.js'
 import statsReducer from './landing-page/index.js'; 
 import testimonialReducer from './testimonials.js/index.js'
 import dashboardReducer from './user-dashboard/index.js';
-
+import loginHistoryReducer from './recent-login/index.js';
 const rootReducer = combineReducers({
   stats: statsReducer,
   auth: authReducer,
@@ -14,7 +14,8 @@ const rootReducer = combineReducers({
   feedback: feedbackReducer,
   admin: adminReducer,
   testimonials:testimonialReducer,
-  dashboard:dashboardReducer
+  dashboard:dashboardReducer,
+  loginHistory:loginHistoryReducer
 });
 
 const store = configureStore({
