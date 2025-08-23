@@ -22,21 +22,18 @@ admin.initializeApp({
 });
 
 // Generate Tokens
-const generateTokens = (user) => {
-  const accessToken = jwt.sign(
-    { id: user._id, email: user.email, role: user.role },
-    process.env.JWT_SECRET_KEY,
-    { expiresIn: "15m" } // short-lived access token
-  );
+function generateTokens(user) {
+  const payload = {
+    id: user._id,
+    email: user.email,
+    tokenVersion: user.tokenVersion  
+  };
 
-  const refreshToken = jwt.sign(
-    { id: user._id, email: user.email, role: user.role },
-    process.env.JWT_REFRESH_SECRET_KEY,
-    { expiresIn: "7d" } // long-lived refresh token
-  );
+  const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+  const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
 
   return { accessToken, refreshToken };
-};
+}
 
 const registerUser = async (req, res) => {
   const { userName, email, password } = req.body;
@@ -155,31 +152,38 @@ const googleLogin = async (req, res) => {
   }
 };
 
-const refreshAccessToken = async (req, res) => {
+const refreshTokenHandler = async (req, res) => {
   const token = req.cookies.refreshToken;
-  if (!token) {
-    return res.status(401).json({ success: false, message: "No refresh token" });
-  }
+  if (!token) return res.status(401).json({ success: false, message: "No token" });
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET_KEY);
-    
-    const user = await User.findById(decoded.id);
-    if (user) {
-      await logLoginEvent(user._id, user.name, user.email);
-    }
-    
-    const accessToken = jwt.sign(
-      { id: decoded.id, email: decoded.email, role: decoded.role },
-      process.env.JWT_SECRET_KEY,
-      { expiresIn: "15m" }
-    );
+    const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
 
-    res.json({ success: true, accessToken });
+    const user = await User.findById(decoded.id);
+    if (!user) return res.status(401).json({ success: false, message: "User not found" });
+
+    // 👇 check tokenVersion
+    if (decoded.tokenVersion !== user.tokenVersion) {
+      return res.status(401).json({ success: false, message: "Token expired due to password change" });
+    }
+
+    // Generate new tokens
+    const { accessToken, refreshToken } = generateTokens(user);
+
+    res
+      .cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
+      .json({ success: true, accessToken });
+
   } catch (error) {
-    return res.status(403).json({ success: false, message: "Invalid refresh token" });
+    res.status(401).json({ success: false, message: "Invalid token" });
   }
 };
+
 
 const logoutUser = (req, res) => {
   res.clearCookie("refreshToken", {
