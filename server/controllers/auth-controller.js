@@ -106,6 +106,7 @@ const loginUser = async (req, res) => {
   }
 };
 
+
 const googleLogin = async (req, res) => {
   const { idToken, email, name, photoURL, uid } = req.body;
 
@@ -280,8 +281,10 @@ const changePassword = async (req, res) => {
     }
 
     await User.findByIdAndUpdate(userId, {
-      password: newPassword
-    });
+        password: newPassword,
+        $inc: { tokenVersion: 1 }  
+      });
+
 
     res.status(200).json({
       success: true,
