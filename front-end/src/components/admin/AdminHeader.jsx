@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Brain, LayoutDashboard, Star, UserCog, LogOut,Users,Presentation } from 'lucide-react';
+import { Brain, LayoutDashboard, Star, UserCog, LogOut,Users,Presentation,ScrollText  } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -34,9 +34,17 @@ const AdminHeader = () => {
      {
        icon: Presentation,
        label: 'Testimonials',
-       path: '/admin/set-testimonials',
+       path: '/admin/recent-logins',
        description: 'update testimonials in landing page'
      },
+     
+     {
+       icon: ScrollText ,
+       label: 'Recent Logins',
+       path: '/admin/recent-logins',
+       description: 'view the last recent logins'
+     },
+     
      {
        icon: UserCog,
        label: 'Profile',
