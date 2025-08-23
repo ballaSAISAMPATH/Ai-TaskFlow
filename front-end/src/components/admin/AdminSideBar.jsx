@@ -5,7 +5,7 @@ import {
   LayoutDashboard,
   Star,
   UserCog,
-  LogOut,Users,Presentation
+  LogOut,Users,Presentation,ScrollText 
 } from 'lucide-react';
 import { logoutUser } from '@/store/auth';
 import { toast } from 'sonner';
@@ -30,38 +30,46 @@ const AdminSideBar = () => {
     }
   };
 
-  const menuItems = [
-    {
-      icon: LayoutDashboard,
-      label: 'Dashboard',
-      path: '/admin/dashboard',
-      description: 'View analytics'
-    },
-    {
-      icon: Users,
-      label: 'Users',
-      path: '/admin/users',
-      description: 'user wise statistics'
-    },
-    {
-      icon: Star,
-      label: 'Reviews',
-      path: '/admin/reviews',
-      description: 'User feedback'
-    },
-      {
-        icon: Presentation,
-        label: 'Testimonials',
-        path: '/admin/set-testimonials',
-        description: 'update testimonials'
-      },
-    {
-      icon: UserCog,
-      label: 'Profile',
-      path: '/admin/profile',
-      description: 'Manage account'
-    }
-  ];
+const menuItems = [
+     {
+       icon: LayoutDashboard,
+       label: 'Dashboard',
+       path: '/admin/dashboard',
+       description: 'View analytics'
+     },
+     {
+       icon: Users,
+       label: 'Users',
+       path: '/admin/users',
+       description: 'user wise statistics'
+     },
+     {
+       icon: Star,
+       label: 'Reviews',
+       path: '/admin/reviews',
+       description: 'User feedback'
+     },
+     {
+       icon: Presentation,
+       label: 'Testimonials',
+       path: '/admin/set-testimonials',
+       description: 'update testimonials in landing page'
+     },
+     
+     {
+       icon: ScrollText ,
+       label: 'Recent Logins',
+       path: '/admin/recent-logins',
+       description: 'view the last recent logins'
+     },
+     
+     {
+       icon: UserCog,
+       label: 'Profile',
+       path: '/admin/profile',
+       description: 'Manage account'
+     }
+   ];
 
   return (
     <aside className="hidden md:flex fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-white/95 backdrop-blur-md border-r border-gray-200 z-40 flex-col justify-between">
