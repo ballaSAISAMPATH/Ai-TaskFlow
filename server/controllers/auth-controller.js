@@ -120,7 +120,6 @@ const googleLogin = async (req, res) => {
       user = new User({
         name,
         email,
-        password: "GOOGLE_AUTH",
         firebaseUid: uid,
         profilePicture: photoURL,
         authProvider: "google",
