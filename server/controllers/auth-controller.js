@@ -2,6 +2,7 @@ const User = require('../models/User');
 const jwt = require("jsonwebtoken");
 const admin = require('firebase-admin');
 const {logLoginEvent} = require('./historylogin-controller')
+const LoginHistory = require('../models/loginHistory');
 require("dotenv").config();
 
 admin.initializeApp({
@@ -218,6 +219,17 @@ const deleteAccount = async (req, res) => {
         success: false,
         message: "User not found.",
       });
+    }
+
+    // Optional: Update login history to mark user as deleted
+    try {
+      await LoginHistory.updateMany(
+        { userId: userId },
+        { $set: { isUserDeleted: true } }
+      );
+    } catch (historyError) {
+      console.error('Error updating login history on user deletion:', historyError);
+      // Don't fail the deletion if history update fails
     }
 
     res.clearCookie("token");
