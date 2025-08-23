@@ -6,7 +6,7 @@ export const fetchRecentLogins = createAsyncThunk(
   'loginHistory/fetchRecentLogins',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('/api/loginHistory/recent-logins', {
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/loginHistory/recent-logins`, {
         withCredentials: true, // Include cookies if using authentication
       });
 
