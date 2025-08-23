@@ -28,6 +28,7 @@ import UsersTaskStatistics from './pages/AdminPages/UsersTaskStatistics';
 import LoadingSpinner from './utilities/LoadingSpinner';
 import { useAuthInitialize } from './utilities/hooks/useAuthInitialize';
 import AdminTestimonials from './pages/AdminPages/AdminTestimonials';
+import RecentLogins from './pages/AdminPages/RecentLogins';
 const App = () => {
   const { isLoading: authInitLoading } = useAuthInitialize();
   const { user, isAuthenticated, isLoading } = useSelector((state) => state.auth);
@@ -64,6 +65,7 @@ const App = () => {
               <Route path='reviews' element={<Reviews/>} />
               <Route path='set-testimonials' element={<AdminTestimonials/>} />
               <Route path='profile' element={<AdminProfile/>} />
+              <Route path='recent-logins' element={<RecentLogins/>}/>
               <Route />
               <Route path='set-new-password' element={<SetNewPassword/>}/>
           </Route>

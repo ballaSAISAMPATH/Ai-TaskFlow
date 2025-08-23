@@ -1,6 +1,8 @@
 const User = require('../models/User');
 const jwt = require("jsonwebtoken");
 const admin = require('firebase-admin');
+const {logLoginEvent} = require('./historylogin-controller')
+const LoginHistory = require('../models/loginHistory');
 require("dotenv").config();
 
 admin.initializeApp({
@@ -78,7 +80,7 @@ const loginUser = async (req, res) => {
     }
 
     const { accessToken, refreshToken } = generateTokens(user);
-
+     await logLoginEvent(user._id, user.name, user.email)
     res
       .cookie("refreshToken", refreshToken, {
         httpOnly: true,
@@ -127,7 +129,7 @@ const googleLogin = async (req, res) => {
     }
 
     const { accessToken, refreshToken } = generateTokens(user);
-
+    await logLoginEvent(user._id, user.name, user.email)
     res
       .cookie("refreshToken", refreshToken, {
         httpOnly: true,
@@ -153,7 +155,7 @@ const googleLogin = async (req, res) => {
   }
 };
 
-const refreshAccessToken = (req, res) => {
+const refreshAccessToken = async (req, res) => {
   const token = req.cookies.refreshToken;
   if (!token) {
     return res.status(401).json({ success: false, message: "No refresh token" });
@@ -161,6 +163,12 @@ const refreshAccessToken = (req, res) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET_KEY);
+    
+    const user = await User.findById(decoded.id);
+    if (user) {
+      await logLoginEvent(user._id, user.name, user.email);
+    }
+    
     const accessToken = jwt.sign(
       { id: decoded.id, email: decoded.email, role: decoded.role },
       process.env.JWT_SECRET_KEY,
@@ -217,6 +225,17 @@ const deleteAccount = async (req, res) => {
         success: false,
         message: "User not found.",
       });
+    }
+
+    // Optional: Update login history to mark user as deleted
+    try {
+      await LoginHistory.updateMany(
+        { userId: userId },
+        { $set: { isUserDeleted: true } }
+      );
+    } catch (historyError) {
+      console.error('Error updating login history on user deletion:', historyError);
+      // Don't fail the deletion if history update fails
     }
 
     res.clearCookie("token");

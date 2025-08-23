@@ -11,6 +11,7 @@ const adminRouter = require('./routes/admin-routes')
 const landingPageRouter = require('./routes/landingpage-routes')
 const testimonialRouter = require('./routes/testimonial-routes')
 const userDashboardRoutes = require('./routes/userDashboard-routes')
+const loginHistory = require('./routes/loginHistory-routes')
 const app = express();
 const PORT = process.env.PORT || 5000; 
 
@@ -31,6 +32,7 @@ app.use('/api/admin',adminRouter)
 app.use('/api/landing-page',landingPageRouter)
 app.use('/api/testimonials',testimonialRouter)
 app.use('/api/user-dashboard',userDashboardRoutes)
+app.use('/api/loginHistory',loginHistory)
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
