@@ -27,7 +27,21 @@ const getRecentLogins = async (req, res) => {
           _id: "$email",
           name: { $first: "$name" },
           email: { $first: "$email" },
-          lastLogin: { $first: "$loginTime" }
+          lastLogin: { $first: "$loginTime" },
+          userId: { $first: "$userId" }
+        }
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "userExists"
+        }
+      },
+      {
+        $addFields: {
+          isUserDeleted: { $eq: [{ $size: "$userExists" }, 0] }
         }
       },
       {
@@ -41,7 +55,8 @@ const getRecentLogins = async (req, res) => {
           _id: 0,
           name: 1,
           email: 1,
-          lastLogin: 1
+          lastLogin: 1,
+          isUserDeleted: 1
         }
       }
     ]);
