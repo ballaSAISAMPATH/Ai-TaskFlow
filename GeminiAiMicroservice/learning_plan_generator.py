@@ -1,6 +1,6 @@
 import json
 import re
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Tuple
 from gemini_llm import GeminiLLM
 from templates import LEARNING_PLAN_PROMPT
 
@@ -20,48 +20,139 @@ class LearningPlanGenerator:
         self.llm = GeminiLLM(api_key=gemini_api_key)
         self.prompt_template = LEARNING_PLAN_PROMPT
         
+        # Enhanced detailed curricula with specific, actionable tasks
         self.detailed_curricula = {
-            "dsa": [
-                "Arrays and String Manipulation", "Two Pointers and Sliding Window", "Linked Lists Operations",
-                "Stacks and Queues", "Recursion and Backtracking", "Binary Trees Fundamentals",
-                "Binary Search Trees", "Tree Traversals", "Heaps and Priority Queues", "Hash Tables",
-                "Graph Representation", "Graph Traversals (BFS/DFS)", "Shortest Path Algorithms",
-                "Dynamic Programming Basics", "1D DP Problems", "2D DP Problems", "Advanced DP Patterns",
-                "Greedy Algorithms", "Bit Manipulation", "Trie Data Structure", "Union Find",
-                "Advanced Graph Algorithms", "String Algorithms", "Mathematical Algorithms", "System Design"
-            ],
-            "react": [
-                "React Environment Setup", "JSX Syntax and Components", "Props and State Management",
-                "Event Handling", "Conditional Rendering", "Lists and Keys", "Forms and Inputs",
-                "Component Lifecycle", "useEffect Hook", "useState Hook", "Custom Hooks",
-                "Context API", "React Router", "State Management with Redux", "HTTP Requests and APIs",
-                "Error Boundaries", "Performance Optimization", "Code Splitting", "Testing with Jest",
-                "Styled Components", "Material-UI Integration", "TypeScript with React", 
-                "Next.js Fundamentals", "Server-side Rendering", "Static Site Generation"
-            ],
-            "python": [
-                "Python Environment Setup", "Variables and Data Types", "Control Structures",
-                "Functions and Scope", "Lists and Tuples", "Dictionaries and Sets", "String Methods",
-                "File Handling", "Exception Handling", "Object-Oriented Programming", "Classes and Objects",
-                "Inheritance and Polymorphism", "Modules and Packages", "Lambda Functions", "Decorators",
-                "Generators and Iterators", "Regular Expressions", "Working with APIs", "Database Integration",
-                "Web Scraping", "GUI Development", "Testing with pytest", "Virtual Environments", "Deployment"
-            ]
+            "dsa": {
+                "topics": [
+                    "Arrays and String Manipulation", "Two Pointers and Sliding Window", "Linked Lists Operations",
+                    "Stacks and Queues", "Recursion and Backtracking", "Binary Trees Fundamentals",
+                    "Binary Search Trees", "Tree Traversals", "Heaps and Priority Queues", "Hash Tables",
+                    "Graph Representation", "Graph Traversals (BFS/DFS)", "Shortest Path Algorithms",
+                    "Dynamic Programming Basics", "1D DP Problems", "2D DP Problems", "Advanced DP Patterns",
+                    "Greedy Algorithms", "Bit Manipulation", "Trie Data Structure", "Union Find",
+                    "Advanced Graph Algorithms", "String Algorithms", "Mathematical Algorithms", "System Design"
+                ],
+                "practical_tasks": [
+                    "Solve 3 easy array problems on LeetCode focusing on two-pointer technique",
+                    "Implement a hash table from scratch using separate chaining",
+                    "Build a binary search tree with insert, delete, and search operations",
+                    "Create a graph class and implement BFS/DFS traversal algorithms",
+                    "Solve the classic 0/1 Knapsack problem using dynamic programming",
+                    "Implement Dijkstra's algorithm for shortest path finding",
+                    "Code a trie data structure for autocomplete functionality",
+                    "Practice 5 medium-level recursion problems with backtracking",
+                    "Build a min-heap and max-heap with heapify operations",
+                    "Solve string matching problems using KMP algorithm"
+                ],
+                "projects": [
+                    "Build a simple text editor with undo/redo using stacks",
+                    "Create a maze solver using BFS algorithm",
+                    "Implement a basic compiler's symbol table using hash tables",
+                    "Build a family tree application using tree data structures"
+                ]
+            },
+            "react": {
+                "topics": [
+                    "React Environment Setup", "JSX Syntax and Components", "Props and State Management",
+                    "Event Handling", "Conditional Rendering", "Lists and Keys", "Forms and Inputs",
+                    "Component Lifecycle", "useEffect Hook", "useState Hook", "Custom Hooks",
+                    "Context API", "React Router", "State Management with Redux", "HTTP Requests and APIs",
+                    "Error Boundaries", "Performance Optimization", "Code Splitting", "Testing with Jest",
+                    "Styled Components", "Material-UI Integration", "TypeScript with React", 
+                    "Next.js Fundamentals", "Server-side Rendering", "Static Site Generation"
+                ],
+                "practical_tasks": [
+                    "Build a counter app with increment/decrement functionality using useState",
+                    "Create a todo list with add, delete, and mark complete features",
+                    "Implement a weather app that fetches data from OpenWeatherMap API",
+                    "Build a product catalog with search and filter functionality",
+                    "Create a multi-step form with validation and progress indicator",
+                    "Develop a shopping cart with add/remove items and total calculation",
+                    "Build a blog interface with post creation and comment system",
+                    "Implement user authentication with login/logout functionality",
+                    "Create a dashboard with charts using recharts library",
+                    "Build a real-time chat interface using WebSocket connection"
+                ],
+                "projects": [
+                    "Build a complete e-commerce storefront with product listing and checkout",
+                    "Create a social media dashboard with post feeds and interactions",
+                    "Develop a project management tool with task boards and team collaboration",
+                    "Build a personal finance tracker with expense categorization and reports"
+                ]
+            },
+            "python": {
+                "topics": [
+                    "Python Environment Setup", "Variables and Data Types", "Control Structures",
+                    "Functions and Scope", "Lists and Tuples", "Dictionaries and Sets", "String Methods",
+                    "File Handling", "Exception Handling", "Object-Oriented Programming", "Classes and Objects",
+                    "Inheritance and Polymorphism", "Modules and Packages", "Lambda Functions", "Decorators",
+                    "Generators and Iterators", "Regular Expressions", "Working with APIs", "Database Integration",
+                    "Web Scraping", "GUI Development", "Testing with pytest", "Virtual Environments", "Deployment"
+                ],
+                "practical_tasks": [
+                    "Build a personal expense tracker that reads/writes CSV files",
+                    "Create a web scraper for job listings using BeautifulSoup",
+                    "Develop a password manager with encryption using cryptography library",
+                    "Build a REST API for a bookstore using Flask and SQLAlchemy",
+                    "Create a data analysis script for sales data using pandas",
+                    "Implement a file organizer that sorts files by type and date",
+                    "Build a weather CLI app that fetches data from weather APIs",
+                    "Create a basic chatbot using natural language processing",
+                    "Develop a stock price analyzer with visualization using matplotlib",
+                    "Build a automated email sender for newsletters using smtplib"
+                ],
+                "projects": [
+                    "Create a complete blog system with user management and post CRUD operations",
+                    "Build a inventory management system for small businesses",
+                    "Develop a machine learning model for house price prediction",
+                    "Create a social media automation tool for content scheduling"
+                ]
+            },
+            "javascript": {
+                "topics": [
+                    "JavaScript Fundamentals", "ES6+ Features", "DOM Manipulation", "Event Handling",
+                    "Asynchronous Programming", "Promises and Async/Await", "Fetch API", "Local Storage",
+                    "Object-Oriented Programming", "Functional Programming", "Closures and Scope",
+                    "Prototypes and Inheritance", "Modules", "Error Handling", "Testing with Jest"
+                ],
+                "practical_tasks": [
+                    "Build a interactive calculator with keyboard support",
+                    "Create a image carousel with auto-play and manual navigation",
+                    "Develop a quiz application with timer and score tracking",
+                    "Build a expense tracker that persists data in localStorage",
+                    "Create a drag-and-drop task board interface",
+                    "Implement a search autocomplete feature with debouncing",
+                    "Build a photo gallery with lightbox functionality",
+                    "Create a real-time clock with multiple timezone support",
+                    "Develop a form validator with custom validation rules",
+                    "Build a memory card game with flip animations"
+                ],
+                "projects": [
+                    "Create a complete note-taking application with rich text editing",
+                    "Build a music player with playlist management",
+                    "Develop a browser-based drawing application",
+                    "Create a budget planning tool with visual charts"
+                ]
+            }
         }
     
     def detect_subject_category(self, goal: str) -> str:
         goal_lower = goal.lower()
         
+        # Direct keyword matching
         for key in self.detailed_curricula.keys():
             if key in goal_lower:
                 return key
         
-        if any(keyword in goal_lower for keyword in ['algorithm', 'data structure', 'coding', 'leetcode']):
+        # Context-based detection
+        if any(keyword in goal_lower for keyword in ['algorithm', 'data structure', 'coding', 'leetcode', 'competitive programming']):
             return "dsa"
-        elif any(keyword in goal_lower for keyword in ['python', 'django', 'flask']):
+        elif any(keyword in goal_lower for keyword in ['python', 'django', 'flask', 'fastapi', 'pandas']):
             return "python"
-        elif any(keyword in goal_lower for keyword in ['react', 'jsx', 'frontend', 'component']):
+        elif any(keyword in goal_lower for keyword in ['react', 'jsx', 'frontend', 'component', 'nextjs']):
             return "react"
+        elif any(keyword in goal_lower for keyword in ['javascript', 'js', 'nodejs', 'express', 'dom']):
+            return "javascript"
         else:
             return "general"
     
@@ -120,67 +211,114 @@ class LearningPlanGenerator:
         
         return response.strip()
     
-    def create_unique_daily_tasks(self, goal: str, category: str, num_days: int) -> List[str]:
+    def create_progressive_daily_tasks(self, goal: str, category: str, num_days: int) -> List[str]:
+        """Create progressive, specific daily tasks based on the learning goal"""
         
-        action_patterns = [
-            "Set up and configure", "Learn fundamentals of", "Practice implementing", "Build mini-project with",
-            "Debug and troubleshoot", "Research best practices for", "Review and optimize", "Create from scratch",
-            "Experiment with different", "Test your knowledge of", "Document your learning about", "Refactor existing",
-            "Study advanced concepts in", "Compare different approaches to", "Solve coding problems using",
-            "Join community discussion about", "Write tutorial on", "Teach someone else about",
-            "Create examples for", "Take assessment on", "Peer review code for", "Contribute to open source project using",
-            "Profile and optimize", "Deploy application using", "Design algorithm for", "Benchmark performance of"
-        ]
+        if category == "general":
+            return self.create_general_tasks(goal, num_days)
         
-        if category in self.detailed_curricula:
-            concepts = self.detailed_curricula[category]
-        else:
-            concepts = [f"{goal.replace('Learn ', '').replace('learn ', '')} fundamentals",
-                       f"{goal.replace('Learn ', '').replace('learn ', '')} intermediate concepts",
-                       f"{goal.replace('Learn ', '').replace('learn ', '')} advanced topics"]
-        
-        specific_items = [
-            "basic syntax", "advanced features", "error handling", "optimization techniques",
-            "debugging strategies", "design patterns", "real-world applications", "edge cases",
-            "performance considerations", "best practices", "common pitfalls", "interview questions",
-            "project structure", "code organization", "testing strategies", "documentation",
-            "version control", "collaboration tools", "deployment methods", "monitoring"
-        ]
+        curriculum = self.detailed_curricula[category]
+        topics = curriculum["topics"]
+        practical_tasks = curriculum["practical_tasks"]
+        projects = curriculum.get("projects", [])
         
         daily_tasks = []
-        used_combinations = set()
         
-        extended_concepts = concepts * ((num_days // len(concepts)) + 2)
+        # Phase-based learning approach
+        foundation_phase = max(1, num_days // 4)  # First 25% - fundamentals
+        building_phase = max(1, num_days // 3)    # Next 33% - practical application
+        advanced_phase = max(1, num_days // 4)    # Next 25% - advanced concepts
+        project_phase = num_days - foundation_phase - building_phase - advanced_phase  # Final phase - projects
         
-        for day in range(num_days):
-            for attempt in range(50):
-                action_idx = (day + attempt) % len(action_patterns)
-                concept_idx = (day + attempt * 2) % len(extended_concepts)
-                specific_idx = (day + attempt * 3) % len(specific_items)
-                
-                action = action_patterns[action_idx]
-                
-                if day % 5 == 0:
-                    task = f"{action} {extended_concepts[concept_idx].lower()}"
-                elif day % 5 == 1:
-                    task = f"{action} {specific_items[specific_idx]} in {goal.lower()}"
-                elif day % 5 == 2:
-                    task = f"{action} {extended_concepts[concept_idx].lower()} focusing on {specific_items[specific_idx]}"
-                elif day % 5 == 3:
-                    task = f"Master {extended_concepts[concept_idx].lower()} through {action.lower()}"
-                else:
-                    task = f"Apply {extended_concepts[concept_idx].lower()} to {specific_items[specific_idx]}"
-                
-                task_key = task.lower().replace(" ", "")
-                if task_key not in used_combinations:
-                    used_combinations.add(task_key)
-                    daily_tasks.append(task)
-                    break
+        day_counter = 0
+        
+        # Foundation Phase
+        for day in range(foundation_phase):
+            if day < len(topics):
+                topic = topics[day]
+                daily_tasks.append(f"Learn and understand {topic.lower()} - read documentation and watch tutorials")
             else:
-                task = f"Advanced practice session #{day + 1} for {goal.lower()}"
-                daily_tasks.append(task)
+                topic_idx = day % len(topics)
+                daily_tasks.append(f"Review and practice {topics[topic_idx].lower()} with hands-on exercises")
+            day_counter += 1
+        
+        # Building Phase - Practical Tasks
+        for day in range(building_phase):
+            if day < len(practical_tasks):
+                daily_tasks.append(practical_tasks[day])
+            else:
+                task_idx = day % len(practical_tasks)
+                daily_tasks.append(f"Enhance previous work: {practical_tasks[task_idx].lower()}")
+            day_counter += 1
+        
+        # Advanced Phase
+        for day in range(advanced_phase):
+            topic_idx = (day + len(topics) // 2) % len(topics)
+            advanced_aspects = ["optimization", "edge cases", "scalability", "best practices", "performance"]
+            aspect = advanced_aspects[day % len(advanced_aspects)]
+            daily_tasks.append(f"Master advanced {aspect} in {topics[topic_idx].lower()}")
+            day_counter += 1
+        
+        # Project Phase
+        for day in range(project_phase):
+            if day < len(projects):
+                daily_tasks.append(f"Work on project: {projects[day]}")
+            elif day < len(projects) * 2:
+                project_idx = (day - len(projects)) % len(projects)
+                daily_tasks.append(f"Refine and add features to: {projects[project_idx]}")
+            else:
+                daily_tasks.append(f"Create portfolio documentation and deploy your {category} projects")
         
         return daily_tasks
+    
+    def create_general_tasks(self, goal: str, num_days: int) -> List[str]:
+        """Create tasks for subjects not in our detailed curriculum"""
+        
+        # Extract the main subject from the goal
+        subject = goal.replace("Learn ", "").replace("learn ", "").strip()
+        
+        learning_phases = [
+            f"Research and understand what {subject} is and its applications",
+            f"Set up development environment and tools for {subject}",
+            f"Learn basic syntax and fundamental concepts of {subject}",
+            f"Practice simple exercises and tutorials in {subject}",
+            f"Build your first small project using {subject}",
+            f"Study intermediate concepts and design patterns in {subject}",
+            f"Implement a medium-complexity project with {subject}",
+            f"Learn advanced features and optimization techniques",
+            f"Contribute to open-source {subject} projects or create your own",
+            f"Build a portfolio project showcasing your {subject} skills"
+        ]
+        
+        # Distribute phases across available days
+        tasks_per_phase = max(1, num_days // len(learning_phases))
+        daily_tasks = []
+        
+        for phase_idx, base_task in enumerate(learning_phases):
+            for day_in_phase in range(tasks_per_phase):
+                if len(daily_tasks) >= num_days:
+                    break
+                    
+                if day_in_phase == 0:
+                    daily_tasks.append(base_task)
+                else:
+                    variations = [
+                        f"Continue {base_task.lower()} - focus on practical application",
+                        f"Deepen your understanding: {base_task.lower()}",
+                        f"Practice and reinforce: {base_task.lower()}",
+                        f"Apply what you learned: {base_task.lower()}"
+                    ]
+                    daily_tasks.append(variations[day_in_phase % len(variations)])
+        
+        # Fill remaining days if needed
+        while len(daily_tasks) < num_days:
+            remaining_days = num_days - len(daily_tasks)
+            if remaining_days > 5:
+                daily_tasks.append(f"Work on capstone project: comprehensive {subject} application")
+            else:
+                daily_tasks.append(f"Review, practice, and prepare for next steps in {subject}")
+        
+        return daily_tasks[:num_days]
     
     def create_intelligent_fallback_plan(self, goal: str, duration: str) -> Dict[str, Any]:
         duration_dict = self.parse_duration(duration)
@@ -196,49 +334,89 @@ class LearningPlanGenerator:
             "dailyTasks": []
         }
         
+        # Create monthly tasks with specific themes
         if totals["total_months"] > 0:
-            monthly_themes = [
-                ["Foundation and Environment Setup", "Basic Concepts and Syntax"],
-                ["Intermediate Concepts and Patterns", "Hands-on Practice Projects"],
-                ["Advanced Topics and Frameworks", "Real-world Applications"],
-                ["Mastery and Optimization", "Portfolio and Interview Prep"],
-                ["Specialization Areas", "Industry Best Practices"],
-                ["Expert-level Challenges", "Teaching and Mentoring"]
-            ]
-            
-            for month_num in range(totals["total_months"]):
-                theme_idx = month_num % len(monthly_themes)
+            if subject_category in self.detailed_curricula:
+                curriculum = self.detailed_curricula[subject_category]
+                topics = curriculum["topics"]
+                
+                monthly_themes = [
+                    ["Foundation and Setup", "Basic Concepts and Syntax"],
+                    ["Core Concepts and Patterns", "Hands-on Practice Projects"],
+                    ["Advanced Topics and Frameworks", "Real-world Applications"],
+                    ["Mastery and Optimization", "Portfolio and Interview Prep"],
+                    ["Specialization Areas", "Industry Best Practices"],
+                    ["Expert-level Challenges", "Teaching and Mentoring"]
+                ]
+                
+                for month_num in range(totals["total_months"]):
+                    theme_idx = month_num % len(monthly_themes)
+                    
+                    # Use specific topics from curriculum
+                    topics_for_month = topics[month_num * 4:(month_num + 1) * 4] if month_num * 4 < len(topics) else topics[-4:]
+                    
+                    plan["monthlyTasks"].append({
+                        "label": f"Month {month_num + 1}",
+                        "tasks": [
+                            f"Master {', '.join(topics_for_month[:2]).lower()}",
+                            f"Build projects using {', '.join(topics_for_month[2:]).lower()}"
+                        ],
+                        "status": False
+                    })
+            else:
+                # Generic monthly structure for unknown subjects
+                subject = goal.replace("Learn ", "").replace("learn ", "").strip()
                 plan["monthlyTasks"].append({
-                    "label": f"Month {month_num + 1}",
+                    "label": "Month 1",
                     "tasks": [
-                        f"{monthly_themes[theme_idx][0]} for {goal}",
-                        f"{monthly_themes[theme_idx][1]} in {goal}"
+                        f"Master fundamentals and core concepts of {subject}",
+                        f"Complete beginner-level projects in {subject}"
                     ],
                     "status": False
                 })
         
+        # Create weekly tasks with curriculum-specific content
         if totals["total_weeks"] > 0:
             if subject_category in self.detailed_curricula:
-                weekly_concepts = self.detailed_curricula[subject_category]
-            else:
-                weekly_concepts = [f"Week {i+1} Advanced {goal} Topics" for i in range(totals["total_weeks"])]
-            
-            extended_weekly = weekly_concepts * ((totals["total_weeks"] // len(weekly_concepts)) + 1)
-            
-            for week_num in range(totals["total_weeks"]):
-                concept_idx = week_num % len(extended_weekly)
-                practice_type = ["exercises", "projects", "challenges", "implementations", "optimizations"][week_num % 5]
+                curriculum = self.detailed_curricula[subject_category]
+                topics = curriculum["topics"]
+                practical_tasks = curriculum["practical_tasks"]
                 
-                plan["weeklyTasks"].append({
-                    "label": f"Week {week_num + 1}",
-                    "tasks": [
-                        f"Master {extended_weekly[concept_idx].lower()}",
-                        f"Complete {practice_type} for {extended_weekly[concept_idx].lower()}"
-                    ],
-                    "status": False
-                })
+                for week_num in range(totals["total_weeks"]):
+                    # Alternate between learning topics and practical application
+                    if week_num % 2 == 0 and week_num // 2 < len(topics):
+                        topic = topics[week_num // 2]
+                        plan["weeklyTasks"].append({
+                            "label": f"Week {week_num + 1}",
+                            "tasks": [
+                                f"Learn and understand {topic.lower()}",
+                                f"Complete exercises and tutorials on {topic.lower()}"
+                            ],
+                            "status": False
+                        })
+                    elif (week_num - 1) // 2 < len(practical_tasks):
+                        task = practical_tasks[(week_num - 1) // 2]
+                        plan["weeklyTasks"].append({
+                            "label": f"Week {week_num + 1}",
+                            "tasks": [
+                                task,
+                                f"Test, debug and refine your implementation"
+                            ],
+                            "status": False
+                        })
+                    else:
+                        # Fallback for extra weeks
+                        plan["weeklyTasks"].append({
+                            "label": f"Week {week_num + 1}",
+                            "tasks": [
+                                f"Advanced practice and portfolio building",
+                                f"Review and consolidate your {goal.lower()} knowledge"
+                            ],
+                            "status": False
+                        })
         
-        daily_tasks = self.create_unique_daily_tasks(goal, subject_category, totals["total_days"])
+        # Create daily tasks using the enhanced progressive system
+        daily_tasks = self.create_progressive_daily_tasks(goal, subject_category, totals["total_days"])
         
         for day_num, task in enumerate(daily_tasks):
             plan["dailyTasks"].append({
