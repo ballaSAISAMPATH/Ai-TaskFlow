@@ -37,6 +37,10 @@ const userSchema = new mongoose.Schema({
     enum: ['email', 'google'],
     default: 'email'
   },
+   tokenVersion: {              
+    type: Number,
+    default: 0,
+  },
   role: {
     type: String,
     enum: ['user', 'admin'],

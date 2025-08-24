@@ -22,21 +22,18 @@ admin.initializeApp({
 });
 
 // Generate Tokens
-const generateTokens = (user) => {
-  const accessToken = jwt.sign(
-    { id: user._id, email: user.email, role: user.role },
-    process.env.JWT_SECRET_KEY,
-    { expiresIn: "15m" } // short-lived access token
-  );
+function generateTokens(user) {
+  const payload = {
+    id: user._id,
+    email: user.email,
+    tokenVersion: user.tokenVersion  
+  };
 
-  const refreshToken = jwt.sign(
-    { id: user._id, email: user.email, role: user.role },
-    process.env.JWT_REFRESH_SECRET_KEY,
-    { expiresIn: "7d" } // long-lived refresh token
-  );
+  const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+  const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
 
   return { accessToken, refreshToken };
-};
+}
 
 const registerUser = async (req, res) => {
   const { userName, email, password } = req.body;
@@ -105,6 +102,7 @@ const loginUser = async (req, res) => {
     res.status(500).json({ success: false, message: "Some error occurred" });
   }
 };
+
 
 const googleLogin = async (req, res) => {
   const { idToken, email, name, photoURL, uid } = req.body;
@@ -280,8 +278,10 @@ const changePassword = async (req, res) => {
     }
 
     await User.findByIdAndUpdate(userId, {
-      password: newPassword
-    });
+        password: newPassword,
+        $inc: { tokenVersion: 1 }  
+      });
+
 
     res.status(200).json({
       success: true,
