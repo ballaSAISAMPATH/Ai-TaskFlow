@@ -163,6 +163,15 @@ Example good daily tasks for Fitness:
 - "Practice yoga or stretching routine for 20 minutes focusing on flexibility and mobility"
 """,
 
+    "weight_loss": """
+Example good daily tasks for Weight Loss:
+- "Calculate your daily caloric needs and maintain a 500-calorie deficit through diet and exercise"
+- "Track all food intake using a nutrition app and weigh portions accurately for 7 days"
+- "Complete a 45-minute cardio session: 20 minutes HIIT + 25 minutes steady-state walking"
+- "Meal prep 7 healthy, portion-controlled meals focusing on lean protein and vegetables"
+- "Take daily body measurements, weight, and progress photos to track fat loss accurately"
+""",
+
     "cooking": """
 Example good daily tasks for Cooking:
 - "Master knife skills by practicing julienne, dice, and chiffonade cuts with different vegetables"
@@ -186,6 +195,26 @@ def get_enhanced_prompt(goal: str, duration: str, total_days: int, total_weeks: 
         subject_examples = SUBJECT_SPECIFIC_EXAMPLES["react"]
     elif any(keyword in goal_lower for keyword in ['python', 'django', 'flask']):
         subject_examples = SUBJECT_SPECIFIC_EXAMPLES["python"]
+    elif any(keyword in goal_lower for keyword in ['hindi', 'हिंदी', 'devanagari']):
+        subject_examples = SUBJECT_SPECIFIC_EXAMPLES["hindi"]
+    elif any(keyword in goal_lower for keyword in ['english', 'grammar', 'vocabulary']):
+        subject_examples = SUBJECT_SPECIFIC_EXAMPLES["english"]
+    elif any(keyword in goal_lower for keyword in ['photo', 'camera', 'photography']):
+        subject_examples = SUBJECT_SPECIFIC_EXAMPLES["photography"]
+    elif any(keyword in goal_lower for keyword in ['music', 'instrument', 'guitar', 'piano']):
+        subject_examples = SUBJECT_SPECIFIC_EXAMPLES["music"]
+    elif any(keyword in goal_lower for keyword in ['gate', 'graduate aptitude']):
+        subject_examples = SUBJECT_SPECIFIC_EXAMPLES["gate"]
+    elif any(keyword in goal_lower for keyword in ['jee', 'joint entrance', 'iit']):
+        subject_examples = SUBJECT_SPECIFIC_EXAMPLES["jee"]
+    elif any(keyword in goal_lower for keyword in ['upsc', 'civil services', 'ias']):
+        subject_examples = SUBJECT_SPECIFIC_EXAMPLES["upsc"]
+    elif any(keyword in goal_lower for keyword in ['weight loss', 'lose weight', 'losing weight', 'fat loss']):
+        subject_examples = SUBJECT_SPECIFIC_EXAMPLES["weight_loss"]
+    elif any(keyword in goal_lower for keyword in ['fitness', 'workout', 'exercise']):
+        subject_examples = SUBJECT_SPECIFIC_EXAMPLES["fitness"]
+    elif any(keyword in goal_lower for keyword in ['cooking', 'recipe', 'culinary']):
+        subject_examples = SUBJECT_SPECIFIC_EXAMPLES["cooking"]
     
     enhanced_prompt = LEARNING_PLAN_PROMPT.format(
         goal=goal,
