@@ -7,7 +7,7 @@ axios.defaults.withCredentials = true;
 const initialData = {
   user: null,
   isAuthenticated: false,
-  isLoading: false,
+  isLoading: true,
   error: null,
   accessToken: null
 }
