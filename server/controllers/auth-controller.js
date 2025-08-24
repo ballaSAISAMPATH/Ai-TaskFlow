@@ -29,8 +29,8 @@ function generateTokens(user) {
     tokenVersion: user.tokenVersion  
   };
 
-  const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
-  const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
+  const accessToken = jwt.sign(payload, process.env.JWT_SECRET_KEY,{ expiresIn: "15m" });
+  const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET_KEY, { expiresIn: "7d" });
 
   return { accessToken, refreshToken };
 }
@@ -99,6 +99,8 @@ const loginUser = async (req, res) => {
         },
       });
   } catch (error) {
+    console.log(error);
+    
     res.status(500).json({ success: false, message: "Some error occurred" });
   }
 };
@@ -148,6 +150,8 @@ const googleLogin = async (req, res) => {
         },
       });
   } catch (error) {
+    console.log(error);
+    
     res.status(500).json({ success: false, message: "Google login failed" });
   }
 };
