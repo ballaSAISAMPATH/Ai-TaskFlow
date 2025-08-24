@@ -164,23 +164,31 @@ const refreshAccessToken = async (req, res) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET_KEY);
-    
     const user = await User.findById(decoded.id);
-    if (user) {
-      await logLoginEvent(user._id, user.name, user.email);
+
+    if (!user) {
+      return res.status(401).json({ success: false, message: "User not found" });
     }
-    
-    const accessToken = jwt.sign(
-      { id: decoded.id, email: decoded.email, role: decoded.role },
-      process.env.JWT_SECRET_KEY,
-      { expiresIn: "15m" }
-    );
+
+    if (decoded.tokenVersion !== user.tokenVersion) {
+      return res.status(403).json({ success: false, message: "Refresh token revoked" });
+    }
+
+    const { accessToken, refreshToken } = generateTokens(user);
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
 
     res.json({ success: true, accessToken });
   } catch (error) {
     return res.status(403).json({ success: false, message: "Invalid refresh token" });
   }
 };
+
 
 const logoutUser = (req, res) => {
   res.clearCookie("refreshToken", {
@@ -193,20 +201,33 @@ const logoutUser = (req, res) => {
   });
 };
 
-const authMiddleware = (req, res, next) => {
+const authMiddleware = async (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
-  if (!token) return res.status(401).json({ success: false, message: "Unauthorized" });
+  if (!token) {
+    return res.status(401).json({ success: false, message: "Unauthorized" });
+  }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res.status(401).json({ success: false, message: "User not found" });
+    }
+
+    if (decoded.tokenVersion !== user.tokenVersion) {
+      return res.status(403).json({ success: false, message: "Token revoked" });
+    }
+
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(403).json({ success: false, message: "Invalid or expired token" });
+    return res.status(403).json({ success: false, message: "Invalid or expired token" });
   }
 };
+
 
 const deleteAccount = async (req, res) => {
   try {

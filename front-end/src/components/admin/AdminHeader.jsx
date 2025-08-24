@@ -34,7 +34,7 @@ const AdminHeader = () => {
      {
        icon: Presentation,
        label: 'Testimonials',
-       path: '/admin/recent-logins',
+       path: '/admin/set-testimonials',
        description: 'update testimonials in landing page'
      },
      
