@@ -7,6 +7,8 @@ import statsReducer from './landing-page/index.js';
 import testimonialReducer from './testimonials.js/index.js'
 import dashboardReducer from './user-dashboard/index.js';
 import loginHistoryReducer from './recent-login/index.js';
+import otpReducer from './otp/index.js'
+
 const rootReducer = combineReducers({
   stats: statsReducer,
   auth: authReducer,
@@ -15,7 +17,8 @@ const rootReducer = combineReducers({
   admin: adminReducer,
   testimonials:testimonialReducer,
   dashboard:dashboardReducer,
-  loginHistory:loginHistoryReducer
+  loginHistory:loginHistoryReducer,
+  otp: otpReducer,
 });
 
 const store = configureStore({
