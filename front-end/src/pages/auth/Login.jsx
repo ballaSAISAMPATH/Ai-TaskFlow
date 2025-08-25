@@ -41,7 +41,7 @@ const handleLogin = async (e) => {
 };
 
   return (
-    <div className="w-full max-w-md mx-auto lg:mt-[-18rem]">
+<div className="w-full max-w-md mx-auto lg:mt-[-18rem]">
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
         <p className="text-gray-600">
@@ -100,6 +100,15 @@ const handleLogin = async (e) => {
                 ) : (
                   <Eye className="h-5 w-5 text-green-500" />
                 )}
+              </button>
+            </div>
+            <div className="text-right mt-2">
+              <button
+                type="button"
+                onClick={() => navigate('/auth/forgot-password')}
+                className="text-sm text-green-600 hover:text-green-700 hover:underline transition-colors duration-200"
+              >
+                Forgot your password?
               </button>
             </div>
           </div>
