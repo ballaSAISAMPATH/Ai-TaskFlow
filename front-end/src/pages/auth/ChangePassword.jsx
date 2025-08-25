@@ -75,7 +75,7 @@ const ChangePassword = () => {
   if (!email || !isVerified) {
     return (
       <div className="w-full max-w-md mx-auto lg:mt-[-20rem]">
-        <div className="bg-white p-8 rounded-2xl shadow-lg border border-red-100">
+        <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
           <div className="text-center">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <AlertCircle className="w-8 h-8 text-green-500" />
@@ -127,7 +127,7 @@ const ChangePassword = () => {
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent pr-12"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 pr-12"
                 placeholder="Enter new password"
                 required
                 minLength={8}
@@ -148,7 +148,7 @@ const ChangePassword = () => {
 
           {/* Confirm Password Field */}
           <div className="mb-6">
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-black mb-2">
               Confirm Password
             </label>
             <div className="relative">
@@ -157,7 +157,7 @@ const ChangePassword = () => {
                 type={showConfirmPassword ? 'text' : 'password'}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 pr-12"
                 placeholder="Confirm new password"
                 required
                 minLength={8}
@@ -179,7 +179,7 @@ const ChangePassword = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white py-3 px-4 rounded-lg font-medium transition-colors"
+            className="w-full bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white py-3 px-4 rounded-lg font-medium transition-colors"
           >
             {isLoading ? 'Changing Password...' : 'Change Password'}
           </button>
@@ -188,7 +188,7 @@ const ChangePassword = () => {
         <div className="mt-6 text-center">
           <button
             onClick={() => navigate('/auth/login')}
-            className="text-blue-500 hover:text-blue-600 text-sm font-medium"
+            className="text-green-500 hover:text-green-600 text-sm font-medium"
           >
             Back to Login
           </button>
