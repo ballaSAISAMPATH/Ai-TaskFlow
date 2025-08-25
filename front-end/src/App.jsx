@@ -29,6 +29,7 @@ import LoadingSpinner from './utilities/LoadingSpinner';
 import { useAuthInitialize } from './utilities/hooks/useAuthInitialize';
 import AdminTestimonials from './pages/AdminPages/AdminTestimonials';
 import RecentLogins from './pages/AdminPages/RecentLogins';
+import ForgotPassword from './pages/auth/ForgotPassword';
 const App = () => {
   const { isLoading: authInitLoading } = useAuthInitialize();
   const { user, isAuthenticated, isLoading } = useSelector((state) => state.auth);
@@ -48,6 +49,7 @@ const App = () => {
           <Route path="/auth" element={<AuthLayout />}>
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
+            <Route path='forgot-password' element={<ForgotPassword/>}/>
           </Route>
           <Route path="/user" element={<TaskLayout />}>
             <Route path="add-task" element={<AddTask />} />
