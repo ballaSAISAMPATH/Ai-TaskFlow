@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { AlertCircle, Eye, EyeOff } from 'lucide-react';
-
+import { AlertCircle, Eye, EyeOff, CheckCircle } from 'lucide-react';
+import { toast } from 'sonner';
 const ChangePassword = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -12,13 +12,10 @@ const ChangePassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Extract email and verification status from navigation state
   const { email, isVerified } = location.state || {};
 
   useEffect(() => {
-    // Check if user has access (came from verified OTP flow)
     if (!email || !isVerified) {
-      // Redirect to forgot password if no proper access
       navigate('/auth/forgot-password', { replace: true });
     }
   }, [email, isVerified, navigate]);
@@ -27,7 +24,6 @@ const ChangePassword = () => {
     e.preventDefault();
     setError('');
 
-    // Validation
     if (password.length < 8) {
       setError('Password must be at least 8 characters long');
       return;
@@ -41,37 +37,50 @@ const ChangePassword = () => {
     setIsLoading(true);
 
     try {
-      // API call to change password
-      const response = await fetch('/api/auth/change-password', {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/otp/change-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           email,
-          newPassword: password,
+          password: password,
         }),
       });
 
-      if (response.ok) {
-        // Success - redirect to login
-        navigate('/auth/login', { 
-          state: { 
-            message: 'Password changed successfully. Please login with your new password.' 
-          }
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        toast.success(data.message || 'Password changed successfully!', {
+          duration: 4000,
+          position: 'top-center',
         });
+
+        setTimeout(() => {
+          navigate('/auth/login', { 
+            state: { 
+              message: 'Password changed successfully. Please login with your new password.' 
+            }
+          });
+        }, 2000);
       } else {
-        const data = await response.json();
+        toast.error(data.message || 'Failed to change password', {
+          duration: 4000,
+          position: 'top-center',
+        });
         setError(data.message || 'Failed to change password');
       }
     } catch (error) {
+      toast.error('Network error. Please try again.', {
+        duration: 4000,
+        position: 'top-center',
+      });
       setError('An error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Show access denied if no proper email/verification
   if (!email || !isVerified) {
     return (
       <div className="w-full max-w-md mx-auto lg:mt-[-20rem]">
@@ -116,7 +125,6 @@ const ChangePassword = () => {
             </div>
           )}
 
-          {/* New Password Field */}
           <div className="mb-4">
             <label htmlFor="password" className="block text-sm font-medium text-black mb-2">
               New Password
@@ -146,7 +154,6 @@ const ChangePassword = () => {
             </div>
           </div>
 
-          {/* Confirm Password Field */}
           <div className="mb-6">
             <label htmlFor="confirmPassword" className="block text-sm font-medium text-black mb-2">
               Confirm Password
