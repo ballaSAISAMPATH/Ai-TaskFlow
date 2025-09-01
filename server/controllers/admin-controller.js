@@ -12,14 +12,19 @@ const getUserFilter = () => ({
 
 const getDashboardStats = async (req, res) => {
   try {
+    // Total users (with filters applied if any)
     const totalUsers = await User.countDocuments(getUserFilter());
     
+    // Total goals
     const totalGoals = await Goal.countDocuments();
     
+    // Total feedback
     const totalFeedback = await Feedback.countDocuments();
     
+    // Completed goals
     const completedGoals = await Goal.countDocuments({ isCompleted: true });
     
+    // New users in last 30 days
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     const newUsers = await User.countDocuments({ 
@@ -28,19 +33,11 @@ const getDashboardStats = async (req, res) => {
         { createdAt: { $gte: thirtyDaysAgo } }
       ]
     });
-    
+
+    // ✅ All-time monthly user growth trend
     const monthlyUserData = await User.aggregate([
       {
-        $match: {
-          $and: [
-            getUserFilter(),
-            {
-              createdAt: {
-                $gte: new Date(new Date().getFullYear(), new Date().getMonth() - 5, 1)
-              }
-            }
-          ]
-        }
+        $match: getUserFilter() // no date restriction
       },
       {
         $group: {
@@ -56,6 +53,7 @@ const getDashboardStats = async (req, res) => {
       }
     ]);
     
+    // ✅ All-time monthly goal completion trend
     const goalCompletionData = await Goal.aggregate([
       {
         $group: {
@@ -74,6 +72,7 @@ const getDashboardStats = async (req, res) => {
       }
     ]);
     
+    // Feedback rating stats
     const ratingStats = await Feedback.aggregate([
       {
         $match: { rating: { $ne: null } }
@@ -87,6 +86,7 @@ const getDashboardStats = async (req, res) => {
       }
     ]);
     
+    // Send response
     res.json({
       success: true,
       data: {
@@ -109,6 +109,7 @@ const getDashboardStats = async (req, res) => {
     });
   }
 };
+
 
 const getAllFeedback = async (req, res) => {
   try {
