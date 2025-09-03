@@ -106,7 +106,7 @@ const handleLogin = async (e) => {
               <button
                 type="button"
                 onClick={() => navigate('/auth/forgot-password')}
-                className="text-sm text-green-600 hover:text-green-700 hover:underline transition-colors duration-200"
+                className="text-sm text-green-600 hover:text-green-700 hover:underline transition-colors duration-200 cursor-pointer"
               >
                 Forgot your password?
               </button>
@@ -118,7 +118,7 @@ const handleLogin = async (e) => {
           <Button
             type="submit"
             disabled={isLoading}
-            className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            className="group relative w-full cursor-pointer flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
             {isLoading ? (
               <div className="flex items-center space-x-2">
@@ -158,7 +158,7 @@ const handleLogin = async (e) => {
           <Button
             type="button"
             onClick={() => navigate('/auth/register')}
-            className="w-full flex justify-center py-3 px-4 border-2 border-green-500 text-sm font-medium rounded-lg text-green-500 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200"
+            className="w-full flex  cursor-pointer justify-center py-3 px-4 border-2 border-green-500 text-sm font-medium rounded-lg text-green-500 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200"
           >
             Create New Account
           </Button>

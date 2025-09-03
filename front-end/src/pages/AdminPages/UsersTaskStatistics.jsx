@@ -15,6 +15,7 @@ import {
   ChevronUp
 } from 'lucide-react';
 import { toast } from 'sonner';
+
 // Skeleton Loading Component
 const UserStatisticsSkeleton = () => (
   <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden animate-pulse">
@@ -47,6 +48,28 @@ const UserStatisticsSkeleton = () => (
   </div>
 );
 
+// Loading Container Component
+const LoadingContainer = ({ children }) => (
+  <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 max-w-full overflow-hidden">
+    {/* Header */}
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+      <div className="flex items-center space-x-2 sm:space-x-3">
+        <Users className="h-6 w-6 sm:h-8 sm:w-8 text-green-500 flex-shrink-0" />
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">User Statistics</h1>
+      </div>
+      <div className="h-5 bg-gray-200 rounded w-24 animate-pulse"></div>
+    </div>
+
+    {/* Search Bar Skeleton */}
+    <div className="bg-white rounded-lg shadow-md p-1 sm:p-2 border border-gray-200">
+      <div className="w-full p-2 sm:p-3 h-10 sm:h-12 bg-gray-200 rounded-md animate-pulse"></div>
+    </div>
+
+    {/* Content */}
+    {children}
+  </div>
+);
+
 const UsersTaskStatistics = () => {
   const dispatch = useDispatch();
   const { users, usersPagination, usersLoading, usersError } = useSelector(state => state.admin);
@@ -54,21 +77,41 @@ const UsersTaskStatistics = () => {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedUsers, setExpandedUsers] = useState(new Set());
+  const [isPageChanging, setIsPageChanging] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchUserStatistics({ page: currentPage, limit: 10 }));
-      window.scrollTo({ top: 0, behavior: "smooth" });
-
+    // Set page changing state when navigating to a different page
+    if (currentPage !== 1) {
+      setIsPageChanging(true);
+    }
+    
+    dispatch(fetchUserStatistics({ page: currentPage, limit: 10 }))
+      .then(() => {
+        setIsPageChanging(false);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      })
+      .catch(() => {
+        setIsPageChanging(false);
+      });
   }, [dispatch, currentPage]);
 
   const handleDeleteUser = async (userId) => {
     try {
       await dispatch(deleteUser(userId)).unwrap();
-      toast.success("User delted sucessfully")
+      toast.success("User deleted successfully");
       setDeleteConfirm(null);
     } catch (error) {
       console.error('Error deleting user:', error);
-      toast.error("error occured while deleting")
+      toast.error("Error occurred while deleting");
+    }
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage !== currentPage) {
+      setIsPageChanging(true);
+      setCurrentPage(newPage);
+      // Clear expanded users when changing pages
+      setExpandedUsers(new Set());
     }
   };
 
@@ -116,30 +159,29 @@ const UsersTaskStatistics = () => {
     user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (usersLoading && currentPage === 1) {
+  // Show skeleton loading for initial load (page 1) or when loading with no data
+  if ((usersLoading && currentPage === 1) || (usersLoading && users.length === 0)) {
     return (
-      <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 max-w-full overflow-hidden">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
-          <div className="flex items-center space-x-2 sm:space-x-3">
-            <Users className="h-6 w-6 sm:h-8 sm:w-8 text-green-500 flex-shrink-0" />
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">User Statistics</h1>
-          </div>
-          <div className="h-5 bg-gray-200 rounded w-24 animate-pulse"></div>
-        </div>
-
-        {/* Search Bar Skeleton */}
-        <div className="bg-white rounded-lg shadow-md p-1 sm:p-2 border border-gray-200">
-          <div className="w-full p-2 sm:p-3 h-10 sm:h-12 bg-gray-200 rounded-md animate-pulse"></div>
-        </div>
-
-        {/* User Cards Skeletons */}
+      <LoadingContainer>
         <div className="space-y-3 sm:space-y-4">
           {[...Array(5)].map((_, index) => (
             <UserStatisticsSkeleton key={index} />
           ))}
         </div>
-      </div>
+      </LoadingContainer>
+    );
+  }
+
+  // Show skeleton loading when changing pages
+  if (isPageChanging || usersLoading) {
+    return (
+      <LoadingContainer>
+        <div className="space-y-3 sm:space-y-4">
+          {[...Array(5)].map((_, index) => (
+            <UserStatisticsSkeleton key={`page-change-${index}`} />
+          ))}
+        </div>
+      </LoadingContainer>
     );
   }
 
@@ -378,9 +420,9 @@ const UsersTaskStatistics = () => {
       {usersPagination && usersPagination.totalPages > 1 && (
         <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-2">
           <button
-            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className="w-full sm:w-auto px-3 py-2 text-sm border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
+            disabled={currentPage === 1 || isPageChanging}
+            className="w-full sm:w-auto px-3 py-2 text-sm border cursor-pointer border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Previous
           </button>
@@ -401,8 +443,9 @@ const UsersTaskStatistics = () => {
               return (
                 <button
                   key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`px-2 sm:px-3 py-2 text-sm rounded-md flex-shrink-0 ${
+                  onClick={() => handlePageChange(page)}
+                  disabled={isPageChanging}
+                  className={`px-2 sm:px-3 cursor-pointer py-2 text-sm rounded-md flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed ${
                     currentPage === page
                       ? 'bg-green-500 text-white'
                       : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -415,9 +458,9 @@ const UsersTaskStatistics = () => {
           </div>
           
           <button
-            onClick={() => setCurrentPage(prev => Math.min(prev + 1, usersPagination.totalPages))}
-            disabled={currentPage === usersPagination.totalPages}
-            className="w-full sm:w-auto px-3 py-2 text-sm border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() => handlePageChange(Math.min(currentPage + 1, usersPagination.totalPages))}
+            disabled={currentPage === usersPagination.totalPages || isPageChanging}
+            className="w-full sm:w-auto px-3 py-2 cursor-pointer text-sm border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next
           </button>

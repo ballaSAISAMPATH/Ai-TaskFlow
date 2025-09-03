@@ -83,7 +83,7 @@ const menuItems = [
               <button
                 key={item.path}
                 onClick={() => navigate(item.path)}
-                className={`w-full group flex items-center space-x-3 px-3 py-3 rounded-lg transition-all duration-300 text-left ${
+                className={`w-full group flex items-center space-x-3 px-3 py-3 rounded-lg transition-all cursor-pointer duration-300 text-left ${
                   isActive
                     ? 'bg-gradient-to-r from-green-500 to-[#8FE877] text-white shadow-lg shadow-green-500/25 transform scale-[1.02]'
                     : 'text-gray-700 hover:text-green-500 hover:bg-green-500/5 hover:translate-x-1'
@@ -133,7 +133,7 @@ const menuItems = [
           onClick={handleLogout}
           className="w-full group flex items-center space-x-3 px-3 py-3 rounded-lg 
                     transition-all duration-300 text-red-700 
-                    hover:text-red-500 hover:bg-green-500/5 hover:translate-x-1"
+                    hover:text-red-500 hover:bg-green-500/5 hover:translate-x-1 cursor-pointer"
         >
           <span>Logout</span>
           <LogOut className="w-4 h-4" />
