@@ -422,7 +422,7 @@ const UsersTaskStatistics = () => {
           <button
             onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
             disabled={currentPage === 1 || isPageChanging}
-            className="w-full sm:w-auto px-3 py-2 text-sm border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto px-3 py-2 text-sm border cursor-pointer border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Previous
           </button>
@@ -445,7 +445,7 @@ const UsersTaskStatistics = () => {
                   key={page}
                   onClick={() => handlePageChange(page)}
                   disabled={isPageChanging}
-                  className={`px-2 sm:px-3 py-2 text-sm rounded-md flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed ${
+                  className={`px-2 sm:px-3 cursor-pointer py-2 text-sm rounded-md flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed ${
                     currentPage === page
                       ? 'bg-green-500 text-white'
                       : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -460,7 +460,7 @@ const UsersTaskStatistics = () => {
           <button
             onClick={() => handlePageChange(Math.min(currentPage + 1, usersPagination.totalPages))}
             disabled={currentPage === usersPagination.totalPages || isPageChanging}
-            className="w-full sm:w-auto px-3 py-2 text-sm border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto px-3 py-2 cursor-pointer text-sm border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next
           </button>
