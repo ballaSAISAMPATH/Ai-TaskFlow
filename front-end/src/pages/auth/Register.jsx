@@ -255,11 +255,11 @@ const Register = () => {
           />
           <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
             I agree to the{' '}
-            <a onClick={()=>navigate('/privacy-policy')} className="font-medium text-green-500 hover:text-green-600 transition-colors duration-200">
-              Terms of Service
+            <a onClick={()=>navigate('/privacy-policy')} className="font-medium cursor-pointer   text-green-500 hover:text-green-600 transition-colors duration-200">
+              Terms of Service 
             </a>
             {' '}and{' '}
-            <a onClick={()=>navigate('/terms-service')} className="font-medium text-green-500 hover:text-green-600 transition-colors duration-200">
+            <a onClick={()=>navigate('/terms-service')} className="font-medium cursor-pointer text-green-500 hover:text-green-600 transition-colors duration-200">
               Privacy Policy
             </a>
           </label>
@@ -269,7 +269,7 @@ const Register = () => {
           <Button
             type="submit"
             disabled={isLoading}
-            className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            className="group relative w-full  cursor-pointer flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
             {isLoading ? (
               <div className="flex items-center space-x-2">
@@ -277,9 +277,9 @@ const Register = () => {
                 <span>Creating account...</span>
               </div>
             ) : (
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 ">
                 <UserPlus className="w-4 h-4" />
-                <span>Create Account</span>
+                <span >Create Account</span>
               </div>
             )}
           </Button>
@@ -289,7 +289,7 @@ const Register = () => {
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-200" />
           </div>
-          <div className="relative flex justify-center text-sm">
+          <div className="relative flex justify-center text-sm ">
             <span className="px-4 bg-white text-gray-500">Already have an account?</span>
           </div>
         </div>
@@ -298,7 +298,7 @@ const Register = () => {
           <Button
             type="button"
             onClick={() => navigate('/auth/login')}
-            className="w-full flex justify-center py-3 px-4 border-2 border-green-500 text-sm font-medium rounded-lg text-green-500 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200"
+            className="w-full cursor-pointer flex justify-center py-3 px-4 border-2 border-green-500 text-sm font-medium rounded-lg text-green-500 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200"
           >
             Sign In Instead
           </Button>
