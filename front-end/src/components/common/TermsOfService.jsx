@@ -7,7 +7,7 @@ const GoBackButton = () => {
   return (
     <button
       onClick={() => navigate(-1)}
-      className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors"
+      className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors cursor-pointer"
     >
       Go Back
     </button>
