@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getGoalById, updateDailyTaskStatus, updateWeeklyTaskStatus, updateMonthlyTaskStatus } from '@/store/task'
 import { toast } from 'sonner'
-import { ArrowLeft, Calendar, Clock, Target, CheckCircle2, Circle, CalendarDays, Timer } from 'lucide-react'
+import { ArrowLeft, Calendar, Clock, Target, CheckCircle2, Circle, CalendarDays, Timer, Map, Gamepad2 } from 'lucide-react'
 
 const GoalDetail = () => {
     const dispatch = useDispatch()
@@ -292,6 +292,19 @@ const GoalDetail = () => {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        
+                        {/* Map View Button - Added here in the best location */}
+                        <div className="flex-shrink-0 ml-4">
+                            <button
+                                onClick={() => navigate(`/user/goal/${goalId}/map`)}
+                                className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg font-medium transition-all duration-200 flex items-center space-x-2 shadow-md hover:shadow-lg transform hover:scale-105"
+                                title="Switch to Adventure Map View"
+                            >
+                                <Gamepad2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                                <span className="hidden sm:inline">Adventure Map</span>
+                                <span className="sm:hidden">Map</span>
+                            </button>
                         </div>
                     </div>
                 </div>
