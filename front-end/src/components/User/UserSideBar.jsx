@@ -258,7 +258,7 @@ const UserSideBar = () => {
           onClick={handleLogout}
           className="w-full group flex items-center space-x-3 px-3 py-3 rounded-lg 
                     transition-all duration-300 text-red-700 
-                    hover:text-red-500 hover:bg-red-500/5 hover:translate-x-1 cursor-pointer"
+                    hover:text-red-500 hover:bg-red-500/5 hover:translate-x-1 cursor-pointer   text-xl"
         >
           <span>Logout</span>
           <LogOut />
