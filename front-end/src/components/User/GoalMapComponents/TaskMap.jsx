@@ -21,7 +21,8 @@ const TaskMap = ({
   availableHeight
 }) => {
   const containerRef = useRef(null);
-const { pathPositions } = usePathGeneration(allLevels.length, { width: 0, height: 0 })
+  const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0 });
+
   useEffect(() => {
     const updateDimensions = () => {
       if (containerRef.current) {
