@@ -1,6 +1,7 @@
-import React from 'react'
 import { Lock, Crown, Star } from 'lucide-react'
 import LevelTooltip from './LevelTooltip'
+import ReactDOM from 'react-dom'
+import React, { useRef } from 'react'
 
 const MapLevel = ({ 
   level, 
@@ -15,7 +16,8 @@ const MapLevel = ({
   handleIndividualTaskToggle
 }) => {
   if (!pathPositions[levelIndex]) return null
-  
+  const levelRef = useRef(null)
+
   const { type: taskType, index: groupIndex } = level
   const isUnlocked = isLevelUnlocked(levelIndex)
   const isCompleted = level.status
@@ -26,7 +28,8 @@ const MapLevel = ({
 
   return (
     <div 
-      className="absolute transform -translate-x-1/2 -translate-y-1/2 z-20" 
+     ref={levelRef} 
+      className="absolute transform -translate-x-1/2 -translate-y-1/2 z-30" 
       key={`${taskType}-${groupIndex}-${levelIndex}`}
       style={{ 
         left: `${position.x}%`, 
@@ -112,15 +115,29 @@ const MapLevel = ({
       )}
 
       {/* Hover Tooltip */}
-      <LevelTooltip
-        level={level}
-        levelIndex={levelIndex}
-        hoveredLevel={hoveredLevel}
-        getTaskCompletionCount={getTaskCompletionCount}
-        isLevelUnlocked={isLevelUnlocked}
-        isTaskCompleted={isTaskCompleted}
-        handleIndividualTaskToggle={handleIndividualTaskToggle}
-      />
+        <LevelTooltip
+          level={level}
+          levelIndex={levelIndex}
+          hoveredLevel={hoveredLevel}
+          getTaskCompletionCount={getTaskCompletionCount}
+          isLevelUnlocked={isLevelUnlocked}
+          isTaskCompleted={isTaskCompleted}
+          handleIndividualTaskToggle={handleIndividualTaskToggle}
+          position={
+            levelRef.current
+              ? {
+                  x:
+                    levelRef.current.getBoundingClientRect().left +
+                    levelRef.current.offsetWidth / 2 +
+                    window.scrollX, // 👈 account for horizontal scroll
+                  y:
+                    levelRef.current.getBoundingClientRect().top +
+                    window.scrollY - 12 // 👈 place 12px above circle
+                }
+              : null
+          }
+        />
+
     </div>
   )
 }
