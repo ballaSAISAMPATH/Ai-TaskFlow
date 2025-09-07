@@ -1,47 +1,46 @@
+// MapLevel.jsx
+import React, { useRef } from 'react'
 import { Lock, Crown, Star } from 'lucide-react'
 import LevelTooltip from './LevelTooltip'
-import ReactDOM from 'react-dom'
-import React, { useRef } from 'react'
 
-const MapLevel = ({ 
-  level, 
-  levelIndex, 
-  pathPositions, 
-  isLevelUnlocked, 
-  getStars, 
-  getTaskCompletionCount, 
-  setHoveredLevel, 
+const MapLevel = ({
+  level,
+  levelIndex,
+  pathPositions,
+  isLevelUnlocked,
+  getStars,
+  getTaskCompletionCount,
+  setHoveredLevel,
   hoveredLevel,
   isTaskCompleted,
   handleIndividualTaskToggle
 }) => {
   if (!pathPositions[levelIndex]) return null
-  const levelRef = useRef(null)
 
+  const levelRef = useRef(null)
   const { type: taskType, index: groupIndex } = level
   const isUnlocked = isLevelUnlocked(levelIndex)
   const isCompleted = level.status
   const stars = getStars(taskType, groupIndex)
   const { completed, total } = getTaskCompletionCount(taskType, groupIndex)
-  
   const position = pathPositions[levelIndex]
 
   return (
-    <div 
-     ref={levelRef} 
-      className="absolute transform -translate-x-1/2 -translate-y-1/2 z-30" 
+    <div
+      ref={levelRef}
+      className="absolute transform -translate-x-1/2 -translate-y-1/2 z-30"
       key={`${taskType}-${groupIndex}-${levelIndex}`}
-      style={{ 
-        left: `${position.x}%`, 
-        top: `${position.y}%` 
+      style={{
+        left: `${position.x}%`,
+        top: `${position.y}%`
       }}
       onMouseEnter={() => setHoveredLevel(levelIndex)}
       onMouseLeave={() => setHoveredLevel(null)}
     >
-      {/* Level Circle - responsive size */}
-      <div 
+      {/* Level Circle */}
+      <div
         className={`relative w-14 h-14 lg:w-18 lg:h-18 xl:w-20 xl:h-20 rounded-full border-3 shadow-lg transform transition-all duration-300 hover:scale-125 cursor-pointer ${
-          isUnlocked 
+          isUnlocked
             ? isCompleted
               ? 'bg-gradient-to-br from-green-400 to-green-600 border-green-700 shadow-green-300'
               : 'bg-gradient-to-br from-white to-gray-50 border-green-500 shadow-green-200'
@@ -57,18 +56,11 @@ const MapLevel = ({
             <span className="text-green-600 font-bold text-base lg:text-lg drop-shadow-sm">{levelIndex + 1}</span>
           )}
         </div>
-        
+
         {/* Progress Ring */}
         {isUnlocked && total > 0 && (
           <svg className="absolute inset-0 w-14 h-14 lg:w-18 lg:h-18 xl:w-20 xl:h-20 transform -rotate-90" viewBox="0 0 48 48">
-            <circle
-              cx="24"
-              cy="24"
-              r="20"
-              stroke="rgba(16, 185, 129, 0.2)"
-              strokeWidth="2"
-              fill="none"
-            />
+            <circle cx="24" cy="24" r="20" stroke="rgba(16, 185, 129, 0.2)" strokeWidth="2" fill="none" />
             <circle
               cx="24"
               cy="24"
@@ -83,7 +75,7 @@ const MapLevel = ({
           </svg>
         )}
 
-        {/* Completion Sparkle Effect */}
+        {/* Completion Sparkle */}
         {isCompleted && (
           <div className="absolute inset-0 rounded-full">
             <div className="absolute top-0 right-0 w-3 h-3 bg-yellow-300 rounded-full animate-ping"></div>
@@ -107,37 +99,25 @@ const MapLevel = ({
         </div>
       )}
 
-      {/* Level number badge for completed levels */}
+      {/* Completed badge */}
       {isCompleted && (
         <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-600 text-white text-xs font-bold rounded-full flex items-center justify-center border-2 border-white shadow-lg">
           {levelIndex + 1}
         </div>
       )}
 
-      {/* Hover Tooltip */}
-        <LevelTooltip
-          level={level}
-          levelIndex={levelIndex}
-          hoveredLevel={hoveredLevel}
-          getTaskCompletionCount={getTaskCompletionCount}
-          isLevelUnlocked={isLevelUnlocked}
-          isTaskCompleted={isTaskCompleted}
-          handleIndividualTaskToggle={handleIndividualTaskToggle}
-          position={
-            levelRef.current
-              ? {
-                  x:
-                    levelRef.current.getBoundingClientRect().left +
-                    levelRef.current.offsetWidth / 2 +
-                    window.scrollX, // 👈 account for horizontal scroll
-                  y:
-                    levelRef.current.getBoundingClientRect().top +
-                    window.scrollY - 350 // 👈 place 12px above circle
-                }
-              : null
-          }
-        />
-
+      {/* Tooltip: pass anchorRef and setHoveredLevel so tooltip can keep itself open when hovered */}
+      <LevelTooltip
+        level={level}
+        levelIndex={levelIndex}
+        hoveredLevel={hoveredLevel}
+        getTaskCompletionCount={getTaskCompletionCount}
+        isLevelUnlocked={isLevelUnlocked}
+        isTaskCompleted={isTaskCompleted}
+        handleIndividualTaskToggle={handleIndividualTaskToggle}
+        anchorRef={levelRef}
+        setHoveredLevel={setHoveredLevel}
+      />
     </div>
   )
 }
