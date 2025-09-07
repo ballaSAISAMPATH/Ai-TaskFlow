@@ -17,11 +17,11 @@ const TaskMap = ({
   isTaskCompleted,
   handleIndividualTaskToggle,
   agentPosition,
-  isMoving
+  isMoving,
+  availableHeight
 }) => {
   const containerRef = useRef(null);
-  const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0 });
-
+const { pathPositions } = usePathGeneration(allLevels.length, { width: 0, height: 0 })
   useEffect(() => {
     const updateDimensions = () => {
       if (containerRef.current) {
@@ -48,8 +48,11 @@ const TaskMap = ({
   return (
     <div 
       ref={containerRef}
-      className="relative w-full h-[100vh] overflow-hidden"
-      style={{ minHeight: '600px' }} // Ensure minimum height for mobile
+      className="relative w-full h-[100vh] overflow-y-scroll"
+      style={{ 
+        height: availableHeight || '600px',
+        minHeight: '600px'
+      }}
     >
       {/* Background Elements */}
       <BackgroundElements backgroundElements={backgroundElements} />
@@ -96,8 +99,6 @@ const TaskMap = ({
           />
         )}
       </div>
-
-   
     </div>
   );
 };
