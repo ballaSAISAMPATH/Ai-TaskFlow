@@ -386,7 +386,7 @@ const CandyCrushGoalMap = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-100 to-white">
       {/* Header */}
-      <Header 
+      <MapHeader 
         selectedGoal={selectedGoal}
         completed={completed}
         total={total}
