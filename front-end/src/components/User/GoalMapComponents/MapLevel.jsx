@@ -132,7 +132,7 @@ const MapLevel = ({
                     window.scrollX, // 👈 account for horizontal scroll
                   y:
                     levelRef.current.getBoundingClientRect().top +
-                    window.scrollY - 12 // 👈 place 12px above circle
+                    window.scrollY - 350 // 👈 place 12px above circle
                 }
               : null
           }
