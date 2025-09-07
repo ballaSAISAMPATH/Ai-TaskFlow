@@ -49,7 +49,7 @@ const RoadPath = ({ pathPositions, containerWidth, containerHeight }) => {
       } else {
         // Create smooth curves using quadratic Bezier curves
         const controlPointDistance = Math.min(
-          Math.sqrt(Math.pow(currentPoint.x - prevPoint.x, 2) + Math.pow(currentPoint.y - prevPoint.y, 2)) * 0.3,
+          Math.sqrt(Math.pow(currentPoint.x - prevPoint.x, 2) + Math.pow(currentPoint.y - prevPoint.y, 2)) * 0.9,
           50 // Max control point distance
         );
 
