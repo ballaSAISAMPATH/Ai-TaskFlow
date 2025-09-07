@@ -710,7 +710,7 @@ const CandyCrushGoalMap = () => {
         )}
       </div>
 
-      {/* Completion Celebration */}
+      {/* Completion Celebration - Simplified */}
       {percentage === 100 && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-70">
           <div className="bg-white rounded-2xl p-10 text-center max-w-sm mx-4 shadow-2xl animate-bounce-in">
@@ -721,20 +721,12 @@ const CandyCrushGoalMap = () => {
             <p className="text-gray-600 mb-8 text-lg">
               Congratulations! You've conquered all levels in your goal adventure!
             </p>
-            <div className="space-y-3">
-              <button
-                onClick={() => navigate('/user/dashboard')}
-                className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-xl font-medium hover:from-green-600 hover:to-green-700 hover:shadow-lg transition-all duration-200 transform hover:scale-105"
-              >
-                View Dashboard
-              </button>
-              <button
-                onClick={() => window.location.reload()}
-                className="w-full bg-gray-100 text-black px-6 py-3 rounded-xl font-medium hover:bg-gray-200 transition-all duration-200"
-              >
-                Continue Exploring
-              </button>
-            </div>
+            <button
+              onClick={() => window.location.reload()}
+              className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-xl font-medium hover:from-green-600 hover:to-green-700 hover:shadow-lg transition-all duration-200 transform hover:scale-105"
+            >
+              Celebrate & Continue
+            </button>
           </div>
         </div>
       )}
