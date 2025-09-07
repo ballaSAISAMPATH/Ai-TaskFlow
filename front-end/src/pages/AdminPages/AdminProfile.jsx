@@ -14,7 +14,7 @@ const AdminProfile = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handlePasswordChange = () => {
-    navigate('/user/set-new-password')
+    navigate('/admin/set-new-password')
   };
 
   const handleLogout = async () => {
