@@ -11,7 +11,7 @@ import CompletionCelebration from '@/components/User/GoalMapComponents/Completio
 import MobileLevelInfo from '@/components/User/GoalMapComponents/MobileLevelInfo'
 import FloatingActionButton from '@/components/User/GoalMapComponents/FloatingActionButton'
 import Styles from '@/components/User/GoalMapComponents/Styles'
-
+import { useRef } from 'react'
 // Custom hooks
 import { useGoalData } from '@/utilities/hooks/GoalMap/useGoalData'
 import { usePathGeneration } from '@/utilities/hooks/GoalMap/usePathGeneration'
@@ -27,10 +27,22 @@ const CandyCrushGoalMap = () => {
   const { user } = useSelector((state) => state.auth)
   const [hoveredLevel, setHoveredLevel] = useState(null)
   const [initialAnimationComplete, setInitialAnimationComplete] = useState(false)
-
+  const [headerHeight, setHeaderHeight] = useState(0);
+   useEffect(() => {
+    if (headerRef.current) {
+      const updateHeaderHeight = () => {
+        setHeaderHeight(headerRef.current.offsetHeight);
+      };
+      
+      updateHeaderHeight();
+      window.addEventListener('resize', updateHeaderHeight);
+      return () => window.removeEventListener('resize', updateHeaderHeight);
+    }
+  }, []);
+  const headerRef = useRef(null);
   // Custom hooks
   const { selectedGoal, loading, error, allLevels } = useGoalData(goalId, user)
-  const { pathPositions } = usePathGeneration(allLevels.length)
+  const { pathPositions } = usePathGeneration(allLevels.length, { width: 0, height: 0 })
   const { taskStates, setTaskStates, getTaskCompletionCount, isTaskCompleted } = useTaskStates(selectedGoal)
   const { agentPosition, isMoving, moveAgentToNextLevel } = useAgentMovement(
     allLevels, 
@@ -86,14 +98,16 @@ const CandyCrushGoalMap = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-100 to-white">
-      <MapHeader 
-        selectedGoal={selectedGoal}
-        completed={completed}
-        total={total}
-        percentage={percentage}
-      />
+  <div ref={headerRef}>
+        <MapHeader 
+          selectedGoal={selectedGoal}
+          completed={completed}
+          total={total}
+          percentage={percentage}
+        />
+      </div>
 
-      <div className="relative">
+       <div className="relative">
         {total === 0 ? (
           <EmptyState goalId={goalId} />
         ) : (
@@ -111,6 +125,7 @@ const CandyCrushGoalMap = () => {
             handleIndividualTaskToggle={handleIndividualTaskToggle}
             agentPosition={agentPosition}
             isMoving={isMoving}
+            availableHeight={`calc(100vh - ${headerHeight}px)`}
           />
         )}
       </div>
