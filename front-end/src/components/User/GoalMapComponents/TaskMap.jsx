@@ -97,14 +97,7 @@ const TaskMap = ({
         )}
       </div>
 
-      {/* Debug info (remove in production) */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="absolute top-4 left-4 bg-black bg-opacity-50 text-white p-2 rounded text-xs z-50">
-          <div>Container: {containerDimensions.width} x {containerDimensions.height}</div>
-          <div>Levels: {allLevels.length}</div>
-          <div>Path Points: {pathPositions.length}</div>
-        </div>
-      )}
+   
     </div>
   );
 };
