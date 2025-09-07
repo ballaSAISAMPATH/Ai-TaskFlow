@@ -9,8 +9,8 @@ export const generateSmoothRoadPath = (positions) => {
     const curr = positions[i];
     
     // midpoint between prev and curr for smooth curve
-    const midX = (prev.x + curr.x) / 2;
-    const midY = (prev.y + curr.y) / 2;
+   const midX = (prev.x + curr.x) / 2 + (Math.random() - 0.5) * 10;
+    const midY = (prev.y + curr.y) / 2 + (Math.random() - 0.5) * 5;
 
     path += ` Q ${midX} ${midY}, ${curr.x} ${curr.y}`;
   }
