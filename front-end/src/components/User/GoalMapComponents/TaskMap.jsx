@@ -20,15 +20,21 @@ const TaskMap = ({
   isMoving
 }) => {
   return (
-    <div className="relative w-full min-h-screen overflow-hidden">
+    <div className="relative w-full h-[100vh] overflow-hidden">
       {/* Background Elements */}
       <BackgroundElements backgroundElements={backgroundElements} />
-      
+
       {/* Road Path */}
-      <RoadPath roadPath={roadPath} />
-      
+      <div className="absolute inset-0 w-full h-full">
+      <RoadPath 
+        pathPositions={pathPositions} 
+        containerWidth={window.innerWidth} 
+        containerHeight={window.innerHeight}
+      />
+      </div>
+
       {/* Map Container */}
-      <div className="relative w-full h-full min-h-screen">
+      <div className="relative w-full h-full">
         {allLevels.map((level, mapIndex) => (
           <MapLevel
             key={`${level.type}-${level.index}-${mapIndex}`}
@@ -44,7 +50,7 @@ const TaskMap = ({
             handleIndividualTaskToggle={handleIndividualTaskToggle}
           />
         ))}
-        
+
         {/* Render the moving agent */}
         {pathPositions.length > 0 && (
           <Agent agentPosition={agentPosition} isMoving={isMoving} />
@@ -53,5 +59,6 @@ const TaskMap = ({
     </div>
   )
 }
+
 
 export default TaskMap
