@@ -2,30 +2,64 @@ import { useState, useEffect, useMemo } from 'react'
 
 export const usePathGeneration = (levelCount) => {
   const [pathPositions, setPathPositions] = useState([])
+  const [screenSize, setScreenSize] = useState({ 
+    width: window.innerWidth, 
+    height: window.innerHeight 
+  })
+
+  // Listen for window resize to update responsiveness
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenSize({ 
+        width: window.innerWidth, 
+        height: window.innerHeight 
+      })
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const generateDynamicPath = useMemo(() => {
-    return (levelCount) => {
+    return (levelCount, screenWidth) => {
       if (levelCount === 0) return []
       if (levelCount === 1) return [{ x: 50, y: 85 }]
 
       const positions = []
       const mapWidth = 100
-      const mapHeight = 100
-      const margin =-10
+      
+      // Responsive breakpoints
+      const isMobile = screenWidth < 768
+      const isTablet = screenWidth >= 768 && screenWidth < 1024
+      const isDesktop = screenWidth >= 1024
+      
+      // Dynamic parameters that adjust based on screen size
+      const margin = isMobile ? -15 : isTablet ? -12 : -10
+      const minVerticalSpacing = isMobile ? 35 : isTablet ? 30 : 25
+      const maxLevelsPerRow = isMobile ? 2 : isTablet ? 3 : 4
+      const minLevelsPerRow = isMobile ? 1 : 2
+      const optimalLevelsPerRow = Math.max(minLevelsPerRow, Math.min(maxLevelsPerRow, Math.ceil(Math.sqrt(levelCount))))
+      const topBottomBuffer = isMobile ? 30 : isTablet ? 25 : 20
+      const curvatureDivisor = isMobile ? 8 : isTablet ? 7 : 6
+      const curvatureMultiplier = isMobile ? 2 : isTablet ? 2.5 : 3
+      
+      // Calculate derived values
+      const rows = Math.ceil(levelCount / optimalLevelsPerRow)
       const usableWidth = mapWidth - (margin * 2)
+      
+      // Dynamic height calculation based on all parameters
+      const mapHeight = topBottomBuffer + (rows * minVerticalSpacing) + minVerticalSpacing
       const usableHeight = mapHeight - (margin * 2)
       
-      const minVerticalSpacing = 25
-      const optimalLevelsPerRow = Math.max(2, Math.min(4, Math.ceil(Math.sqrt(levelCount))))
-      const rows = Math.ceil(levelCount / optimalLevelsPerRow)
-      const verticalSpacing = Math.max(minVerticalSpacing, usableHeight / (rows + 1))
+      // Use the exact desired spacing since height is calculated to accommodate it
+      const verticalSpacing = minVerticalSpacing
       
       let currentLevel = 0
       let direction = 1
       
       for (let row = 0; row < rows && currentLevel < levelCount; row++) {
         const levelsInThisRow = Math.min(optimalLevelsPerRow, levelCount - currentLevel)
-        const horizontalSpacing = usableWidth / (levelsInThisRow+1)
+        const horizontalSpacing = usableWidth / (levelsInThisRow + 1)
         const y = mapHeight - margin - (row * verticalSpacing)
         
         for (let col = 0; col < levelsInThisRow && currentLevel < levelCount; col++) {
@@ -33,7 +67,7 @@ export const usePathGeneration = (levelCount) => {
             ? margin + ((col + 1) * horizontalSpacing)
             : margin + ((levelsInThisRow - col) * horizontalSpacing)
           
-          const curvatureOffset = Math.sin((currentLevel * Math.PI) / 6) * 3
+          const curvatureOffset = Math.sin((currentLevel * Math.PI) / curvatureDivisor) * curvatureMultiplier
           x += curvatureOffset
           x = Math.max(margin, Math.min(mapWidth - margin, x))
           
@@ -47,9 +81,9 @@ export const usePathGeneration = (levelCount) => {
   }, [])
 
   useEffect(() => {
-    const positions = generateDynamicPath(levelCount)
+    const positions = generateDynamicPath(levelCount, screenSize.width)
     setPathPositions(positions)
-  }, [levelCount, generateDynamicPath])
+  }, [levelCount, screenSize.width, generateDynamicPath])
 
   return { pathPositions, setPathPositions }
 }
