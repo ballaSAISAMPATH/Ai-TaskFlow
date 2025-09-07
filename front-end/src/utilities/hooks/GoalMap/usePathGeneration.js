@@ -11,12 +11,12 @@ export const usePathGeneration = (levelCount) => {
       const positions = []
       const mapWidth = 100
       const mapHeight = 100
-      const margin = 15
+      const margin =-10
       const usableWidth = mapWidth - (margin * 2)
       const usableHeight = mapHeight - (margin * 2)
       
-      const minVerticalSpacing = 8
-      const optimalLevelsPerRow = Math.max(3, Math.min(6, Math.ceil(Math.sqrt(levelCount))))
+      const minVerticalSpacing = 25
+      const optimalLevelsPerRow = Math.max(2, Math.min(4, Math.ceil(Math.sqrt(levelCount))))
       const rows = Math.ceil(levelCount / optimalLevelsPerRow)
       const verticalSpacing = Math.max(minVerticalSpacing, usableHeight / (rows + 1))
       
