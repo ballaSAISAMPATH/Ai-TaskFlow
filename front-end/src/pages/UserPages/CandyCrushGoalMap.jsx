@@ -21,6 +21,9 @@ import { useTaskActions } from '@/utilities/hooks/GoalMap/useTaskActions'
 // Utilities
 import { generateBackgroundElements,generateSmoothRoadPath } from '@/utilities/GoalMapUtils/pathUtils'
 import { getStars,isLevelUnlocked, getOverallProgress } from '@/utilities/GoalMapUtils/gameUtils'
+import { useNavigate } from 'react-router-dom'
+import Confetti from 'react-confetti'
+import { useWindowSize } from "react-use";
 
 const CandyCrushGoalMap = () => {
   const { goalId } = useParams()
@@ -28,7 +31,11 @@ const CandyCrushGoalMap = () => {
   const [hoveredLevel, setHoveredLevel] = useState(null)
   const [initialAnimationComplete, setInitialAnimationComplete] = useState(false)
   const [headerHeight, setHeaderHeight] = useState(0);
-   useEffect(() => {
+  const [showConfetti, setShowConfetti] = useState(false); // Add confetti state
+  const navigate = useNavigate()
+  const { width, height } = useWindowSize(); // Custom hook for window dimensions
+  
+  useEffect(() => {
     if (headerRef.current) {
       const updateHeaderHeight = () => {
         setHeaderHeight(headerRef.current.offsetHeight);
@@ -39,7 +46,9 @@ const CandyCrushGoalMap = () => {
       return () => window.removeEventListener('resize', updateHeaderHeight);
     }
   }, []);
+  
   const headerRef = useRef(null);
+  
   // Custom hooks
   const { selectedGoal, loading, error, allLevels } = useGoalData(goalId, user)
   const { pathPositions } = usePathGeneration(allLevels.length, { width: 0, height: 0 })
@@ -84,6 +93,17 @@ const CandyCrushGoalMap = () => {
     })
   }
 
+  const handleCelebration = () => {
+    // Show confetti
+    setShowConfetti(true);
+    
+    // Hide confetti and navigate after 3 seconds
+    setTimeout(() => {
+      setShowConfetti(false);
+      navigate('/user/home');
+    }, 3000);
+  };
+
   if (loading.getGoalById) {
     return <LoadingState />
   }
@@ -98,7 +118,22 @@ const CandyCrushGoalMap = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-100 to-white">
-  <div ref={headerRef}>
+      {/* Render confetti conditionally */}
+      {showConfetti && (
+        <Confetti
+          width={width}
+          height={height}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            zIndex: 9999,
+            pointerEvents: 'none'
+          }}
+        />
+      )}
+      
+      <div ref={headerRef}>
         <MapHeader 
           selectedGoal={selectedGoal}
           completed={completed}
@@ -107,7 +142,7 @@ const CandyCrushGoalMap = () => {
         />
       </div>
 
-       <div className="relative">
+      <div className="relative">
         {total === 0 ? (
           <EmptyState goalId={goalId} />
         ) : (
@@ -139,7 +174,7 @@ const CandyCrushGoalMap = () => {
       <CompletionCelebration
         percentage={percentage}
         total={total}
-        onCelebrate={() => window.location.reload()}
+        onCelebrate={handleCelebration}
       />
 
       <FloatingActionButton goalId={goalId} />
