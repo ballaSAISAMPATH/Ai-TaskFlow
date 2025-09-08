@@ -118,20 +118,27 @@ const CandyCrushGoalMap = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-100 to-white">
-      {/* Render confetti conditionally */}
-      {showConfetti && (
-        <Confetti
-          width={width}
-          height={height}
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            zIndex: 9999,
-            pointerEvents: 'none'
-          }}
-        />
-      )}
+     {showConfetti && (
+      <Confetti
+        width={width}
+        height={height}
+        numberOfPieces={300}        
+        recycle={false}             
+        run={showConfetti}          
+        gravity={0.3}               
+        friction={0.99}             
+        wind={0.05}                 
+        initialVelocityY={-20}      
+        colors={['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#f0932b', '#eb4d4b']} 
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          zIndex: 9999,
+          pointerEvents: 'none'
+        }}
+      />
+    )}
       
       <div ref={headerRef}>
         <MapHeader 
