@@ -5,7 +5,7 @@ const CompletionCelebration = ({ percentage, total, onCelebrate }) => {
   if (percentage !== 100) return null
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-70">
+<div className="fixed inset-0 flex items-center justify-center z-50 bg-white/30 backdrop-blur-md">
       <div className="bg-white rounded-2xl p-10 text-center max-w-sm mx-4 shadow-2xl animate-bounce-in">
         <div className="w-24 h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
           <Award className="w-12 h-12 text-white" />
