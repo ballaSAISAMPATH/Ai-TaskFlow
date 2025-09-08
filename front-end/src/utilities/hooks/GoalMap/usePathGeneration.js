@@ -34,8 +34,9 @@ export const usePathGeneration = (levelCount) => {
       const isDesktop = screenWidth >= 1024
       
       // Dynamic parameters that adjust based on screen size
-      const margin = isMobile ? -15 : isTablet ? -12 : -10
-      const minVerticalSpacing = isMobile ? 35 : isTablet ? 30 : 25
+      const horizontalMargin = isMobile ? -15 : isTablet ? -12 : -12
+      const verticalMargin = isMobile ? 20 : isTablet ? 25 : 30
+      const minVerticalSpacing = isMobile ? 35 : isTablet ? 30 : 45
       const maxLevelsPerRow = isMobile ? 2 : isTablet ? 3 : 4
       const minLevelsPerRow = isMobile ? 1 : 2
       const optimalLevelsPerRow = Math.max(minLevelsPerRow, Math.min(maxLevelsPerRow, Math.ceil(Math.sqrt(levelCount))))
@@ -45,11 +46,11 @@ export const usePathGeneration = (levelCount) => {
       
       // Calculate derived values
       const rows = Math.ceil(levelCount / optimalLevelsPerRow)
-      const usableWidth = mapWidth - (margin * 2)
+      const usableWidth = mapWidth - (horizontalMargin * 2)
       
       // Dynamic height calculation based on all parameters
       const mapHeight = topBottomBuffer + (rows * minVerticalSpacing) + minVerticalSpacing
-      const usableHeight = mapHeight - (margin * 2)
+      const usableHeight = mapHeight - (horizontalMargin * 2)
       
       // Use the exact desired spacing since height is calculated to accommodate it
       const verticalSpacing = minVerticalSpacing
@@ -60,16 +61,16 @@ export const usePathGeneration = (levelCount) => {
       for (let row = 0; row < rows && currentLevel < levelCount; row++) {
         const levelsInThisRow = Math.min(optimalLevelsPerRow, levelCount - currentLevel)
         const horizontalSpacing = usableWidth / (levelsInThisRow + 1)
-        const y = margin + (row * verticalSpacing)
+        const y = verticalMargin + (row * verticalSpacing)
         
         for (let col = 0; col < levelsInThisRow && currentLevel < levelCount; col++) {
           let x = direction === 1 
-            ? margin + ((col + 1) * horizontalSpacing)
-            : margin + ((levelsInThisRow - col) * horizontalSpacing)
+            ? horizontalMargin + ((col + 1) * horizontalSpacing)
+            : horizontalMargin + ((levelsInThisRow - col) * horizontalSpacing)
           
           const curvatureOffset = Math.sin((currentLevel * Math.PI) / curvatureDivisor) * curvatureMultiplier
           x += curvatureOffset
-          x = Math.max(margin, Math.min(mapWidth - margin, x))
+          x = Math.max(horizontalMargin, Math.min(mapWidth - horizontalMargin, x))
           
           positions.push({ x, y })
           currentLevel++
