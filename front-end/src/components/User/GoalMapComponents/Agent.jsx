@@ -1,9 +1,25 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Users } from 'lucide-react'
 
 const Agent = ({ agentPosition, isMoving }) => {
+  const agentRef = useRef(null)
+
+  useEffect(() => {
+    if (agentRef.current && !isMoving) {
+      // Small delay to ensure position is updated first
+      setTimeout(() => {
+        agentRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'center'
+        })
+      }, 200) // Delay allows movement animation to complete
+    }
+  }, [agentPosition, isMoving])
+
   return (
     <div 
+      ref={agentRef}
       className={`absolute transform -translate-x-1/2 -translate-y-1/2 z-30 transition-all duration-800 ${
         isMoving ? 'scale-110' : ''
       }`}
