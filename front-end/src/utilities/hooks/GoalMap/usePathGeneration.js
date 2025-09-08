@@ -60,7 +60,7 @@ export const usePathGeneration = (levelCount) => {
       for (let row = 0; row < rows && currentLevel < levelCount; row++) {
         const levelsInThisRow = Math.min(optimalLevelsPerRow, levelCount - currentLevel)
         const horizontalSpacing = usableWidth / (levelsInThisRow + 1)
-        const y = mapHeight - margin - (row * verticalSpacing)
+        const y = margin + (row * verticalSpacing)
         
         for (let col = 0; col < levelsInThisRow && currentLevel < levelCount; col++) {
           let x = direction === 1 
