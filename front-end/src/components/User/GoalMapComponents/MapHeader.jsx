@@ -48,27 +48,15 @@ const MapHeader = ({ selectedGoal, completed, total, percentage }) => {
         </div>
 
         {/* Enhanced Progress Bar */}
-        <div className="mt-6">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-sm font-medium">Adventure Progress</span>
-            <span className="text-black text-sm font-medium">{percentage}% Complete</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-5 shadow-inner">
-            <div 
-              className="bg-gradient-to-r from-green-400 to-green-600 h-5 rounded-full transition-all duration-700 relative overflow-hidden shadow-sm"
-              style={{ width: `${percentage}%` }}
-            >
-              {percentage > 0 && (
-                <div className="absolute inset-0 bg-white opacity-20 animate-shimmer"></div>
-              )}
-              {percentage > 15 && (
-                <div className="absolute inset-0 flex items-center justify-end pr-4">
-                  <Zap className="w-4 h-4 text-white animate-pulse" />
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+ <div className="mt-4">
+  <div className="w-full bg-gray-200 rounded-full h-3">
+    <div
+      className="bg-gradient-to-r from-green-400 to-green-600 h-3 rounded-full"
+      style={{ width: `${percentage}%` }}
+    ></div>
+  </div>
+</div>
+
       </div>
     </div>
   )
