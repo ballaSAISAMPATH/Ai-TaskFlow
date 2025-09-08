@@ -75,29 +75,9 @@ const MapLevel = ({
           </svg>
         )}
 
-        {/* Completion Sparkle */}
-        {isCompleted && (
-          <div className="absolute inset-0 rounded-full">
-            <div className="absolute top-0 right-0 w-3 h-3 bg-yellow-300 rounded-full animate-ping"></div>
-            <div className="absolute bottom-1 left-1 w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
-            <div className="absolute top-1 left-0 w-1.5 h-1.5 bg-white rounded-full animate-bounce"></div>
-          </div>
-        )}
+
       </div>
 
-      {/* Stars */}
-      {isUnlocked && stars > 0 && (
-        <div className="flex space-x-1 mt-2 justify-center">
-          {[1, 2, 3].map((star) => (
-            <Star
-              key={star}
-              className={`w-3 h-3 lg:w-4 lg:h-4 transition-all duration-300 ${
-                star <= stars ? 'text-yellow-500 fill-current animate-pulse' : 'text-gray-300'
-              }`}
-            />
-          ))}
-        </div>
-      )}
 
       {/* Completed badge */}
       {isCompleted && (
