@@ -39,7 +39,7 @@ export const usePathGeneration = (levelCount) => {
       const maxLevelsPerRow = isMobile ? 2 : isTablet ? 3 : 4
       const minLevelsPerRow = isMobile ? 1 : 2
       const optimalLevelsPerRow = Math.max(minLevelsPerRow, Math.min(maxLevelsPerRow, Math.ceil(Math.sqrt(levelCount))))
-      const topBottomBuffer = isMobile ? 30 : isTablet ? 25 : 20
+      const topBottomBuffer = isMobile ? -60 : isTablet ? -40 : -40
       const curvatureDivisor = isMobile ? 8 : isTablet ? 7 : 6
       const curvatureMultiplier = isMobile ? 2 : isTablet ? 2.5 : 3
       
