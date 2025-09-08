@@ -25,8 +25,7 @@ const CompletionCelebration = ({ percentage, total, onCelebrate }) => {
               <div>Complete</div>
             </div>
             <div className="text-center">
-              <div className="font-bold text-purple-600 text-xl">⭐⭐⭐</div>
-              <div>Perfect</div>
+                <div>Perfect</div>
             </div>
           </div>
           <button
