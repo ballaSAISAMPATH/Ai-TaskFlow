@@ -1,6 +1,6 @@
 # task_generator.py
 from typing import List, Dict, Any
-from curricula import DetailedCurricula
+from LearningPlanComponents.curricula import DetailedCurricula
 
 
 class TaskGenerator:

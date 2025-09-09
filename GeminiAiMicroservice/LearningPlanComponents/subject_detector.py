@@ -1,5 +1,5 @@
 # subject_detector.py
-from curricula import DetailedCurricula
+from LearningPlanComponents.curricula import DetailedCurricula
 
 
 class SubjectDetector:
