@@ -11,7 +11,9 @@ class TaskGenerator:
         """Create progressive, specific daily tasks based on the learning goal"""
         
         if category == "general":
-            return daily_tasks
+            return self.create_general_tasks(goal, num_days)
+        else:
+            return self.create_curriculum_tasks(goal, category, num_days)
     
     def create_general_tasks(self, goal: str, num_days: int) -> List[str]:
         """Create tasks for subjects not in our detailed curriculum"""
@@ -19,7 +21,7 @@ class TaskGenerator:
         # Extract the main subject from the goal
         subject = goal.replace("Learn ", "").replace("learn ", "").replace("prepare for ", "").strip()
         
-        # Generic learning phases that work for any subject
+        # Generic learning phases
         learning_phases = [
             f"Research and understand what {subject} involves and its practical applications",
             f"Gather essential resources, tools, and materials needed for {subject}",
@@ -33,7 +35,7 @@ class TaskGenerator:
             f"Build a comprehensive portfolio showcasing your {subject} expertise"
         ]
         
-        # Distribute phases across available days
+        # Distribute phases across days
         tasks_per_phase = max(1, num_days // len(learning_phases))
         daily_tasks = []
         
@@ -61,8 +63,10 @@ class TaskGenerator:
             else:
                 daily_tasks.append(f"Consolidate learning, create study materials, and prepare to teach {subject} to others")
         
-        return daily_tasks[:num_days] 
-        self.create_general_tasks(goal, num_days)
+        return daily_tasks[:num_days]
+    
+    def create_curriculum_tasks(self, goal: str, category: str, num_days: int) -> List[str]:
+        """Create structured tasks based on detailed curriculum"""
         
         curriculum = self.curricula[category]
         topics = curriculum["topics"]
@@ -71,15 +75,13 @@ class TaskGenerator:
         
         daily_tasks = []
         
-        # Phase-based learning approach
-        foundation_phase = max(1, num_days // 4)  # First 25% - fundamentals
-        building_phase = max(1, num_days // 3)    # Next 33% - practical application
-        advanced_phase = max(1, num_days // 4)    # Next 25% - advanced concepts
-        project_phase = num_days - foundation_phase - building_phase - advanced_phase  # Final phase - projects
+        # Phase-based learning
+        foundation_phase = max(1, num_days // 4)  
+        building_phase = max(1, num_days // 3)    
+        advanced_phase = max(1, num_days // 4)    
+        project_phase = num_days - foundation_phase - building_phase - advanced_phase  
         
-        day_counter = 0
-        
-        # Foundation Phase - Learning core concepts
+        # Foundation Phase
         for day in range(foundation_phase):
             if day < len(topics):
                 topic = topics[day]
@@ -96,18 +98,16 @@ class TaskGenerator:
             else:
                 topic_idx = day % len(topics)
                 daily_tasks.append(f"Review and practice {topics[topic_idx].lower()} with hands-on exercises")
-            day_counter += 1
         
-        # Building Phase - Practical Tasks
+        # Building Phase
         for day in range(building_phase):
             if day < len(practical_tasks):
                 daily_tasks.append(practical_tasks[day])
             else:
                 task_idx = day % len(practical_tasks)
                 daily_tasks.append(f"Enhance and expand on: {practical_tasks[task_idx].lower()}")
-            day_counter += 1
         
-        # Advanced Phase - Mastery and refinement
+        # Advanced Phase
         for day in range(advanced_phase):
             topic_idx = (day + len(topics) // 2) % len(topics)
             if category in ["hindi", "english"]:
@@ -126,9 +126,8 @@ class TaskGenerator:
                 advanced_aspects = ["optimization", "edge cases", "scalability", "best practices", "performance"]
                 aspect = advanced_aspects[day % len(advanced_aspects)]
                 daily_tasks.append(f"Master advanced {aspect} in {topics[topic_idx].lower()}")
-            day_counter += 1
         
-        # Project Phase - Real-world application
+        # Project Phase
         for day in range(project_phase):
             if day < len(projects):
                 daily_tasks.append(f"Work on project: {projects[day]}")
@@ -145,4 +144,4 @@ class TaskGenerator:
                 else:
                     daily_tasks.append(f"Create portfolio documentation and showcase your {category} expertise")
         
-        return
+        return daily_tasks[:num_days]
