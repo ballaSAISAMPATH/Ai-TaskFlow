@@ -1,9 +1,9 @@
 # fallback_plan_generator.py
 from typing import Dict, Any
-from curricula import DetailedCurricula
-from utils import DurationParser
-from subject_detector import SubjectDetector
-from task_generator import TaskGenerator
+from LearningPlanComponents.curricula import DetailedCurricula
+from LearningPlanComponents.utils import DurationParser
+from LearningPlanComponents.subject_detector import SubjectDetector
+from LearningPlanComponents.task_generator import TaskGenerator
 
 
 class FallbackPlanGenerator:

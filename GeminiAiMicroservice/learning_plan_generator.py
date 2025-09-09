@@ -3,11 +3,10 @@ import json
 from typing import Dict, Any
 from gemini_llm import GeminiLLM
 from templates import LEARNING_PLAN_PROMPT
-from utils import DurationParser, ResponseCleaner, PlanValidator
-from subject_detector import SubjectDetector
-from task_generator import TaskGenerator
-from fallback_plan_generator import FallbackPlanGenerator
-
+from LearningPlanComponents.utils import DurationParser, ResponseCleaner, PlanValidator
+from LearningPlanComponents.subject_detector import SubjectDetector
+from LearningPlanComponents.task_generator import TaskGenerator
+from LearningPlanComponents.fallback_plan_generator import FallbackPlanGenerator
 
 class LearningPlanGenerator:
     
