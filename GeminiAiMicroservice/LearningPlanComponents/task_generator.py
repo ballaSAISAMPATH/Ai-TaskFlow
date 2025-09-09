@@ -11,7 +11,58 @@ class TaskGenerator:
         """Create progressive, specific daily tasks based on the learning goal"""
         
         if category == "general":
-            return self.create_general_tasks(goal, num_days)
+            return daily_tasks
+    
+    def create_general_tasks(self, goal: str, num_days: int) -> List[str]:
+        """Create tasks for subjects not in our detailed curriculum"""
+        
+        # Extract the main subject from the goal
+        subject = goal.replace("Learn ", "").replace("learn ", "").replace("prepare for ", "").strip()
+        
+        # Generic learning phases that work for any subject
+        learning_phases = [
+            f"Research and understand what {subject} involves and its practical applications",
+            f"Gather essential resources, tools, and materials needed for {subject}",
+            f"Learn fundamental concepts and basic principles of {subject}",
+            f"Practice beginner exercises and follow structured tutorials for {subject}",
+            f"Apply knowledge by working on a simple real-world project in {subject}",
+            f"Study intermediate concepts and explore different approaches in {subject}",
+            f"Implement a medium-complexity project demonstrating your {subject} skills",
+            f"Learn advanced techniques and study expert-level practices in {subject}",
+            f"Contribute to community projects or create original content in {subject}",
+            f"Build a comprehensive portfolio showcasing your {subject} expertise"
+        ]
+        
+        # Distribute phases across available days
+        tasks_per_phase = max(1, num_days // len(learning_phases))
+        daily_tasks = []
+        
+        for phase_idx, base_task in enumerate(learning_phases):
+            for day_in_phase in range(tasks_per_phase):
+                if len(daily_tasks) >= num_days:
+                    break
+                    
+                if day_in_phase == 0:
+                    daily_tasks.append(base_task)
+                else:
+                    variations = [
+                        f"Continue {base_task.lower()} with focused practice sessions",
+                        f"Deepen understanding: {base_task.lower()} through different perspectives",
+                        f"Apply and test knowledge: {base_task.lower()} in new scenarios",
+                        f"Review and reinforce: {base_task.lower()} with peer discussions"
+                    ]
+                    daily_tasks.append(variations[day_in_phase % len(variations)])
+        
+        # Fill remaining days if needed
+        while len(daily_tasks) < num_days:
+            remaining_days = num_days - len(daily_tasks)
+            if remaining_days > 5:
+                daily_tasks.append(f"Work on capstone project: comprehensive {subject} application with real-world impact")
+            else:
+                daily_tasks.append(f"Consolidate learning, create study materials, and prepare to teach {subject} to others")
+        
+        return daily_tasks[:num_days] 
+        self.create_general_tasks(goal, num_days)
         
         curriculum = self.curricula[category]
         topics = curriculum["topics"]
