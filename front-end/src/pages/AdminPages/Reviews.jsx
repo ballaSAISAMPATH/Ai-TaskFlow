@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import ScrollToTop from '@/utilities/ScrollToTop';
 import { toast } from 'sonner';
+
 const ReviewSkeleton = () => (
   <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden animate-pulse">
     <div className="p-4 sm:p-6 border-b border-gray-200">
@@ -63,10 +64,20 @@ const Reviews = () => {
   const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [feedbackToDelete, setFeedbackToDelete] = useState(null);
+  const [isPageChanging, setIsPageChanging] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchAllFeedback({ page: currentPage, limit: 10 }));
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const fetchFeedback = async () => {
+      setIsPageChanging(true);
+      try {
+        await dispatch(fetchAllFeedback({ page: currentPage, limit: 10 }));
+      } finally {
+        setIsPageChanging(false);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    };
+
+    fetchFeedback();
   }, [dispatch, currentPage]);
 
   const handleReply = async (feedbackId) => {
@@ -157,7 +168,12 @@ const Reviews = () => {
     );
   };
 
-  if (feedbackLoading && currentPage === 1) {
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  // Show skeleton loading for initial load or page changes
+  if (feedbackLoading && currentPage === 1 || isPageChanging) {
     return (
       <div className="p-3 sm:p-6 space-y-4 sm:space-y-6 min-h-screen">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -174,6 +190,17 @@ const Reviews = () => {
           {[...Array(5)].map((_, index) => (
             <ReviewSkeleton key={index} />
           ))}
+        </div>
+
+        {/* Skeleton pagination */}
+        <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-2">
+          <div className="w-full sm:w-auto h-10 bg-gray-200 rounded-md animate-pulse" style={{ width: '80px' }}></div>
+          <div className="flex gap-1">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="w-10 h-10 bg-gray-200 rounded-md animate-pulse"></div>
+            ))}
+          </div>
+          <div className="w-full sm:w-auto h-10 bg-gray-200 rounded-md animate-pulse" style={{ width: '60px' }}></div>
         </div>
       </div>
     );
@@ -331,9 +358,9 @@ const Reviews = () => {
       {feedbackPagination && feedbackPagination.totalPages > 1 && (
         <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-2">
           <button
-            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+            onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
+            disabled={currentPage === 1 || isPageChanging}
+            className="w-full cursor-pointer sm:w-auto px-3 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
           >
             Previous
           </button>
@@ -354,8 +381,9 @@ const Reviews = () => {
               return (
                 <button
                   key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`px-3 py-2 rounded-md text-sm ${
+                  onClick={() => handlePageChange(page)}
+                  disabled={isPageChanging}
+                  className={`px-3 py-2 rounded-md text-sm disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed ${
                     currentPage === page
                       ? 'bg-green-500 text-white'
                       : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -368,9 +396,9 @@ const Reviews = () => {
           </div>
           
           <button
-            onClick={() => setCurrentPage(prev => Math.min(prev + 1, feedbackPagination.totalPages))}
-            disabled={currentPage === feedbackPagination.totalPages}
-            className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+            onClick={() => handlePageChange(Math.min(currentPage + 1, feedbackPagination.totalPages))}
+            disabled={currentPage === feedbackPagination.totalPages || isPageChanging}
+            className="w-full sm:w-auto cursor-pointer px-3 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
           >
             Next
           </button>
