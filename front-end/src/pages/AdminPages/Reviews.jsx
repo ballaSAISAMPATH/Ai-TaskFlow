@@ -360,7 +360,7 @@ const Reviews = () => {
           <button
             onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
             disabled={currentPage === 1 || isPageChanging}
-            className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+            className="w-full cursor-pointer sm:w-auto px-3 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
           >
             Previous
           </button>
@@ -383,7 +383,7 @@ const Reviews = () => {
                   key={page}
                   onClick={() => handlePageChange(page)}
                   disabled={isPageChanging}
-                  className={`px-3 py-2 rounded-md text-sm disabled:opacity-50 disabled:cursor-not-allowed ${
+                  className={`px-3 py-2 rounded-md text-sm disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed ${
                     currentPage === page
                       ? 'bg-green-500 text-white'
                       : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -398,7 +398,7 @@ const Reviews = () => {
           <button
             onClick={() => handlePageChange(Math.min(currentPage + 1, feedbackPagination.totalPages))}
             disabled={currentPage === feedbackPagination.totalPages || isPageChanging}
-            className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+            className="w-full sm:w-auto cursor-pointer px-3 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
           >
             Next
           </button>
