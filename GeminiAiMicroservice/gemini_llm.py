@@ -1,13 +1,12 @@
 from typing import Optional, List
 from langchain.llms.base import LLM
-from langchain_core.pydantic_v1 import Field
 import requests
 
 class GeminiLLM(LLM):
-    api_key: str = Field(...)
-    model: str = Field(default="gemini-2.0-flash-exp")
-    temperature: float = Field(default=0.8)
-    max_tokens: int = Field(default=8000)
+    api_key: str
+    model: str = "gemini-2.0-flash-exp"  # plain string default, not Field
+    temperature: float = 0.8
+    max_tokens: int = 8000
 
     @property
     def _llm_type(self) -> str:
@@ -21,9 +20,7 @@ class GeminiLLM(LLM):
         **kwargs,
     ) -> str:
         url = f'https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent'
-        headers = {
-            'Content-Type': 'application/json',
-        }
+        headers = {'Content-Type': 'application/json'}
         params = {'key': self.api_key}
 
         request_body = {
@@ -45,17 +42,17 @@ class GeminiLLM(LLM):
         }
 
         try:
-            # Debugging info before sending request
+            # DEBUGGING INFO
             print("\n========= GEMINI DEBUG =========")
-            print(f"➡️  URL: {url}")
-            print(f"➡️  API Key (first 6 chars): {self.api_key[:6]}..., length: {len(self.api_key)}")
-            print(f"➡️  Request body keys: {list(request_body.keys())}")
-            print(f"➡️  Prompt preview (first 100 chars): {prompt[:100]}")
+            print(f"➡️ URL: {url}")
+            print(f"➡️ API Key (first 6 chars): {self.api_key[:6]}..., length: {len(self.api_key)}")
+            print(f"➡️ Request body keys: {list(request_body.keys())}")
+            print(f"➡️ Prompt preview (first 100 chars): {prompt[:100]}")
             print("================================\n")
 
             response = requests.post(url, headers=headers, params=params, json=request_body, timeout=60)
 
-            print(f"⬅️  Response status: {response.status_code}")
+            print(f"⬅️ Response status: {response.status_code}")
             if response.status_code != 200:
                 print("❌ Full error response:", response.text)
 
