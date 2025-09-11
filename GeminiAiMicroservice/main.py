@@ -1,13 +1,16 @@
+# main.py (Enhanced)
 import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import Optional, List
 from models import LearningPlanRequest, TaskItem, LearningPlanResponse
 from learning_plan_generator import LearningPlanGenerator
 
 app = FastAPI(
     title="Enhanced Learning Plan Generator API",
-    description="Generate unique, progressive learning plans using AI",
-    version="2.1.0"
+    description="Generate highly personalized, progressive learning plans using AI",
+    version="3.0.0"
 )
 
 app.add_middleware(
@@ -17,6 +20,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Enhanced request model with user context
+class EnhancedLearningPlanRequest(BaseModel):
+    goal: str
+    duration: str
+    skill_level: Optional[str] = "beginner"  # beginner, intermediate, advanced
+    learning_style: Optional[str] = "practical"  # practical, theoretical, project-based, exam-focused
+    daily_time: Optional[str] = "1-2 hours"  # 30 minutes, 1-2 hours, 2-3 hours, 3+ hours
+    specific_interests: Optional[List[str]] = []  # e.g., ["web development", "machine learning"]
+    practical_goals: Optional[List[str]] = []  # e.g., ["job interviews", "freelancing", "personal projects"]
 
 generator = None
 
@@ -28,30 +41,24 @@ async def startup_event():
         raise Exception("GEMINI_API_KEY environment variable not set")
     
     generator = LearningPlanGenerator(api_key)
-    print("Enhanced Learning Plan Generator initialized successfully")
+    print("Enhanced Learning Plan Generator with personalization initialized successfully")
 
 @app.get("/")
 async def root():
     return {
-        "message": "Enhanced Learning Plan Generator API",
-        "version": "2.1.0",
+        "message": "Enhanced Learning Plan Generator API v3.0",
         "features": [
-            "Fixed duration calculation - no forced monthly tasks",
-            "Proper handling of weeks-only and days-only durations",
-            "Enhanced React course curriculum",
-            "Intelligent task distribution"
+            "Personalized learning plans based on skill level and learning style",
+            "Ultra-specific, actionable daily tasks",
+            "Intelligent fallback system with curriculum knowledge",
+            "Dynamic task progression and complexity adaptation"
         ]
     }
 
-@app.get("/health")
-async def health_check():
-    return {
-        "status": "healthy",
-        "generator_initialized": generator is not None
-    }
-
+# Legacy endpoint for backward compatibility
 @app.post("/generate-plan", response_model=LearningPlanResponse)
 async def generate_plan(request: LearningPlanRequest):
+    """Legacy endpoint - converts to enhanced format internally"""
     if not generator:
         raise HTTPException(status_code=500, detail="Generator not initialized")
     
@@ -62,7 +69,16 @@ async def generate_plan(request: LearningPlanRequest):
         raise HTTPException(status_code=400, detail="Duration cannot be empty")
     
     try:
-        plan = generator.generate_learning_plan(request.goal, request.duration)
+        # Convert legacy request to enhanced format
+        user_context = {
+            "skill_level": "beginner",
+            "learning_style": "practical",
+            "daily_time": "1-2 hours",
+            "specific_interests": [],
+            "practical_goals": []
+        }
+        
+        plan = generator.generate_learning_plan(request.goal, request.duration, user_context)
         
         response = LearningPlanResponse(
             goalTitle=plan["goalTitle"],
@@ -78,59 +94,104 @@ async def generate_plan(request: LearningPlanRequest):
         print(f"Error in generate_plan endpoint: {e}")
         raise HTTPException(status_code=500, detail=f"Error generating plan: {str(e)}")
 
-def test_duration_scenarios():
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        print("Error: Please set GEMINI_API_KEY environment variable")
-        return
+# New enhanced endpoint with personalization
+@app.post("/generate-enhanced-plan", response_model=LearningPlanResponse)
+async def generate_enhanced_plan(request: EnhancedLearningPlanRequest):
+    """Enhanced endpoint with full personalization support"""
+    if not generator:
+        raise HTTPException(status_code=500, detail="Generator not initialized")
     
-    test_generator = LearningPlanGenerator(api_key)
+    if not request.goal.strip():
+        raise HTTPException(status_code=400, detail="Goal cannot be empty")
     
-    test_cases = [
-        {"goal": "Learn DSA", "duration": "2 weeks", "expected": {"months": 0, "weeks": 2, "days": 14}},
-        {"goal": "Learn React", "duration": "8 weeks", "expected": {"months": 0, "weeks": 8, "days": 56}},
-        {"goal": "Learn React", "duration": "3 months", "expected": {"months": 3, "weeks": 12, "days": 90}},
-        {"goal": "Learn Python", "duration": "30 days", "expected": {"months": 0, "weeks": 4, "days": 30}},
-    ]
+    if not request.duration.strip():
+        raise HTTPException(status_code=400, detail="Duration cannot be empty")
     
-    for test_case in test_cases:
-        print(f"\n{'='*80}")
-        print(f"Testing: {test_case['goal']} - {test_case['duration']}")
-        print(f"Expected: {test_case['expected']}")
-        
-        duration_dict = test_generator.parse_duration(test_case['duration'])
-        totals = test_generator.calculate_totals(duration_dict)
-        
-        print(f"Parsed: {duration_dict}")
-        print(f"Totals: {totals}")
-        
-        plan = test_generator.generate_learning_plan(test_case['goal'], test_case['duration'])
-        
-        print(f"Generated plan structure:")
-        print(f"  Monthly tasks: {len(plan['monthlyTasks'])}")
-        print(f"  Weekly tasks: {len(plan['weeklyTasks'])}")  
-        print(f"  Daily tasks: {len(plan['dailyTasks'])}")
-        
-        expected = test_case['expected']
-        actual = {
-            "months": len(plan['monthlyTasks']),
-            "weeks": len(plan['weeklyTasks']),
-            "days": len(plan['dailyTasks'])
+    # Validate skill level
+    valid_skill_levels = ["beginner", "intermediate", "advanced"]
+    if request.skill_level not in valid_skill_levels:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Invalid skill_level. Must be one of: {valid_skill_levels}"
+        )
+    
+    # Validate learning style
+    valid_learning_styles = ["practical", "theoretical", "project-based", "exam-focused"]
+    if request.learning_style not in valid_learning_styles:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Invalid learning_style. Must be one of: {valid_learning_styles}"
+        )
+    
+    try:
+        # Create user context from request
+        user_context = {
+            "skill_level": request.skill_level,
+            "learning_style": request.learning_style,
+            "daily_time": request.daily_time,
+            "specific_interests": request.specific_interests,
+            "practical_goals": request.practical_goals
         }
         
-        matches = all(actual[k] == expected[k] for k in expected)
-        print(f"✅ PASSED" if matches else f"❌ FAILED - Expected {expected}, got {actual}")
+        print(f"Generating enhanced plan with context: {user_context}")
         
-        if len(plan['weeklyTasks']) > 0:
-            print(f"\nSample weekly tasks:")
-            for i, task in enumerate(plan['weeklyTasks'][:2]):
-                print(f"  {task['label']}: {', '.join(task['tasks'])}")
+        plan = generator.generate_learning_plan(request.goal, request.duration, user_context)
         
-        if len(plan['dailyTasks']) > 0:
-            print(f"\nSample daily tasks:")
-            for i, task in enumerate(plan['dailyTasks'][:3]):
-                print(f"  {task['label']}: {task['tasks'][0]}")
+        response = LearningPlanResponse(
+            goalTitle=plan["goalTitle"],
+            totalDays=plan["totalDays"],
+            monthlyTasks=[TaskItem(**task) for task in plan["monthlyTasks"]],
+            weeklyTasks=[TaskItem(**task) for task in plan["weeklyTasks"]],
+            dailyTasks=[TaskItem(**task) for task in plan["dailyTasks"]]
+        )
+        
+        return response
+        
+    except Exception as e:
+        print(f"Error in generate_enhanced_plan endpoint: {e}")
+        raise HTTPException(status_code=500, detail=f"Error generating enhanced plan: {str(e)}")
 
+@app.get("/supported-subjects")
+async def get_supported_subjects():
+    """Get list of subjects with enhanced curriculum support"""
+    return {
+        "programming": ["dsa", "react", "python"],
+        "languages": ["hindi", "english"],
+        "creative": ["photography", "music"],
+        "exams": ["gate", "jee", "upsc"],
+        "lifestyle": ["fitness", "weight_loss", "cooking"],
+        "note": "All other subjects are supported with intelligent generic task generation"
+    }
+
+@app.get("/learning-styles")
+async def get_learning_styles():
+    """Get available learning style options"""
+    return {
+        "practical": "Hands-on projects and real-world applications",
+        "theoretical": "Concept understanding and academic approach",
+        "project-based": "Large projects with integrated learning",
+        "exam-focused": "Structured preparation for tests and certifications"
+    }
+
+@app.get("/skill-levels")
+async def get_skill_levels():
+    """Get available skill level options"""
+    return {
+        "beginner": "No prior experience, start from basics",
+        "intermediate": "Some experience, ready for advanced concepts",
+        "advanced": "Strong foundation, seeking mastery and specialization"
+    }
+
+# Health check endpoint
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for monitoring"""
+    return {
+        "status": "healthy",
+        "generator_initialized": generator is not None,
+        "version": "3.0.0"
+    }
 
 if __name__ == "__main__":
-    test_duration_scenarios()
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
