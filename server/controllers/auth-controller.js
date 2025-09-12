@@ -1,7 +1,6 @@
 const User = require('../models/User');
 const jwt = require("jsonwebtoken");
 const admin = require('firebase-admin');
-const bcrypt = require('bcryptjs');
 const {logLoginEvent} = require('./historylogin-controller')
 const LoginHistory = require('../models/loginHistory');
 require("dotenv").config();
@@ -48,14 +47,10 @@ const registerUser = async (req, res) => {
       });
     }
 
-    // Hash the password before saving
-    const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS) || 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
     const newUser = new User({
       name: userName,
       email,
-      password: hashedPassword,
+      password,
       authProvider: 'email',
     });
 
@@ -77,20 +72,12 @@ const loginUser = async (req, res) => {
   try {
     const user = await User.findOne({ email });
 
-    if (!user) {
-      return res.json({ success: false, message: "Invalid credentials" });
-    }
-
-    // Compare the provided password with the hashed password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    
-    if (!isPasswordValid) {
+    if (!user || user.password !== password) {
       return res.json({ success: false, message: "Invalid credentials" });
     }
 
     const { accessToken, refreshToken } = generateTokens(user);
-    await logLoginEvent(user._id, user.name, user.email)
-    
+     await logLoginEvent(user._id, user.name, user.email)
     res
       .cookie("refreshToken", refreshToken, {
         httpOnly: true,
@@ -118,6 +105,7 @@ const loginUser = async (req, res) => {
   }
 };
 
+
 const googleLogin = async (req, res) => {
   const { idToken, email, name, photoURL, uid } = req.body;
 
@@ -135,14 +123,12 @@ const googleLogin = async (req, res) => {
         firebaseUid: uid,
         profilePicture: photoURL,
         authProvider: "google",
-        // No password field for Google OAuth users
       });
       await user.save();
     }
 
     const { accessToken, refreshToken } = generateTokens(user);
     await logLoginEvent(user._id, user.name, user.email)
-    
     res
       .cookie("refreshToken", refreshToken, {
         httpOnly: true,
@@ -203,6 +189,7 @@ const refreshAccessToken = async (req, res) => {
   }
 };
 
+
 const logoutUser = (req, res) => {
   res.clearCookie("refreshToken", {
     httpOnly: true,
@@ -240,6 +227,7 @@ const authMiddleware = async (req, res, next) => {
     return res.status(403).json({ success: false, message: "Invalid or expired token" });
   }
 };
+
 
 const deleteAccount = async (req, res) => {
   try {
@@ -306,32 +294,19 @@ const changePassword = async (req, res) => {
       });
     }
 
-    // Check if user has email authentication (password exists)
-    if (!user.password) {
-      return res.status(400).json({
-        success: false,
-        message: 'Password change not available for OAuth users'
-      });
-    }
 
-    // Verify old password using bcrypt
-    const isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
-    if (!isOldPasswordValid) {
+    if (oldPassword !== user.password) {
       return res.status(400).json({
         success: false,
         message: 'Current password is incorrect'
       });
     }
 
-    // Hash the new password
-    const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS) || 10;
-    const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
-
-    // Update password and increment token version
     await User.findByIdAndUpdate(userId, {
-      password: hashedNewPassword,
-      $inc: { tokenVersion: 1 }  
-    });
+        password: newPassword,
+        $inc: { tokenVersion: 1 }  
+      });
+
 
     res.status(200).json({
       success: true,
