@@ -75,7 +75,6 @@ class ResponseCleaner:
         
         return response.strip()
 
-
 class PlanValidator:
     @staticmethod
     def validate_plan_structure(plan: Dict[str, Any]) -> Dict[str, Any]:
