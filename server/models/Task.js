@@ -14,7 +14,13 @@ const taskGroupSchema = new mongoose.Schema({
     default: false
   },
   resources: {
-    type: [String]   
+    type: [{
+      title: String,
+      type: String,
+      url: String,
+      description: String
+    }],
+    default: []
   }
 });
 
