@@ -12,6 +12,9 @@ const taskGroupSchema = new mongoose.Schema({
   status: {
     type: Boolean,
     default: false
+  },
+  resources: {
+    type: [String]   
   }
 });
 
