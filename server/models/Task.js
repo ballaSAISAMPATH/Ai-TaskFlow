@@ -1,5 +1,24 @@
 const mongoose = require('mongoose');
 
+const resourceSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true
+  },
+  type: {
+    type: String,
+    required: true
+  },
+  url: {
+    type: String,
+    required: true
+  },
+  description: {
+    type: String,
+    required: true
+  }
+}, { _id: false }); 
+
 const taskGroupSchema = new mongoose.Schema({
   label: {
     type: String,
@@ -14,12 +33,7 @@ const taskGroupSchema = new mongoose.Schema({
     default: false
   },
   resources: {
-    type: [{
-      title: String,
-      type: String,
-      url: String,
-      description: String
-    }],
+    type: [resourceSchema], 
     default: []
   }
 });
