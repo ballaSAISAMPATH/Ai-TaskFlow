@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Upload, FileText, CheckCircle } from 'lucide-react';
 
-const ResumeUploadComponent = ({ onFileUpload, onJdChange, isLoading }) => {
+const ResumeUploadComponent = ({ onFileUpload, onJdChange, onScanResume, isLoading, uploadedFile }) => {
   const [dragActive, setDragActive] = useState(false);
-  const [file, setFile] = useState(null);
   const [jd, setJd] = useState('');
+
+  // Use uploadedFile from parent or fallback to local state
+  const currentFile = uploadedFile;
 
   const handleDrag = (e) => {
     e.preventDefault();
@@ -23,7 +25,6 @@ const ResumeUploadComponent = ({ onFileUpload, onJdChange, isLoading }) => {
     
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const droppedFile = e.dataTransfer.files[0];
-      setFile(droppedFile);
       onFileUpload(droppedFile);
     }
   };
@@ -32,7 +33,6 @@ const ResumeUploadComponent = ({ onFileUpload, onJdChange, isLoading }) => {
     e.preventDefault();
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
-      setFile(selectedFile);
       onFileUpload(selectedFile);
     }
   };
@@ -43,8 +43,18 @@ const ResumeUploadComponent = ({ onFileUpload, onJdChange, isLoading }) => {
   };
 
   const removeFile = () => {
-    setFile(null);
     onFileUpload(null);
+  };
+
+  const handleScanResume = () => {
+    if (currentFile && jd.trim()) {
+      if (onScanResume) {
+        onScanResume(currentFile, jd);
+      } else {
+        // Fallback for backward compatibility
+        onFileUpload(currentFile, jd);
+      }
+    }
   };
 
   return (
@@ -52,7 +62,7 @@ const ResumeUploadComponent = ({ onFileUpload, onJdChange, isLoading }) => {
       <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg border-2 border-green-500">
         <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-black mb-2 sm:mb-3 lg:mb-4">Upload Resume</h2>
         
-        {!file ? (
+        {!currentFile ? (
           <div 
             className={`border-2 border-dashed rounded-lg p-4 sm:p-6 lg:p-8 text-center transition-colors ${
               dragActive ? 'border-green-500 bg-green-50' : 'border-gray-300 hover:border-green-400'
@@ -91,10 +101,10 @@ const ResumeUploadComponent = ({ onFileUpload, onJdChange, isLoading }) => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs sm:text-sm lg:text-base font-medium text-green-800 truncate">
-                    {file.name}
+                    {currentFile.name}
                   </p>
                   <p className="text-xs sm:text-sm text-green-600">
-                    {(file.size / 1024 / 1024).toFixed(2)} MB
+                    {(currentFile.size / 1024 / 1024).toFixed(2)} MB
                   </p>
                 </div>
                 <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-green-600 flex-shrink-0" />
@@ -129,8 +139,8 @@ const ResumeUploadComponent = ({ onFileUpload, onJdChange, isLoading }) => {
       </div>
 
       <button 
-        onClick={() => onFileUpload(file, jd)}
-        disabled={!file || !jd.trim() || isLoading}
+        onClick={handleScanResume}
+        disabled={!currentFile || !jd.trim() || isLoading}
         className="w-full bg-green-500 text-white py-2 sm:py-3 lg:py-4 px-3 sm:px-4 lg:px-6 rounded-lg font-semibold text-xs sm:text-sm lg:text-base hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
       >
         {isLoading ? 'Scanning Resume...' : 'Scan Resume'}

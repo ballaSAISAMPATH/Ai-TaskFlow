@@ -66,11 +66,13 @@ const ScanResume = () => {
         {/* Mobile Layout */}
         <div className="lg:hidden">
           <div className="space-y-4">
-            <ResumeUploadComponent 
-              onFileUpload={handleFileUpload}
-              onJdChange={handleJdChange}
-              isLoading={isLoading}
-            />
+          <ResumeUploadComponent 
+          onFileUpload={setFile}  // Just set the file directly
+          onJdChange={handleJdChange}
+          onScanResume={scanResume}  // Add this for the scan functionality
+          isLoading={isLoading}
+          uploadedFile={file}  // Pass the file state
+        />
 
             {/* Mobile Action Buttons */}
             <div className="flex gap-3">
@@ -148,11 +150,13 @@ const ScanResume = () => {
         <div className="hidden lg:grid lg:grid-cols-2 gap-6 lg:gap-8">
           {/* Left side - Upload components */}
           <div className="space-y-6">
-            <ResumeUploadComponent 
-              onFileUpload={handleFileUpload}
-              onJdChange={handleJdChange}
-              isLoading={isLoading}
-            />
+           <ResumeUploadComponent 
+            onFileUpload={setFile}  // Just set the file directly
+            onJdChange={handleJdChange}
+            onScanResume={scanResume}  // Add this for the scan functionality
+            isLoading={isLoading}
+            uploadedFile={file}  // Pass the file state
+          />
           </div>
 
           {/* Right side - Preview and results */}
