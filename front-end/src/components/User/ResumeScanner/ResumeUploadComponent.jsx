@@ -43,12 +43,12 @@ const ResumeUploadComponent = ({ onFileUpload, onJdChange, isLoading }) => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white p-6 rounded-lg border-2 border-green-500">
-        <h2 className="text-xl font-semibold text-black mb-4">Upload Resume</h2>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="bg-white p-4 sm:p-6 rounded-lg border-2 border-green-500">
+        <h2 className="text-lg sm:text-xl font-semibold text-black mb-3 sm:mb-4">Upload Resume</h2>
         
         <div
-          className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+          className={`border-2 border-dashed rounded-lg p-6 sm:p-8 text-center transition-colors ${
             dragActive ? 'border-green-500 bg-green-50' : 'border-gray-300'
           }`}
           onDragEnter={handleDrag}
@@ -66,24 +66,29 @@ const ResumeUploadComponent = ({ onFileUpload, onJdChange, isLoading }) => {
           />
           
           <label htmlFor="file-upload" className="cursor-pointer">
-            <Upload className="mx-auto h-12 w-12 text-green-500 mb-4" />
-            <p className="text-black font-medium mb-2">
-              {file ? file.name : 'Drop your resume here or click to browse'}
+            <Upload className="mx-auto h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 text-green-500 mb-3 sm:mb-4" />
+            <p className="text-black font-medium text-sm sm:text-base mb-2">
+              {file ? file.name : (
+                <>
+                  <span className="hidden sm:inline">Drop your resume here or click to browse</span>
+                  <span className="sm:hidden">Tap to upload resume</span>
+                </>
+              )}
             </p>
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-600 text-xs sm:text-sm">
               Supports PDF, DOC, DOCX files
             </p>
           </label>
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-lg border-2 border-green-500">
-        <h2 className="text-xl font-semibold text-black mb-4">Job Description</h2>
+      <div className="bg-white p-4 sm:p-6 rounded-lg border-2 border-green-500">
+        <h2 className="text-lg sm:text-xl font-semibold text-black mb-3 sm:mb-4">Job Description</h2>
         <textarea
           value={jd}
           onChange={handleJdChange}
           placeholder="Paste the job description here..."
-          className="w-full h-40 p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-black"
+          className="w-full h-32 sm:h-40 p-3 sm:p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-black text-sm sm:text-base"
           disabled={isLoading}
         />
       </div>
@@ -91,7 +96,7 @@ const ResumeUploadComponent = ({ onFileUpload, onJdChange, isLoading }) => {
       <button
         onClick={() => onFileUpload(file, jd)}
         disabled={!file || !jd.trim() || isLoading}
-        className="w-full bg-green-500 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+        className="w-full bg-green-500 text-white py-3 sm:py-4 px-4 sm:px-6 rounded-lg font-semibold text-sm sm:text-base hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
       >
         {isLoading ? 'Scanning Resume...' : 'Scan Resume'}
       </button>
