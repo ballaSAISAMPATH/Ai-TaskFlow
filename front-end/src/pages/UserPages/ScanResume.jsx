@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ResumePreviewComponent from '@/components/User/ResumeScanner/ResumePreviewComponent';
 import ResumeUploadComponent from '@/components/User/ResumeScanner/ResumeUploadComponent';
+import { toast } from 'sonner';
 const ScanResume = () => {
   console.log(import.meta.env.VITE_RESUME_MICROSERVICE);
   
@@ -23,30 +24,34 @@ const ScanResume = () => {
     setJobDescription(jd);
   };
 
-  const scanResume = async (resumeFile, jd) => {
-    setIsLoading(true);
-    try {
-      const formData = new FormData();
-      formData.append('file', resumeFile);
-      formData.append('job_description', jd);
+const scanResume = async (resumeFile, jd) => {
+  setIsLoading(true);
+  try {
+    const formData = new FormData();
+    formData.append("file", resumeFile);
+    formData.append("job_description", jd);
 
-      const response = await fetch(`${import.meta.env.VITE_RESUME_MICROSERVICE}/scan-resume/`, {
-        method: 'POST',
+    const response = await fetch(
+      `${import.meta.env.VITE_RESUME_MICROSERVICE}/scan-resume/`,
+      {
+        method: "POST",
         body: formData,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setResults(data);
-      } else {
-        console.error('Error scanning resume:', response.statusText);
       }
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setIsLoading(false);
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      setResults(data);
+      toast.success("Resume scanned successfully!");
+    } else {
+      toast.error(`Failed to scan resume: ${response.statusText}`);
     }
-  };
+  } catch (error) {
+    toast.error(`⚠️ Error: ${error.message}`);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
