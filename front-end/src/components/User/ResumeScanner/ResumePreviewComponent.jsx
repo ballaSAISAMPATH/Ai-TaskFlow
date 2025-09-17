@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { FileText, Loader2, CheckCircle, AlertCircle, XCircle, Eye, Download, ZoomIn } from 'lucide-react';
-
 const ResumePreviewComponent = ({ file, isLoading, results }) => {
   const [fileContent, setFileContent] = useState(null);
   const [fileUrl, setFileUrl] = useState(null);
@@ -67,10 +66,10 @@ const ResumePreviewComponent = ({ file, isLoading, results }) => {
 
   if (!file && !results) {
     return (
-      <div className="bg-white p-4 sm:p-6 rounded-lg border-2 border-green-500 h-64 sm:h-80 lg:h-96 flex items-center justify-center">
+      <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg border-2 border-green-500 h-40 sm:h-48 lg:h-96 flex items-center justify-center">
         <div className="text-center">
-          <FileText className="mx-auto h-12 w-12 sm:h-16 sm:w-16 text-gray-400 mb-4" />
-          <p className="text-gray-600 text-sm sm:text-base">Upload a resume to see preview</p>
+          <FileText className="mx-auto h-8 w-8 sm:h-12 sm:w-12 lg:h-16 lg:w-16 text-gray-400 mb-2 sm:mb-4" />
+          <p className="text-gray-600 text-xs sm:text-sm lg:text-base">Upload a resume to see preview</p>
         </div>
       </div>
     );
@@ -78,15 +77,15 @@ const ResumePreviewComponent = ({ file, isLoading, results }) => {
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-lg border-2 border-green-500 h-[500px] sm:h-[600px] lg:h-[700px] xl:h-[800px]">
+      <div className="bg-white rounded-lg border-2 border-green-500 h-[300px] sm:h-[400px] lg:h-[700px] xl:h-[800px]">
         {/* File Header */}
-        <div className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-200 bg-gray-50">
+        <div className="flex items-center justify-between p-2 sm:p-3 lg:p-4 border-b border-gray-200 bg-gray-50">
           <div className="flex items-center min-w-0 flex-1">
             <div className="relative flex-shrink-0">
-              <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-green-500" />
+              <FileText className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-green-500" />
               <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
             </div>
-            <div className="ml-2 sm:ml-3 min-w-0 flex-1">
+            <div className="ml-2 min-w-0 flex-1">
               <h3 className="text-xs sm:text-sm font-semibold text-black truncate">{file?.name || 'Resume'}</h3>
               <p className="text-xs text-gray-500">
                 {file ? `${(file.size / 1024).toFixed(1)} KB` : 'Processing...'}
@@ -95,7 +94,7 @@ const ResumePreviewComponent = ({ file, isLoading, results }) => {
           </div>
           <div className="flex items-center space-x-2 flex-shrink-0">
             <div className="flex items-center text-green-500 text-xs font-medium">
-              <div className="w-2 h-2 bg-green-500 rounded-full mr-1 sm:mr-2 animate-pulse"></div>
+              <div className="w-2 h-2 bg-green-500 rounded-full mr-1 animate-pulse"></div>
               <span className="hidden sm:inline">Scanning...</span>
               <span className="sm:hidden">Scan...</span>
             </div>
@@ -103,7 +102,7 @@ const ResumePreviewComponent = ({ file, isLoading, results }) => {
         </div>
 
         {/* Resume Preview with Scanning Animation */}
-        <div className="relative h-[456px] sm:h-[556px] lg:h-[656px] xl:h-[756px] overflow-hidden">
+        <div className="relative h-[256px] sm:h-[356px] lg:h-[656px] xl:h-[756px] overflow-hidden">
           {/* Resume Content Background */}
           <div className="absolute inset-0 p-3 sm:p-6">
             {fileContent ? (
@@ -215,28 +214,28 @@ const ResumePreviewComponent = ({ file, isLoading, results }) => {
 
   if (results) {
     return (
-      <div className="space-y-3 sm:space-y-4 max-h-screen overflow-y-auto">
+      <div className="space-y-3 sm:space-y-4 max-h-[80vh] lg:max-h-screen overflow-y-auto">
         {/* ATS Score */}
-        <div className="bg-white p-4 sm:p-6 rounded-lg border-2 border-green-500 animate-fadeIn">
-          <div className="text-center mb-4">
-            <h3 className="text-lg sm:text-2xl font-bold text-black mb-2 truncate">{results.candidate_name}</h3>
+        <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg border-2 border-green-500 animate-fadeIn">
+          <div className="text-center mb-3 sm:mb-4">
+            <h3 className="text-base sm:text-lg lg:text-2xl font-bold text-black mb-2 truncate">{results.candidate_name}</h3>
             <div className="flex items-center justify-center space-x-2">
-              <div className="text-3xl sm:text-4xl font-bold text-green-500">{results.ats_score}%</div>
-              <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-green-500" />
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-green-500">{results.ats_score}%</div>
+              <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 lg:h-8 lg:w-8 text-green-500" />
             </div>
-            <p className="text-gray-600 text-sm sm:text-base">ATS Score</p>
+            <p className="text-gray-600 text-xs sm:text-sm lg:text-base">ATS Score</p>
           </div>
         </div>
 
         {/* Score Breakdown */}
-        <div className="bg-white p-4 sm:p-6 rounded-lg border-2 border-green-500 animate-fadeIn" style={{ animationDelay: '0.1s' }}>
-          <h4 className="font-semibold text-black mb-4 text-base sm:text-lg">Score Breakdown</h4>
-          <div className="space-y-3">
+        <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg border-2 border-green-500 animate-fadeIn" style={{ animationDelay: '0.1s' }}>
+          <h4 className="font-semibold text-black mb-3 sm:mb-4 text-sm sm:text-base lg:text-lg">Score Breakdown</h4>
+          <div className="space-y-2 sm:space-y-3">
             {Object.entries(results.score_breakdown).map(([key, value], index) => (
-              <div key={key} className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
-                <span className="text-black capitalize text-sm sm:text-base mb-1 sm:mb-0">{key.replace('_', ' ')}</span>
+              <div key={key} className="flex justify-between items-center">
+                <span className="text-black capitalize text-xs sm:text-sm lg:text-base">{key.replace('_', ' ')}</span>
                 <div className="flex items-center space-x-2">
-                  <div className="w-20 sm:w-24 bg-gray-200 rounded-full h-2">
+                  <div className="w-16 sm:w-20 lg:w-24 bg-gray-200 rounded-full h-2">
                     <div 
                       className="bg-green-500 h-2 rounded-full transition-all duration-1000 ease-out" 
                       style={{ 
@@ -245,7 +244,7 @@ const ResumePreviewComponent = ({ file, isLoading, results }) => {
                       }}
                     ></div>
                   </div>
-                  <span className="text-black font-medium w-8 text-sm sm:text-base">{value}%</span>
+                  <span className="text-black font-medium w-6 sm:w-8 text-xs sm:text-sm lg:text-base">{value}%</span>
                 </div>
               </div>
             ))}
@@ -253,15 +252,15 @@ const ResumePreviewComponent = ({ file, isLoading, results }) => {
         </div>
 
         {/* Strengths */}
-        <div className="bg-white p-4 sm:p-6 rounded-lg border-2 border-green-500 animate-fadeIn" style={{ animationDelay: '0.2s' }}>
-          <h4 className="font-semibold text-black mb-4 flex items-center text-base sm:text-lg">
-            <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-500 mr-2 flex-shrink-0" />
+        <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg border-2 border-green-500 animate-fadeIn" style={{ animationDelay: '0.2s' }}>
+          <h4 className="font-semibold text-black mb-3 sm:mb-4 flex items-center text-sm sm:text-base lg:text-lg">
+            <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 lg:h-5 lg:w-5 text-green-500 mr-2 flex-shrink-0" />
             Strengths
           </h4>
-          <ul className="space-y-2">
+          <ul className="space-y-1 sm:space-y-2">
             {results.strengths.map((strength, index) => (
               <li key={index} className="flex items-start animate-slideIn" style={{ animationDelay: `${0.3 + index * 0.1}s` }}>
-                <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                <CheckCircle className="h-2 w-2 sm:h-3 sm:w-3 lg:h-4 lg:w-4 text-green-500 mr-2 mt-1 flex-shrink-0" />
                 <span className="text-black text-xs sm:text-sm leading-relaxed">{strength}</span>
               </li>
             ))}
@@ -269,15 +268,15 @@ const ResumePreviewComponent = ({ file, isLoading, results }) => {
         </div>
 
         {/* Gaps */}
-        <div className="bg-white p-4 sm:p-6 rounded-lg border-2 border-green-500 animate-fadeIn" style={{ animationDelay: '0.3s' }}>
-          <h4 className="font-semibold text-black mb-4 flex items-center text-base sm:text-lg">
-            <XCircle className="h-4 w-4 sm:h-5 sm:w-5 text-red-500 mr-2 flex-shrink-0" />
+        <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg border-2 border-green-500 animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+          <h4 className="font-semibold text-black mb-3 sm:mb-4 flex items-center text-sm sm:text-base lg:text-lg">
+            <XCircle className="h-3 w-3 sm:h-4 sm:w-4 lg:h-5 lg:w-5 text-red-500 mr-2 flex-shrink-0" />
             Areas for Improvement
           </h4>
-          <ul className="space-y-2">
+          <ul className="space-y-1 sm:space-y-2">
             {results.gaps.map((gap, index) => (
               <li key={index} className="flex items-start animate-slideIn" style={{ animationDelay: `${0.4 + index * 0.1}s` }}>
-                <XCircle className="h-3 w-3 sm:h-4 sm:w-4 text-red-500 mr-2 mt-0.5 flex-shrink-0" />
+                <XCircle className="h-2 w-2 sm:h-3 sm:w-3 lg:h-4 lg:w-4 text-red-500 mr-2 mt-1 flex-shrink-0" />
                 <span className="text-black text-xs sm:text-sm leading-relaxed">{gap}</span>
               </li>
             ))}
@@ -285,15 +284,15 @@ const ResumePreviewComponent = ({ file, isLoading, results }) => {
         </div>
 
         {/* Recommendations */}
-        <div className="bg-white p-4 sm:p-6 rounded-lg border-2 border-green-500 animate-fadeIn" style={{ animationDelay: '0.4s' }}>
-          <h4 className="font-semibold text-black mb-4 flex items-center text-base sm:text-lg">
-            <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-orange-500 mr-2 flex-shrink-0" />
+        <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg border-2 border-green-500 animate-fadeIn" style={{ animationDelay: '0.4s' }}>
+          <h4 className="font-semibold text-black mb-3 sm:mb-4 flex items-center text-sm sm:text-base lg:text-lg">
+            <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4 lg:h-5 lg:w-5 text-orange-500 mr-2 flex-shrink-0" />
             Recommendations
           </h4>
-          <ul className="space-y-2">
+          <ul className="space-y-1 sm:space-y-2">
             {results.recommendations.map((recommendation, index) => (
               <li key={index} className="flex items-start animate-slideIn" style={{ animationDelay: `${0.5 + index * 0.1}s` }}>
-                <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4 text-orange-500 mr-2 mt-0.5 flex-shrink-0" />
+                <AlertCircle className="h-2 w-2 sm:h-3 sm:w-3 lg:h-4 lg:w-4 text-orange-500 mr-2 mt-1 flex-shrink-0" />
                 <span className="text-black text-xs sm:text-sm leading-relaxed">{recommendation}</span>
               </li>
             ))}
@@ -301,15 +300,15 @@ const ResumePreviewComponent = ({ file, isLoading, results }) => {
         </div>
 
         {/* Keywords Analysis */}
-        <div className="bg-white p-4 sm:p-6 rounded-lg border-2 border-green-500 animate-fadeIn" style={{ animationDelay: '0.5s' }}>
-          <h4 className="font-semibold text-black mb-4 text-base sm:text-lg">Keywords Analysis</h4>
+        <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg border-2 border-green-500 animate-fadeIn" style={{ animationDelay: '0.5s' }}>
+          <h4 className="font-semibold text-black mb-3 sm:mb-4 text-sm sm:text-base lg:text-lg">Keywords Analysis</h4>
           
-          <div className="mb-4">
-            <h5 className="font-medium text-black mb-2 flex items-center text-sm sm:text-base">
-              <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-green-500 mr-2 flex-shrink-0" />
+          <div className="mb-3 sm:mb-4">
+            <h5 className="font-medium text-black mb-2 flex items-center text-xs sm:text-sm lg:text-base">
+              <CheckCircle className="h-2 w-2 sm:h-3 sm:w-3 lg:h-4 lg:w-4 text-green-500 mr-2 flex-shrink-0" />
               Matching Keywords
             </h5>
-            <div className="flex flex-wrap gap-1 sm:gap-2">
+            <div className="flex flex-wrap gap-1">
               {results.matching_keywords.map((keyword, index) => (
                 <span 
                   key={index} 
@@ -323,11 +322,11 @@ const ResumePreviewComponent = ({ file, isLoading, results }) => {
           </div>
 
           <div>
-            <h5 className="font-medium text-black mb-2 flex items-center text-sm sm:text-base">
-              <XCircle className="h-3 w-3 sm:h-4 sm:w-4 text-red-500 mr-2 flex-shrink-0" />
+            <h5 className="font-medium text-black mb-2 flex items-center text-xs sm:text-sm lg:text-base">
+              <XCircle className="h-2 w-2 sm:h-3 sm:w-3 lg:h-4 lg:w-4 text-red-500 mr-2 flex-shrink-0" />
               Missing Keywords
             </h5>
-            <div className="flex flex-wrap gap-1 sm:gap-2">
+            <div className="flex flex-wrap gap-1">
               {results.missing_keywords.map((keyword, index) => (
                 <span 
                   key={index} 
@@ -342,8 +341,8 @@ const ResumePreviewComponent = ({ file, isLoading, results }) => {
         </div>
 
         {/* Overall Assessment */}
-        <div className="bg-white p-4 sm:p-6 rounded-lg border-2 border-green-500 animate-fadeIn" style={{ animationDelay: '0.6s' }}>
-          <h4 className="font-semibold text-black mb-4 text-base sm:text-lg">Overall Assessment</h4>
+        <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg border-2 border-green-500 animate-fadeIn" style={{ animationDelay: '0.6s' }}>
+          <h4 className="font-semibold text-black mb-3 sm:mb-4 text-sm sm:text-base lg:text-lg">Overall Assessment</h4>
           <p className="text-black text-xs sm:text-sm leading-relaxed">{results.overall_assessment}</p>
         </div>
       </div>
@@ -353,92 +352,27 @@ const ResumePreviewComponent = ({ file, isLoading, results }) => {
   // Show actual file preview when file is uploaded but not yet scanning
   if (file && !isLoading && !results) {
     return (
-      <div className="bg-white rounded-lg border-2 border-green-500 h-[500px] sm:h-[600px] lg:h-[700px] flex flex-col">
+      <div className="bg-white rounded-lg border-2 border-green-500 h-40 sm:h-48 lg:h-[700px] flex flex-col">
         {/* File Header */}
-        <div className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-200 bg-gray-50">
+        <div className="flex items-center justify-between p-2 sm:p-3 lg:p-4 border-b border-gray-200 bg-gray-50">
           <div className="flex items-center min-w-0 flex-1">
-            <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-green-500 flex-shrink-0" />
-            <div className="ml-2 sm:ml-3 min-w-0 flex-1">
+            <FileText className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-green-500 flex-shrink-0" />
+            <div className="ml-2 min-w-0 flex-1">
               <h3 className="text-xs sm:text-sm font-semibold text-black truncate">{file.name}</h3>
               <p className="text-xs text-gray-500">
-                {(file.size / 1024).toFixed(1)} KB • {file.type || 'Document'}
+                {(file.size / 1024).toFixed(1)} KB
               </p>
             </div>
-          </div>
-          <div className="flex items-center space-x-2 flex-shrink-0">
-            <Eye className="h-3 w-3 sm:h-4 sm:w-4 text-green-500" />
-            <ZoomIn className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
-            <Download className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
           </div>
         </div>
 
         {/* File Preview Content */}
-        <div className="flex-1 p-3 sm:p-4 min-h-0">
-          {isLoadingPreview ? (
-            <div className="h-full flex items-center justify-center">
-              <div className="text-center">
-                <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 text-green-500 animate-spin mx-auto mb-2" />
-                <p className="text-gray-600 text-xs sm:text-sm">Loading preview...</p>
-              </div>
-            </div>
-          ) : previewError ? (
-            <div className="h-full flex items-center justify-center">
-              <div className="text-center">
-                <AlertCircle className="h-6 w-6 sm:h-8 sm:w-8 text-red-500 mx-auto mb-2" />
-                <p className="text-red-600 text-xs sm:text-sm">{previewError}</p>
-              </div>
-            </div>
-          ) : fileContent ? (
-            <div className="h-full">
-              {fileContent.type === 'pdf' && (
-                <iframe 
-                  src={fileContent.url}
-                  className="w-full h-full border rounded"
-                  title="Resume Preview"
-                />
-              )}
-              
-              {fileContent.type === 'text' && (
-                <div className="h-full overflow-y-auto">
-                  <pre className="text-xs text-black whitespace-pre-wrap font-mono p-2 sm:p-4 bg-gray-50 rounded">
-                    {fileContent.content}
-                  </pre>
-                </div>
-              )}
-              
-              {fileContent.type === 'document' && (
-                <div className="h-full flex flex-col items-center justify-center bg-gray-50 rounded px-4">
-                  <div className="text-center">
-                    <FileText className="h-12 w-12 sm:h-16 sm:w-16 text-green-500 mx-auto mb-4" />
-                    <h3 className="text-base sm:text-lg font-semibold text-black mb-2 truncate max-w-full">{fileContent.name}</h3>
-                    <p className="text-gray-600 text-xs sm:text-sm mb-4">
-                      {(fileContent.size / 1024).toFixed(1)} KB
-                    </p>
-                    <div className="space-y-2 mb-4">
-                      <p className="text-xs sm:text-sm text-gray-700">Document ready for analysis</p>
-                      <p className="text-xs text-gray-500">Add job description and click scan to analyze</p>
-                    </div>
-                    <a 
-                      href={fileContent.url} 
-                      download={fileContent.name}
-                      className="inline-flex items-center px-3 sm:px-4 py-2 bg-green-500 text-white text-xs sm:text-sm rounded hover:bg-green-600 transition-colors"
-                    >
-                      <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                      Download
-                    </a>
-                  </div>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="h-full flex items-center justify-center">
-              <div className="text-center">
-                <CheckCircle className="w-12 h-12 sm:w-16 sm:h-16 bg-green-100 text-green-500 rounded-full p-3 sm:p-4 mx-auto mb-4" />
-                <p className="text-black font-medium mb-2 text-sm sm:text-base">File Ready</p>
-                <p className="text-gray-600 text-xs sm:text-sm">Add job description and click scan</p>
-              </div>
-            </div>
-          )}
+        <div className="flex-1 flex items-center justify-center p-2 sm:p-3 lg:p-4">
+          <div className="text-center">
+            <CheckCircle className="w-8 h-8 sm:w-12 sm:h-12 lg:w-16 lg:h-16 bg-green-100 text-green-500 rounded-full p-2 sm:p-3 lg:p-4 mx-auto mb-2 sm:mb-4" />
+            <p className="text-black font-medium mb-1 sm:mb-2 text-xs sm:text-sm lg:text-base">File Ready</p>
+            <p className="text-gray-600 text-xs sm:text-sm">Add job description and click scan</p>
+          </div>
         </div>
       </div>
     );
