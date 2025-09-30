@@ -6,6 +6,7 @@ import {
   BarChart3,
   TrendingUp,
   User,
+  Route,
   Target,
   LogOut,
   Plus,
@@ -103,6 +104,12 @@ const UserSideBar = () => {
       label: 'Add Task',
       path: '/user/add-task',
       description: 'Add new AI tasks'
+    },
+    {
+      icon: Route,
+      label: 'Road Map',
+      path: '/user/road-map',
+      description: 'Track your AI learning journey'
     },
     {
       icon: BarChart3,
