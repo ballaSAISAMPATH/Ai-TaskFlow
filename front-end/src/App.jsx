@@ -33,6 +33,7 @@ import ForgotPassword from './pages/auth/ForgotPassword';
 import ChangePassword from './pages/auth/ChangePassword';
 import CandyCrushGoalMap from './pages/UserPages/CandyCrushGoalMap';
 import ScanResume from './pages/UserPages/ScanResume';
+import RoadMap from './pages/UserPages/RoadMap';
 const App = () => {
   const { isLoading: authInitLoading } = useAuthInitialize();
   const { user, isAuthenticated, isLoading } = useSelector((state) => state.auth);
@@ -58,6 +59,7 @@ const App = () => {
           <Route path="/user" element={<TaskLayout />}>
             <Route path="add-task" element={<AddTask />} />
             <Route path="dashboard" element={<DashBoard />} />
+            <Route path="road-map" element={<RoadMap />} />
             <Route path='home' element={<UserHome/>} />
             <Route path='profile' element={<UserProfile/>} />
             <Route path='add-manual' element={<ManualTask/>} />
