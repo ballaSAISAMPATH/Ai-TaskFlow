@@ -15,7 +15,7 @@ const loginHistory = require('./routes/loginHistory-routes')
 const otpRoutes = require('./routes/otp-routes')
 const app = express();
 const PORT = process.env.PORT || 5000; 
-const roadmap_router = require('./routes/roadmap-routes')
+// const roadmap_router = require('./routes/roadmap-routes')
 app.use(cors({
   origin: process.env.CLIENT_ORIGIN, 
   credentials: true,             
@@ -24,7 +24,7 @@ app.use(cors({
 app.use(cookieParser());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
-app.use("/user",roadmap_router);
+// app.use("/user",roadmap_router);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/auth', authRouter);
 app.use('/api/feedback',feedbackRouter)

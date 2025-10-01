@@ -1,14 +1,13 @@
-const 
-const generateRoadmapController = async (req, res) => {
-  try {
-    console.log("hii");
+// const generateRoadmapController = async (req, res) => {
+//   try {
+//     console.log("hii");
     
-    console.log(req.body);
+//     console.log(req.body);
    
-  } catch (error) {
-    console.error(error);
+//   } catch (error) {
+//     console.error(error);
    
-  }
-};
+//   }
+// };
 
-module.exports = { generateRoadmapController };
+// module.exports = { generateRoadmapController };
