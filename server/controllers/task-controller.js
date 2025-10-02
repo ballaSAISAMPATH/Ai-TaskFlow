@@ -2,10 +2,14 @@ import Goal from '../models/goal.js';
 import mongoose from 'mongoose';
 import axios from 'axios';
 import User from '../models/User.js';
-
+import { configDotenv } from 'dotenv';
+configDotenv()
 const MICROSERVICE_BASE_URL = process.env.MICROSERVICE_URL;
 
 const createGoal = async (req, res) => {
+  console.log(req.body);
+  console.log(`${MICROSERVICE_BASE_URL}/generate-plan`);
+  
   try {
     const { goal, duration, user } = req.body;
     const userId = user?.id || user?._id;
