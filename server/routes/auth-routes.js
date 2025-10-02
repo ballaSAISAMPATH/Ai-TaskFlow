@@ -1,5 +1,5 @@
-const express = require('express');
-const {
+import express from 'express';
+import {
   registerUser,
   loginUser,
   logoutUser,
@@ -8,8 +8,8 @@ const {
   deleteAccount,
   changePassword,
   refreshAccessToken
-} = require("../controllers/auth-controller");
-const User = require('../models/User');
+} from "../controllers/auth-controller.js";
+import User from '../models/User.js';
 
 const router = express.Router();
 
@@ -19,7 +19,6 @@ router.post("/logout", logoutUser);
 router.post("/google-login", googleLogin);
 router.delete("/delete-account", authMiddleware, deleteAccount);
 router.post("/setnewpassword", authMiddleware, changePassword);
-
 router.post("/refresh", refreshAccessToken);
 
 router.get("/check-auth", authMiddleware, async (req, res) => {
@@ -54,4 +53,4 @@ router.get("/check-auth", authMiddleware, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

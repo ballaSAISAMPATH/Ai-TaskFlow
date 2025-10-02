@@ -306,6 +306,7 @@ export default function ExampleGeneration() {
   return (
     <div>
          {/* Example Sections */}
+         <div className={`text-2xl p-4 font-bold`}>Example roadmap generation</div>
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
           {/* Python Programming Example */}
           <div className="bg-white rounded-xl shadow-lg p-8">

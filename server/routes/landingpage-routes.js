@@ -1,8 +1,8 @@
-const express = require('express');
-const { getLandingStats } = require('../controllers/landingpage-controller');
+import express from 'express';
+import { getLandingStats } from '../controllers/landingpage-controller.js';
 
 const router = express.Router();
 
 router.get('/landing', getLandingStats);
 
-module.exports = router;
+export default router;
