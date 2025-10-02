@@ -36,6 +36,7 @@ import ScanResume from './pages/UserPages/ScanResume';
 import RoadMapGeneration from './pages/UserPages/RoadMapGeneration';
 import RoadmapDisplay from './pages/UserPages/RoadmapDisplay';
 import RoadMap from './pages/UserPages/RoadMap';
+import AllRoadmaps from './pages/UserPages/AllRoadmaps';
 const App = () => {
   const { isLoading: authInitLoading } = useAuthInitialize();
   const { user, isAuthenticated, isLoading } = useSelector((state) => state.auth);
@@ -63,7 +64,7 @@ const App = () => {
             <Route path="add-task" element={<AddTask />} />
             <Route path="dashboard" element={<DashBoard />} />
             <Route path="road-map" element={<RoadMap />}>
-              <Route path='' element={<RoadmapDisplay/>} />
+              <Route path='' element={<AllRoadmaps/>} />
               <Route path='create-roadmap' element={<RoadMapGeneration/>} />
             </Route>
             <Route path='profile' element={<UserProfile/>} />
