@@ -7,9 +7,7 @@ configDotenv();
 const MICROSERVICE_BASE_URL = process.env.MICROSERVICE_URL;
 
 const createGoal = async (req, res) => {
-  console.log(req.body);
-  console.log(`${MICROSERVICE_BASE_URL}/generate-plan`);
-  
+  console.log(req.body);  
   try {
     const { goal, duration, user } = req.body;
     const userId = user?.id || user?._id;

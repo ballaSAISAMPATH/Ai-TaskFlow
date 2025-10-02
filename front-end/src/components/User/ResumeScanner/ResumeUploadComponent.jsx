@@ -94,10 +94,10 @@ const ResumeUploadComponent = ({ onFileUpload, onJdChange, onScanResume, isLoadi
           </div>
         ) : (
           <div className="border-2 border-green-500 bg-green-50 rounded-lg p-3 sm:p-4 lg:p-6">
-            <div className="flex items-center justify-between">
+            <div className="pflex flex-col items-center justify-between">
               <div className="flex items-center space-x-2 sm:space-x-3">
                 <div className="flex-shrink-0">
-                  <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
+                  <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-green-600 text-wrap" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs sm:text-sm lg:text-base font-medium text-green-800 truncate">
@@ -111,7 +111,7 @@ const ResumeUploadComponent = ({ onFileUpload, onJdChange, onScanResume, isLoadi
               </div>
               <button
                 onClick={removeFile}
-                className="ml-2 sm:ml-4 text-xs sm:text-sm text-red-600 hover:text-red-800 font-medium"
+                className="ml-2 sm:m-0 text-xs sm:text-sm text-red-600 hover:text-red-800 font-medium"
                 disabled={isLoading}
               >
                 Remove
