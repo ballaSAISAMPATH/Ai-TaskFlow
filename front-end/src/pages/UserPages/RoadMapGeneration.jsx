@@ -8,6 +8,7 @@ export default function RoadMapGeneration() {
   const [skill, setSkill] = useState('');
   const [selectedApproach,setSelectedApproach] = useState('complete-mastery');
   const [generatedRoadmap, setGeneratedRoadmap] = useState(null);
+  const [isLoading,setIsLoading] = useState(false);
   const user = useSelector((state)=>state.auth.user)
 
   const popularSkills = [
@@ -85,6 +86,7 @@ export default function RoadMapGeneration() {
   };
 
  const roadmapGenerationRequest = async () => {
+  setIsLoading(true);
   if (!skill) {
     toast.info('Please enter a skill to generate comprehensive roadmap');
     return;
@@ -94,13 +96,15 @@ export default function RoadMapGeneration() {
   const approachObject = learningApproaches.find(
     (approach) => approach.id === selectedApproach
   );
-
+  console.log(skill,approachObject,user.id);
+  
   try {
     const response = await axios.post("http://localhost:5000/user/roadmap/generation", {
       skill: skill,
       approach: approachObject,
       id:user.id, 
     });
+    setIsLoading(false);
     console.log(response.data);
     setGeneratedRoadmap(response.data); 
   } catch (error) {
@@ -108,7 +112,6 @@ export default function RoadMapGeneration() {
     toast.error("Failed to generate roadmap");
   }
 };
-
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
@@ -193,7 +196,8 @@ export default function RoadMapGeneration() {
               onClick={roadmapGenerationRequest}
               className="bg-green-500 hover:bg-green-600 text-white font-semibold py-4 px-8 rounded-lg text-lg transition-colors duration-200 shadow-md hover:shadow-lg"
             >
-              🗺️ Generate Complete Concept Map
+                {isLoading?<div className='flex  gap-3'><div className='w-7 h-7 p-0 border-t-1 animate-spin rounded-3xl'></div><div>Generating Complete Concept Map</div> </div>:<div>Generate Complete Concept Map</div> } 
+                
             </button>
           </div>
 
