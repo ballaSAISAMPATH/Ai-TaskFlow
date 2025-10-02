@@ -1,13 +1,13 @@
-const Goal = require('../models/goal'); 
-const mongoose = require('mongoose');
-const axios = require('axios');
-const  User = require('../models/User')
+import Goal from '../models/goal.js';
+import mongoose from 'mongoose';
+import axios from 'axios';
+import User from '../models/User.js';
 
 const MICROSERVICE_BASE_URL = process.env.MICROSERVICE_URL;
 
- const createGoal = async (req, res) => {
+const createGoal = async (req, res) => {
   try {
-    const { goal, duration, user } = req.body; 
+    const { goal, duration, user } = req.body;
     const userId = user?.id || user?._id;
 
     if (!goal || !duration) {
@@ -30,7 +30,7 @@ const MICROSERVICE_BASE_URL = process.env.MICROSERVICE_URL;
     });
 
     const planData = microserviceResponse.data;
-    
+
     // Ensure dailyTasks resources are properly formatted
     const processedDailyTasks = planData.dailyTasks.map(task => ({
       ...task,
@@ -69,12 +69,12 @@ const MICROSERVICE_BASE_URL = process.env.MICROSERVICE_URL;
 
   } catch (error) {
     console.error('Error creating goal:', error);
-    
+
     // Log the actual data structure for debugging
     if (error.name === 'ValidationError') {
       console.log('Validation error details:', JSON.stringify(error.errors, null, 2));
     }
-    
+
     if (error.response && error.response.data) {
       return res.status(error.response.status || 500).json({
         success: false,
@@ -89,11 +89,11 @@ const MICROSERVICE_BASE_URL = process.env.MICROSERVICE_URL;
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
-}
+};
 
 const getAllGoals = async (req, res) => {
   try {
-    const { user } = req.body; 
+    const { user } = req.body;
     const userId = user?.id || user?._id;
 
     if (!userId) {
@@ -120,153 +120,155 @@ const getAllGoals = async (req, res) => {
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
-}
+};
 
-  const getGoalById= async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { user } = req.body; 
-      const userId = user?.id || user?._id;
+const getGoalById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { user } = req.body;
+    const userId = user?.id || user?._id;
 
-      if (!userId) {
-        return res.status(400).json({
-          success: false,
-          message: 'User information is required'
-        });
-      }
-
-      if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid goal ID format'
-        });
-      }
-
-      const goal = await Goal.findOne({ _id: id, userId }).select('-__v');
-
-      if (!goal) {
-        return res.status(404).json({
-          success: false,
-          message: 'Goal not found'
-        });
-      }
-
-      res.status(200).json({
-        success: true,
-        data: goal
-      });
-
-    } catch (error) {
-      console.error('Error fetching goal:', error);
-      res.status(500).json({
+    if (!userId) {
+      return res.status(400).json({
         success: false,
-        message: 'Internal server error',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        message: 'User information is required'
       });
     }
-  }
 
-  const updateGoal= async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { user, goalTitle, duration } = req.body; 
-      const userId = user?.id || user?._id;
-
-      if (!userId) {
-        return res.status(400).json({
-          success: false,
-          message: 'User information is required'
-        });
-      }
-
-      if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid goal ID format'
-        });
-      }
-
-      const updateData = {};
-      if (goalTitle) updateData.goalTitle = goalTitle;
-      if (duration) updateData.duration = duration;
-
-      const goal = await Goal.findOneAndUpdate(
-        { _id: id, userId },
-        { ...updateData, updatedAt: new Date() },
-        { new: true, runValidators: true }
-      ).select('-__v');
-
-      if (!goal) {
-        return res.status(404).json({
-          success: false,
-          message: 'Goal not found'
-        });
-      }
-
-      res.status(200).json({
-        success: true,
-        data: goal,
-        message: 'Goal updated successfully'
-      });
-
-    } catch (error) {
-      console.error('Error updating goal:', error);
-      res.status(500).json({
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
         success: false,
-        message: 'Internal server error',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        message: 'Invalid goal ID format'
       });
     }
+
+    const goal = await Goal.findOne({ _id: id, userId }).select('-__v');
+
+    if (!goal) {
+      return res.status(404).json({
+        success: false,
+        message: 'Goal not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: goal
+    });
+
+  } catch (error) {
+    console.error('Error fetching goal:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
+};
+
+const updateGoal = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { user, goalTitle, duration } = req.body;
+    const userId = user?.id || user?._id;
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: 'User information is required'
+      });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid goal ID format'
+      });
+    }
+
+    const updateData = {};
+    if (goalTitle) updateData.goalTitle = goalTitle;
+    if (duration) updateData.duration = duration;
+
+    const goal = await Goal.findOneAndUpdate(
+      { _id: id, userId },
+      { ...updateData, updatedAt: new Date() },
+      { new: true, runValidators: true }
+    ).select('-__v');
+
+    if (!goal) {
+      return res.status(404).json({
+        success: false,
+        message: 'Goal not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: goal,
+      message: 'Goal updated successfully'
+    });
+
+  } catch (error) {
+    console.error('Error updating goal:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
 const checkAllTasksCompleted = (goal) => {
   const allDailyCompleted = goal.dailyTasks.every(task => task.status === true);
   const allWeeklyCompleted = goal.weeklyTasks.every(task => task.status === true);
   const allMonthlyCompleted = goal.monthlyTasks.every(task => task.status === true);
-  
+
   return allDailyCompleted && allWeeklyCompleted && allMonthlyCompleted;
-}
-  const updateDailyTaskStatus= async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { taskIndex, status, user } = req.body; 
-      const userId = user?.id || user?._id;
+};
 
-      if (!userId) {
-        return res.status(400).json({
-          success: false,
-          message: 'User information is required'
-        });
-      }
+const updateDailyTaskStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { taskIndex, status, user } = req.body;
+    const userId = user?.id || user?._id;
 
-      if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid goal ID format'
-        });
-      }
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: 'User information is required'
+      });
+    }
 
-      const goal = await Goal.findOne({ _id: id, userId });
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid goal ID format'
+      });
+    }
 
-      if (!goal) {
-        return res.status(404).json({
-          success: false,
-          message: 'Goal not found'
-        });
-      }
+    const goal = await Goal.findOne({ _id: id, userId });
 
-      if (taskIndex < 0 || taskIndex >= goal.dailyTasks.length) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid task index'
-        });
-      }
-      goal.dailyTasks[taskIndex].status = status;
-       const allTasksCompleted = checkAllTasksCompleted(goal);
-      goal.isCompleted = allTasksCompleted;
+    if (!goal) {
+      return res.status(404).json({
+        success: false,
+        message: 'Goal not found'
+      });
+    }
 
-      await goal.save();
+    if (taskIndex < 0 || taskIndex >= goal.dailyTasks.length) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid task index'
+      });
+    }
+    goal.dailyTasks[taskIndex].status = status;
+    const allTasksCompleted = checkAllTasksCompleted(goal);
+    goal.isCompleted = allTasksCompleted;
 
-      res.status(200).json({
+    await goal.save();
+
+    res.status(200).json({
       success: true,
       message: 'Daily task status updated successfully',
       data: {
@@ -277,119 +279,119 @@ const checkAllTasksCompleted = (goal) => {
       }
     });
 
-    } catch (error) {
-      console.error('Error updating daily task status:', error);
-      res.status(500).json({
+  } catch (error) {
+    console.error('Error updating daily task status:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
+const updateWeeklyTaskStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { taskIndex, status, user } = req.body;
+    const userId = user?.id || user?._id;
+
+    if (!userId) {
+      return res.status(400).json({
         success: false,
-        message: 'Internal server error',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        message: 'User information is required'
       });
     }
-  }
 
-  const updateWeeklyTaskStatus= async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { taskIndex, status, user } = req.body; 
-      const userId = user?.id || user?._id;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid goal ID format'
+      });
+    }
 
-      if (!userId) {
-        return res.status(400).json({
-          success: false,
-          message: 'User information is required'
-        });
-      }
+    const goal = await Goal.findOne({ _id: id, userId });
 
-      if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid goal ID format'
-        });
-      }
+    if (!goal) {
+      return res.status(404).json({
+        success: false,
+        message: 'Goal not found'
+      });
+    }
 
-      const goal = await Goal.findOne({ _id: id, userId });
+    if (taskIndex < 0 || taskIndex >= goal.weeklyTasks.length) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid task index'
+      });
+    }
 
-      if (!goal) {
-        return res.status(404).json({
-          success: false,
-          message: 'Goal not found'
-        });
-      }
-
-      if (taskIndex < 0 || taskIndex >= goal.weeklyTasks.length) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid task index'
-        });
-      }
-
-      goal.weeklyTasks[taskIndex].status = status;
+    goal.weeklyTasks[taskIndex].status = status;
     const allTasksCompleted = checkAllTasksCompleted(goal);
     goal.isCompleted = allTasksCompleted;
-      await goal.save();
+    await goal.save();
 
-      res.status(200).json({
-        success: true,
-        message: 'Weekly task status updated successfully',
-        data: {
-          taskIndex,
-          newStatus: status,
-          taskLabel: goal.weeklyTasks[taskIndex].label,
-          isCompleted: goal.isCompleted
-        }
-      });
+    res.status(200).json({
+      success: true,
+      message: 'Weekly task status updated successfully',
+      data: {
+        taskIndex,
+        newStatus: status,
+        taskLabel: goal.weeklyTasks[taskIndex].label,
+        isCompleted: goal.isCompleted
+      }
+    });
 
-    } catch (error) {
-      console.error('Error updating weekly task status:', error);
-      res.status(500).json({
+  } catch (error) {
+    console.error('Error updating weekly task status:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
+const updateMonthlyTaskStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { taskIndex, status, user } = req.body;
+    const userId = user?.id || user?._id;
+
+    if (!userId) {
+      return res.status(400).json({
         success: false,
-        message: 'Internal server error',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        message: 'User information is required'
       });
     }
-  }
 
-  const updateMonthlyTaskStatus= async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { taskIndex, status, user } = req.body; 
-      const userId = user?.id || user?._id;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid goal ID format'
+      });
+    }
 
-      if (!userId) {
-        return res.status(400).json({
-          success: false,
-          message: 'User information is required'
-        });
-      }
+    const goal = await Goal.findOne({ _id: id, userId });
 
-      if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid goal ID format'
-        });
-      }
+    if (!goal) {
+      return res.status(404).json({
+        success: false,
+        message: 'Goal not found'
+      });
+    }
 
-      const goal = await Goal.findOne({ _id: id, userId });
+    if (taskIndex < 0 || taskIndex >= goal.monthlyTasks.length) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid task index'
+      });
+    }
 
-      if (!goal) {
-        return res.status(404).json({
-          success: false,
-          message: 'Goal not found'
-        });
-      }
-
-      if (taskIndex < 0 || taskIndex >= goal.monthlyTasks.length) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid task index'
-        });
-      }
-
-      goal.monthlyTasks[taskIndex].status = status;
-      const allTasksCompleted = checkAllTasksCompleted(goal);
-      goal.isCompleted = allTasksCompleted;
-      await goal.save();
-      res.status(200).json({
+    goal.monthlyTasks[taskIndex].status = status;
+    const allTasksCompleted = checkAllTasksCompleted(goal);
+    goal.isCompleted = allTasksCompleted;
+    await goal.save();
+    res.status(200).json({
       success: true,
       message: 'Monthly task status updated successfully',
       data: {
@@ -399,208 +401,208 @@ const checkAllTasksCompleted = (goal) => {
         isCompleted: goal.isCompleted
       }
     });
-    } catch (error) {
-      console.error('Error updating monthly task status:', error);
-      res.status(500).json({
+  } catch (error) {
+    console.error('Error updating monthly task status:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
+const getDailyTasks = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { user } = req.body;
+    const userId = user?.id || user?._id;
+
+    if (!userId) {
+      return res.status(400).json({
         success: false,
-        message: 'Internal server error',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        message: 'User information is required'
       });
     }
-  }
 
-  const getDailyTasks= async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { user } = req.body; 
-      const userId = user?.id || user?._id;
-
-      if (!userId) {
-        return res.status(400).json({
-          success: false,
-          message: 'User information is required'
-        });
-      }
-
-      if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid goal ID format'
-        });
-      }
-
-      const goal = await Goal.findOne({ _id: id, userId }).select('dailyTasks goalTitle');
-
-      if (!goal) {
-        return res.status(404).json({
-          success: false,
-          message: 'Goal not found'
-        });
-      }
-
-      res.status(200).json({
-        success: true,
-        data: {
-          goalTitle: goal.goalTitle,
-          dailyTasks: goal.dailyTasks
-        }
-      });
-
-    } catch (error) {
-      console.error('Error fetching daily tasks:', error);
-      res.status(500).json({
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
         success: false,
-        message: 'Internal server error',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        message: 'Invalid goal ID format'
       });
     }
-  }
 
-  const getWeeklyTasks= async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { user } = req.body; 
-      const userId = user?.id || user?._id;
+    const goal = await Goal.findOne({ _id: id, userId }).select('dailyTasks goalTitle');
 
-      if (!userId) {
-        return res.status(400).json({
-          success: false,
-          message: 'User information is required'
-        });
-      }
-
-      if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid goal ID format'
-        });
-      }
-
-      const goal = await Goal.findOne({ _id: id, userId }).select('weeklyTasks goalTitle');
-
-      if (!goal) {
-        return res.status(404).json({
-          success: false,
-          message: 'Goal not found'
-        });
-      }
-
-      res.status(200).json({
-        success: true,
-        data: {
-          goalTitle: goal.goalTitle,
-          weeklyTasks: goal.weeklyTasks
-        }
-      });
-
-    } catch (error) {
-      console.error('Error fetching weekly tasks:', error);
-      res.status(500).json({
+    if (!goal) {
+      return res.status(404).json({
         success: false,
-        message: 'Internal server error',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        message: 'Goal not found'
       });
     }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        goalTitle: goal.goalTitle,
+        dailyTasks: goal.dailyTasks
+      }
+    });
+
+  } catch (error) {
+    console.error('Error fetching daily tasks:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
+};
 
-  const getMonthlyTasks= async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { user } = req.body; 
-      const userId = user?.id || user?._id;
+const getWeeklyTasks = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { user } = req.body;
+    const userId = user?.id || user?._id;
 
-      if (!userId) {
-        return res.status(400).json({
-          success: false,
-          message: 'User information is required'
-        });
-      }
-
-      if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid goal ID format'
-        });
-      }
-
-      const goal = await Goal.findOne({ _id: id, userId }).select('monthlyTasks goalTitle');
-
-      if (!goal) {
-        return res.status(404).json({
-          success: false,
-          message: 'Goal not found'
-        });
-      }
-
-      res.status(200).json({
-        success: true,
-        data: {
-          goalTitle: goal.goalTitle,
-          monthlyTasks: goal.monthlyTasks
-        }
-      });
-
-    } catch (error) {
-      console.error('Error fetching monthly tasks:', error);
-      res.status(500).json({
+    if (!userId) {
+      return res.status(400).json({
         success: false,
-        message: 'Internal server error',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        message: 'User information is required'
       });
     }
-  }
 
- const  deleteGoal= async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { user } = req.body; 
-      const userId = user?.id || user?._id;
-
-      if (!userId) {
-        return res.status(400).json({
-          success: false,
-          message: 'User information is required'
-        });
-      }
-
-      if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid goal ID format'
-        });
-      }
-
-      const goal = await Goal.findOneAndDelete({ _id: id, userId });
-
-      if (!goal) {
-        return res.status(404).json({
-          success: false,
-          message: 'Goal not found'
-        });
-      }
-
-      res.status(200).json({
-        success: true,
-        message: 'Goal deleted successfully',
-        data: { 
-          deletedGoalId: id,
-          deletedGoalTitle: goal.goalTitle
-        }
-      });
-
-    } catch (error) {
-      console.error('Error deleting goal:', error);
-      res.status(500).json({
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
         success: false,
-        message: 'Internal server error',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        message: 'Invalid goal ID format'
       });
     }
+
+    const goal = await Goal.findOne({ _id: id, userId }).select('weeklyTasks goalTitle');
+
+    if (!goal) {
+      return res.status(404).json({
+        success: false,
+        message: 'Goal not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        goalTitle: goal.goalTitle,
+        weeklyTasks: goal.weeklyTasks
+      }
+    });
+
+  } catch (error) {
+    console.error('Error fetching weekly tasks:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
+};
+
+const getMonthlyTasks = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { user } = req.body;
+    const userId = user?.id || user?._id;
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: 'User information is required'
+      });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid goal ID format'
+      });
+    }
+
+    const goal = await Goal.findOne({ _id: id, userId }).select('monthlyTasks goalTitle');
+
+    if (!goal) {
+      return res.status(404).json({
+        success: false,
+        message: 'Goal not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        goalTitle: goal.goalTitle,
+        monthlyTasks: goal.monthlyTasks
+      }
+    });
+
+  } catch (error) {
+    console.error('Error fetching monthly tasks:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
+const deleteGoal = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { user } = req.body;
+    const userId = user?.id || user?._id;
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: 'User information is required'
+      });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid goal ID format'
+      });
+    }
+
+    const goal = await Goal.findOneAndDelete({ _id: id, userId });
+
+    if (!goal) {
+      return res.status(404).json({
+        success: false,
+        message: 'Goal not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Goal deleted successfully',
+      data: {
+        deletedGoalId: id,
+        deletedGoalTitle: goal.goalTitle
+      }
+    });
+
+  } catch (error) {
+    console.error('Error deleting goal:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
 
 const getGoalStats = async (req, res) => {
   try {
-    const { user } = req.body; 
+    const { user } = req.body;
     const userId = user?.id || user?._id;
 
     if (!userId) {
@@ -629,7 +631,7 @@ const getGoalStats = async (req, res) => {
       let goalTotalTasks = 0;
       let goalCompletedTasks = 0;
 
-    
+
       stats.taskBreakdown.daily.total += goal.dailyTasks.length;
       const completedDailyTasks = goal.dailyTasks.filter(task => task.status).length;
       stats.taskBreakdown.daily.completed += completedDailyTasks;
@@ -643,7 +645,7 @@ const getGoalStats = async (req, res) => {
       goalTotalTasks += goal.weeklyTasks.length;
       goalCompletedTasks += completedWeeklyTasks;
 
-    
+
       stats.taskBreakdown.monthly.total += goal.monthlyTasks.length;
       const completedMonthlyTasks = goal.monthlyTasks.filter(task => task.status).length;
       stats.taskBreakdown.monthly.completed += completedMonthlyTasks;
@@ -653,7 +655,7 @@ const getGoalStats = async (req, res) => {
       stats.totalTasks += goalTotalTasks;
       stats.completedTasks += goalCompletedTasks;
 
-      const goalCompletionRate = goalTotalTasks > 0 ? 
+      const goalCompletionRate = goalTotalTasks > 0 ?
         Math.round((goalCompletedTasks / goalTotalTasks) * 100) : 0;
 
       stats.goalProgress.push({
@@ -662,7 +664,7 @@ const getGoalStats = async (req, res) => {
         totalTasks: goalTotalTasks,
         completedTasks: goalCompletedTasks,
         completionRate: goalCompletionRate,
-        isCompleted: goal.isCompleted 
+        isCompleted: goal.isCompleted
       });
 
       if (goal.isCompleted) {
@@ -670,7 +672,7 @@ const getGoalStats = async (req, res) => {
       }
     });
 
-    stats.overallCompletionRate = stats.totalTasks > 0 ? 
+    stats.overallCompletionRate = stats.totalTasks > 0 ?
       Math.round((stats.completedTasks / stats.totalTasks) * 100) : 0;
 
     res.status(200).json({
@@ -686,7 +688,8 @@ const getGoalStats = async (req, res) => {
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
-}
+};
+
 const addManualTask = async (req, res) => {
   try {
     const {
@@ -773,6 +776,18 @@ const addManualTask = async (req, res) => {
   }
 };
 
-module.exports = {createGoal,getAllGoals,getGoalById,updateGoal,updateDailyTaskStatus,updateWeeklyTaskStatus,updateMonthlyTaskStatus,getDailyTasks
-  ,getWeeklyTasks,getMonthlyTasks,deleteGoal,getGoalStats,addManualTask
+export {
+  createGoal,
+  getAllGoals,
+  getGoalById,
+  updateGoal,
+  updateDailyTaskStatus,
+  updateWeeklyTaskStatus,
+  updateMonthlyTaskStatus,
+  getDailyTasks,
+  getWeeklyTasks,
+  getMonthlyTasks,
+  deleteGoal,
+  getGoalStats,
+  addManualTask
 };

@@ -1,9 +1,9 @@
-const express = require("express");
-const { getDashboardAnalytics } = require("../controllers/userDashboard-controller");
+import { Router } from "express";
+import { getDashboardAnalytics } from "../controllers/userDashboard-controller.js";
 
-const router = express.Router();
+const router = Router();
 
 // Analytics for graphs only (7-day data)
 router.get('/dashboard/analytics/:userId', getDashboardAnalytics);
 
-module.exports = router;
+export default router;

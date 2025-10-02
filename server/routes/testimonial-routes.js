@@ -1,12 +1,7 @@
-const express = require("express");
-const {
-  getAllTestimonials,
-  getTestimonialsWithPagination,
-  addFeedbackToTestimonials,
-  deleteTestimonial
-} = require("../controllers/testimonials-controller.js");
+import { Router } from "express";
+import { getAllTestimonials, getTestimonialsWithPagination, addFeedbackToTestimonials, deleteTestimonial } from "../controllers/testimonials-controller.js";
 
-const router = express.Router();
+const router = Router();
 
 router.get("/", getAllTestimonials);
 router.get("/paginated", getTestimonialsWithPagination);
@@ -14,4 +9,4 @@ router.get("/paginated", getTestimonialsWithPagination);
 router.post("/add-feedback/:feedbackId", addFeedbackToTestimonials);
 router.delete("/:id", deleteTestimonial);
 
-module.exports = router;
+export default router;

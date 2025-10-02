@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const taskGroupSchema = require('./Task.js');
+import mongoose from 'mongoose';
+import taskGroupSchema from './Task.js';
 
 const goalSchema = new mongoose.Schema({
   goalTitle: {
@@ -44,4 +44,4 @@ const goalSchema = new mongoose.Schema({
 });
 
 const Goal = mongoose.model('Goal', goalSchema);
-module.exports = Goal;
+export default Goal;

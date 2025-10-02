@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const resourceSchema = new mongoose.Schema({
   title: {
@@ -38,4 +38,4 @@ const taskGroupSchema = new mongoose.Schema({
   }
 });
 
-module.exports = taskGroupSchema;
+export default taskGroupSchema;

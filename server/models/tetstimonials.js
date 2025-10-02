@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
 
 const testimonialSchema = new mongoose.Schema({
   name: {
@@ -31,4 +31,4 @@ const testimonialSchema = new mongoose.Schema({
 testimonialSchema.index({ feedbackId: 1 }, { unique: true, sparse: true });
 
 const Testimonial = mongoose.model("Testimonial", testimonialSchema);
-module.exports = Testimonial;
+export default Testimonial;
