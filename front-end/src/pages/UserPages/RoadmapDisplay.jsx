@@ -22,16 +22,11 @@ export default function RoadmapDisplay() {
   const fetchRoadmap = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:5000/roadmap/${id}`);
+      const response = await axios.get(`http://localhost:5000/user/roadmap/${id}`);
       setRoadmap(response.data.roadmap);
       
       // Load saved progress from localStorage
-      const savedProgress = localStorage.getItem(`roadmap-progress-${id}`);
-      if (savedProgress) {
-        setCompletedConcepts(JSON.parse(savedProgress));
-      }
-      
-      setError(null);
+     
     } catch (err) {
       setError('Failed to fetch roadmap');
       console.error('Error fetching roadmap:', err);
