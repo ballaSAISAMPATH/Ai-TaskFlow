@@ -66,6 +66,7 @@ const App = () => {
             <Route path="road-map" element={<RoadMap />}>
               <Route path='' element={<AllRoadmaps/>} />
               <Route path='create-roadmap' element={<RoadMapGeneration/>} />
+              <Route path='displayDetailedRoadmap/:id' element={<RoadmapDisplay/>} />
             </Route>
             <Route path='profile' element={<UserProfile/>} />
             <Route path='add-manual' element={<ManualTask/>} />
