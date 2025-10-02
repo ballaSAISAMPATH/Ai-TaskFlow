@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import axios from 'axios';
 import User from '../models/User.js';
 import { configDotenv } from 'dotenv';
-configDotenv()
+configDotenv();
 const MICROSERVICE_BASE_URL = process.env.MICROSERVICE_URL;
 
 const createGoal = async (req, res) => {
