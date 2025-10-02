@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
-
+import roadmapRoutes from "./routes/roadmap-routes.js"
 import taskRoutes from './routes/taskRoutes.js';
 import authRouter from './routes/auth-routes.js';
 import feedbackRouter from './routes/feedback-routes.js';
@@ -34,7 +34,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
+app.use('/user',roadmapRoutes)
 app.use('/api/tasks', taskRoutes);
 app.use('/api/auth', authRouter);
 app.use('/api/feedback', feedbackRouter);
