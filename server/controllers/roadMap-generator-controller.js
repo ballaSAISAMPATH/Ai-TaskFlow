@@ -105,7 +105,7 @@ const roadmapSchema = {
 
 // Enhanced prompt template with explicit salary structure
 const roadmapPrompt = PromptTemplate.fromTemplate(`
-Create a comprehensive learning roadmap for "{skill}" using the {approachName} approach.
+Create a comprehensive learning latest future proof roadmap for "{skill}" using the {approachName} approach.
 
 Approach Details:
 - Focus: {approachDescription}
@@ -113,7 +113,7 @@ Approach Details:
 
 CRITICAL REQUIREMENTS - Follow this EXACTLY:
 
-1. Generate exactly 6 levels: "Novice Level", "Beginner Level", "Competent Level", "Proficient Level", "Expert Level", "Guru/Master Level"
+1. Generate exactly 6 levels: "Novice Level", "Beginner Level", "Competent Level", "Proficient Level", "Expert Level", "Master Level"
 2. Each level should have 7-10 specific, actionable concepts
 3. Provide realistic duration estimates (e.g., "4-6 weeks", "8-10 weeks")
 4. Include exactly 5 complementary skills, 5 next-level skills

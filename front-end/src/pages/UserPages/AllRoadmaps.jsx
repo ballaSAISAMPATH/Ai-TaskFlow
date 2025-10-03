@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { ChartColumnIncreasing, Footprints, Route } from 'lucide-react';
 
 export default function AllRoadmaps() {
   const user = useSelector((state) => state.auth.user);
   const [roadmaps, setRoadmaps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [stats, setStats] = useState({});
+  const [totalRoadmaps, setTotalRoadmaps] = useState(0);
   const [filters, setFilters] = useState({
     skill: '',
     approach: '',
@@ -19,7 +20,6 @@ export default function AllRoadmaps() {
   // Fetch user roadmaps
   useEffect(() => {
     fetchUserRoadmaps();
-    fetchUserStats();
   }, [filters]);
 
   const fetchUserRoadmaps = async () => {
@@ -35,6 +35,9 @@ export default function AllRoadmaps() {
           }
         }
       );
+      setTotalRoadmaps(response.data.roadmaps.length);
+      console.log(response.data.roadmaps);
+      
       setRoadmaps(response.data.roadmaps);
       setError(null);
     } catch (err) {
@@ -45,22 +48,11 @@ export default function AllRoadmaps() {
     }
   };
 
-  const fetchUserStats = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/user/${user.id}/roadmaps/stats`
-      );
-      setStats(response.data.stats);
-    } catch (err) {
-      console.error('Error fetching stats:', err);
-    }
-  };
-
   const handleDelete = async (roadmapId) => {
     if (!window.confirm('Are you sure you want to delete this roadmap?')) return;
     
     try {
-      await axios.delete(`http://localhost:5000/roadmap/${roadmapId}`, {
+      await axios.delete(`http://localhost:5000/user/roadmap/${roadmapId}`, {
         data: { userId: user.id }
       });
       fetchUserRoadmaps();
@@ -115,9 +107,8 @@ export default function AllRoadmaps() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="relative">
+          <div className="relative flex justify-center">
             <div className="w-16 h-16 border-4 border-green-200 rounded-full animate-spin border-t-green-500 mb-6"></div>
-            <div className="absolute inset-0 w-12 h-12 m-auto border-4 border-green-100 rounded-full animate-ping"></div>
           </div>
           <div className="text-green-700 text-xl font-semibold">Loading Your Roadmaps</div>
           <div className="text-green-600 text-sm mt-2">Preparing your learning journey...</div>
@@ -127,7 +118,7 @@ export default function AllRoadmaps() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50">
+    <div className="min-h-screen pt-20 bg-gradient-to-br from-green-50 via-white to-green-50">
       {/* Header Section */}
       <div className="bg-white shadow-sm border-b border-green-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -139,11 +130,11 @@ export default function AllRoadmaps() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                   </svg>
                 </div>
-                <h1 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">
+                <h1 className="text-2xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">
                   My Learning Roadmaps
                 </h1>
               </div>
-              <p className="text-lg text-gray-600 flex items-center space-x-2">
+              <p className="text-sm sm:text-lg text-gray-600 flex items-center space-x-2">
                 <span>Navigate your personalized learning journey</span>
                 <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
                   {roadmaps.length} Active Paths
@@ -167,17 +158,15 @@ export default function AllRoadmaps() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Enhanced Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {[
             { 
               label: 'Total Roadmaps', 
-              value: stats.totalRoadmaps || 0, 
+              value: totalRoadmaps, 
               icon: (
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+                <Route />
               ),
               color: 'from-green-500 to-green-600',
               bgColor: 'bg-green-50',
@@ -187,9 +176,7 @@ export default function AllRoadmaps() {
               label: 'Concepts Mapped', 
               value: roadmaps.reduce((sum, rm) => sum + (rm.totalConcepts || 0), 0), 
               icon: (
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+                <ChartColumnIncreasing />
               ),
               color: 'from-blue-500 to-blue-600',
               bgColor: 'bg-blue-50',
@@ -208,12 +195,10 @@ export default function AllRoadmaps() {
               textColor: 'text-purple-600'
             },
             { 
-              label: 'Completion Rate', 
-              value: roadmaps.length > 0 ? Math.round((roadmaps.filter(rm => rm.isPublic).length / roadmaps.length) * 100) : 0, 
+              label: 'Approach Types', 
+              value: 0, 
               icon: (
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
+                <Footprints />
               ),
               color: 'from-orange-500 to-orange-600',
               bgColor: 'bg-orange-50',
@@ -221,24 +206,19 @@ export default function AllRoadmaps() {
               suffix: '%'
             }
           ].map((stat, index) => (
-            <div key={index} className={`${stat.bgColor} border-2 border-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1`}>
+            <div key={index} className={`${stat.bgColor} border-2 border-white rounded-2xl p-3 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1`}>
               <div className="flex items-center justify-between mb-4">
-                <div className={`w-16 h-16 bg-gradient-to-br ${stat.color} rounded-2xl flex items-center justify-center text-white shadow-lg`}>
+                <div className={`w-10 h-10 bg-gradient-to-br ${stat.color} rounded-2xl flex items-center justify-center text-white shadow-lg`}>
                   {stat.icon}
                 </div>
                 <div className="text-right">
-                  <div className={`text-4xl font-bold ${stat.textColor} mb-1`}>
+                  <div className={`text-2xl font-bold ${stat.textColor} mb-1`}>
                     {stat.value}{stat.suffix || ''}
                   </div>
                 </div>
               </div>
               <h3 className="text-lg font-semibold text-gray-700">{stat.label}</h3>
-              <div className="w-full bg-white rounded-full h-2 mt-3 overflow-hidden shadow-inner">
-                <div 
-                  className={`h-full bg-gradient-to-r ${stat.color} transition-all duration-1000 rounded-full`} 
-                  style={{ width: `${Math.min((stat.value / Math.max(100, stat.value)) * 100, 100)}%` }}
-                ></div>
-              </div>
+              
             </div>
           ))}
         </div>
@@ -459,7 +439,7 @@ export default function AllRoadmaps() {
                       </Link>
                       
                       <div className="flex space-x-2">
-                        <button
+                        {/* <button
                           onClick={() => handleVisibilityToggle(roadmap._id, roadmap.isPublic)}
                           className="p-3 text-gray-500 hover:text-green-600 hover:bg-green-50 border-2 border-gray-200 hover:border-green-300 rounded-xl transition-all duration-300"
                           title={roadmap.isPublic ? 'Make Private' : 'Make Public'}
@@ -474,7 +454,7 @@ export default function AllRoadmaps() {
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                             </svg>
                           )}
-                        </button>
+                        </button> */}
                         
                         <button
                           onClick={() => handleDelete(roadmap._id)}

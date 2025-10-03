@@ -1,122 +1,139 @@
-import ExampleGeneration from '@/components/User/Roadmap/ExampleGeneration';
-import Header from '@/components/User/Roadmap/Header';
-import axios from 'axios';
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import {toast} from 'react-toastify'
+import ExampleGeneration from "@/components/User/Roadmap/ExampleGeneration";
+import Header from "@/components/User/Roadmap/Header";
+import axios from "axios";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 export default function RoadMapGeneration() {
-  const [skill, setSkill] = useState('');
-  const [selectedApproach,setSelectedApproach] = useState('complete-mastery');
+  const [skill, setSkill] = useState("");
+  const [selectedApproach, setSelectedApproach] = useState("complete-mastery");
   const [generatedRoadmap, setGeneratedRoadmap] = useState(null);
-  const [isLoading,setIsLoading] = useState(false);
-  const user = useSelector((state)=>state.auth.user)
+  const [isLoading, setIsLoading] = useState(false);
+  const user = useSelector((state) => state.auth.user);
 
   const popularSkills = [
-    'React Development',
-    'Full Stack Development',
-    'Python Programming',
-    'Data Science',
-    'Machine Learning',
-    'UI/UX Design',
-    'DevOps Engineering',
-    'Mobile App Development',
-    'Cybersecurity',
-    'Cloud Computing'
+    "React Development",
+    "Full Stack Development",
+    "Python Programming",
+    "Data Science",
+    "Machine Learning",
+    "UI/UX Design",
+    "DevOps Engineering",
+    "Mobile App Development",
+    "Cybersecurity",
+    "Cloud Computing",
   ];
-  
+
   const learningApproaches = [
-  { 
-    id: 'complete-mastery', 
-    name: 'Complete Mastery', 
-    description: 'Full comprehensive learning from basics to advanced',
-    roadmapStyle: 'Shows all concepts across all levels with detailed progression'
-  },
-  { 
-    id: 'interview-prep', 
-    name: 'Interview Preparation', 
-    description: 'Focus on commonly asked concepts and practical questions',
-    roadmapStyle: 'Emphasizes frequently tested topics, coding problems, and key concepts'
-  },
-  { 
-    id: 'quick-recap', 
-    name: 'Quick Recap/Revision', 
-    description: 'Brief overview of key concepts for someone with basic knowledge',
-    roadmapStyle: 'Condensed version highlighting essential topics and key points'
-  },
-  { 
-    id: 'project-focused', 
-    name: 'Project-Based Learning', 
-    description: 'Learn through building real-world projects and applications',
-    roadmapStyle: 'Organized around practical projects with concepts learned as needed'
-  },
-  { 
-    id: 'certification-prep', 
-    name: 'Certification Preparation', 
-    description: 'Structured learning for specific technology certifications',
-    roadmapStyle: 'Aligned with certification exam objectives and requirements'
-  },
-  { 
-    id: 'foundation-building', 
-    name: 'Strong Foundation', 
-    description: 'Deep understanding of core concepts before moving to advanced topics',
-    roadmapStyle: 'Emphasizes fundamentals with thorough understanding before progression'
-  },
-  { 
-    id: 'practical-skills', 
-    name: 'Practical Skills Only', 
-    description: 'Focus on immediately applicable skills for current work',
-    roadmapStyle: 'Skips theoretical concepts, focuses on hands-on practical applications'
-  },
-  { 
-    id: 'competitive-programming', 
-    name: 'Competitive Programming', 
-    description: 'Algorithm and data structure focused for coding competitions',
-    roadmapStyle: 'Heavy emphasis on algorithms, data structures, and problem-solving'
-  },
-  { 
-    id: 'academic-study', 
-    name: 'Academic/Theoretical', 
-    description: 'Comprehensive theoretical understanding with academic depth',
-    roadmapStyle: 'Includes theoretical foundations, research papers, and academic concepts'
-  }
-];
+    {
+      id: "complete-mastery",
+      name: "Complete Mastery",
+      description: "Full comprehensive learning from basics to advanced",
+      roadmapStyle:
+        "Shows all concepts across all levels with detailed progression",
+    },
+    {
+      id: "interview-prep",
+      name: "Interview Preparation",
+      description: "Focus on commonly asked concepts and practical questions",
+      roadmapStyle:
+        "Emphasizes frequently tested topics, coding problems, and key concepts",
+    },
+    {
+      id: "quick-recap",
+      name: "Quick Recap/Revision",
+      description:
+        "Brief overview of key concepts for someone with basic knowledge",
+      roadmapStyle:
+        "Condensed version highlighting essential topics and key points",
+    },
+    {
+      id: "project-focused",
+      name: "Project-Based Learning",
+      description:
+        "Learn through building real-world projects and applications",
+      roadmapStyle:
+        "Organized around practical projects with concepts learned as needed",
+    },
+    {
+      id: "certification-prep",
+      name: "Certification Preparation",
+      description: "Structured learning for specific technology certifications",
+      roadmapStyle:
+        "Aligned with certification exam objectives and requirements",
+    },
+    {
+      id: "foundation-building",
+      name: "Strong Foundation",
+      description:
+        "Deep understanding of core concepts before moving to advanced topics",
+      roadmapStyle:
+        "Emphasizes fundamentals with thorough understanding before progression",
+    },
+    {
+      id: "practical-skills",
+      name: "Practical Skills Only",
+      description: "Focus on immediately applicable skills for current work",
+      roadmapStyle:
+        "Skips theoretical concepts, focuses on hands-on practical applications",
+    },
+    {
+      id: "competitive-programming",
+      name: "Competitive Programming",
+      description:
+        "Algorithm and data structure focused for coding competitions",
+      roadmapStyle:
+        "Heavy emphasis on algorithms, data structures, and problem-solving",
+    },
+    {
+      id: "academic-study",
+      name: "Academic/Theoretical",
+      description:
+        "Comprehensive theoretical understanding with academic depth",
+      roadmapStyle:
+        "Includes theoretical foundations, research papers, and academic concepts",
+    },
+  ];
 
   const handleSkillSelect = (selectedSkill) => {
     setSkill(selectedSkill);
   };
 
- const roadmapGenerationRequest = async () => {
-  setIsLoading(true);
-  if (!skill) {
-    toast.info('Please enter a skill to generate comprehensive roadmap');
-    return;
-  }
+  const roadmapGenerationRequest = async () => {
+    setIsLoading(true);
+    if (!skill) {
+      toast.info("Please enter a skill to generate comprehensive roadmap");
+      return;
+    }
 
-  // ✅ Find the full approach object by id
-  const approachObject = learningApproaches.find(
-    (approach) => approach.id === selectedApproach
-  );
-  console.log(skill,approachObject,user.id);
-  
-  try {
-    const response = await axios.post("http://localhost:5000/user/roadmap/generation", {
-      skill: skill,
-      approach: approachObject,
-      id:user.id, 
-    });
-    setIsLoading(false);
-    console.log(response.data);
-    setGeneratedRoadmap(response.data); 
-  } catch (error) {
-    console.error(error);
-    toast.error("Failed to generate roadmap");
-  }
-};
+    // ✅ Find the full approach object by id
+    const approachObject = learningApproaches.find(
+      (approach) => approach.id === selectedApproach
+    );
+    console.log(skill, approachObject, user.id);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/user/roadmap/generation",
+        {
+          skill: skill,
+          approach: approachObject,
+          id: user.id,
+        }
+      );
+      setIsLoading(false);
+      console.log(response.data);
+      setGeneratedRoadmap(response.data);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to generate roadmap");
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="min-h-screen pt-20 bg-gray-50 py-8 px-4">
       <div className="max-w-6xl mx-auto">
-        <Header/>
+        <Header />
         {/* Main Form Card */}
         <div className="bg-white rounded-xl shadow-lg py-8 px-4 mb-8">
           {/* Skill Input Section */}
@@ -159,35 +176,38 @@ export default function RoadMapGeneration() {
             </h3>
 
             <div className="mb-8">
-  <h3 className="text-lg font-semibold text-gray-700 mb-4">
-    How would you like to approach learning this skill?
-  </h3>
-  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-    {learningApproaches.map((approach) => (
-      <label
-        key={approach.id}
-        className="flex items-start p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-green-500 cursor-pointer transition-colors"
-      >
-        <input
-          type="radio"
-          name="learningApproach"
-          value={approach.id}
-          
-          checked={selectedApproach === approach.id}
-          onChange={(e) => setSelectedApproach(e.target.value)}
-          className="w-4 h-4 text-green-500 border-gray-300 focus:ring-green-500 mt-1"
-        />
-        <div className="ml-3">
-          <div className="font-medium text-gray-800 text-sm mb-1">{approach.name}</div>
-          <div className="text-xs text-gray-500 mb-2">{approach.description}</div>
-          <div className="text-xs text-green-600 font-medium">
-            📋 {approach.roadmapStyle}
-          </div>
-        </div>
-      </label>
-    ))}
-  </div>
-</div>
+              <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                How would you like to approach learning this skill?
+              </h3>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {learningApproaches.map((approach) => (
+                  <label
+                    key={approach.id}
+                    className="flex items-start p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-green-500 cursor-pointer transition-colors"
+                  >
+                    <input
+                      type="radio"
+                      name="learningApproach"
+                      value={approach.id}
+                      checked={selectedApproach === approach.id}
+                      onChange={(e) => setSelectedApproach(e.target.value)}
+                      className="w-4 h-4 text-green-500 border-gray-300 focus:ring-green-500 mt-1"
+                    />
+                    <div className="ml-3">
+                      <div className="font-medium text-gray-800 text-sm mb-1">
+                        {approach.name}
+                      </div>
+                      <div className="text-xs text-gray-500 mb-2">
+                        {approach.description}
+                      </div>
+                      <div className="text-xs text-green-600 font-medium">
+                        📋 {approach.roadmapStyle}
+                      </div>
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* Generate Button */}
@@ -196,8 +216,14 @@ export default function RoadMapGeneration() {
               onClick={roadmapGenerationRequest}
               className="bg-green-500 hover:bg-green-600 text-white font-semibold py-4 px-8 rounded-lg text-lg transition-colors duration-200 shadow-md hover:shadow-lg"
             >
-                {isLoading?<div className='flex  gap-3'><div className='w-7 h-7 p-0 border-t-1 animate-spin rounded-3xl'></div><div>Generating Complete Concept Map</div> </div>:<div>Generate Complete Concept Map</div> } 
-                
+              {isLoading ? (
+                <div className="flex  gap-3">
+                  <div className="w-7 h-7 p-0 border-t-1 animate-spin rounded-3xl"></div>
+                  <div>Generating Complete Concept Map</div>{" "}
+                </div>
+              ) : (
+                <div>Generate Complete Concept Map</div>
+              )}
             </button>
           </div>
 
@@ -212,8 +238,7 @@ export default function RoadMapGeneration() {
           )}
         </div>
 
-       <ExampleGeneration/>
-        
+        <ExampleGeneration />
       </div>
     </div>
   );
