@@ -33,10 +33,10 @@ import ForgotPassword from './pages/auth/ForgotPassword';
 import ChangePassword from './pages/auth/ChangePassword';
 import CandyCrushGoalMap from './pages/UserPages/CandyCrushGoalMap';
 import ScanResume from './pages/UserPages/ScanResume';
-import RoadMapGeneration from './pages/UserPages/RoadMapGeneration';
-import RoadmapDisplay from './pages/UserPages/RoadmapDisplay';
-import RoadMap from './pages/UserPages/RoadMap';
-import AllRoadmaps from './pages/UserPages/AllRoadmaps';
+import RoadMapGeneration from './pages/UserPages/RoadMap/RoadMapGeneration';
+import RoadmapDisplay from './pages/UserPages/RoadMap/RoadmapDisplay';
+import RoadMap from './pages/UserPages/RoadMap/Roadmap';
+import AllRoadmaps from './pages/UserPages/RoadMap/AllRoadmaps';
 const App = () => {
   const { isLoading: authInitLoading } = useAuthInitialize();
   const { user, isAuthenticated, isLoading } = useSelector((state) => state.auth);

@@ -32,8 +32,9 @@ export default function RoadmapDisplay() {
   const fetchRoadmap = async () => {
     try {
       setLoading(true);
+      
       const response = await axios.get(
-        `http://localhost:5000/user/roadmap/${id}`
+        `${import.meta.env.VITE_BACKEND_URL}/user/roadmap/${id}`
       );
       setRoadmap(response.data.roadmap);
     } catch (err) {
@@ -102,7 +103,7 @@ export default function RoadmapDisplay() {
   if (!roadmap) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50">
+    <div className="min-h-screen pt-20 bg-gradient-to-br from-green-50 via-white to-emerald-50">
       {/* Hero Section with Animated Background */}
       <div className=" border-b bg-green-100 border-gray-200 py-6 ">
         <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">

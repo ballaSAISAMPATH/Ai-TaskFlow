@@ -1,3 +1,0 @@
-what if the user has a course called react and when he types reactt inplace of  react and we think its a new skill and start generating it right 
-what should we be dng in this case should we fetch all the names of the roadmap the iuser already has and send it to the model and take its help
-if the course exists the output from the model is yes and we send a waning msg else we generat the new course
