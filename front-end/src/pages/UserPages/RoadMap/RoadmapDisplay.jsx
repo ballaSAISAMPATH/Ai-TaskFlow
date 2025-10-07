@@ -32,8 +32,9 @@ export default function RoadmapDisplay() {
   const fetchRoadmap = async () => {
     try {
       setLoading(true);
+      
       const response = await axios.get(
-        `http://localhost:5000/user/roadmap/${id}`
+        `${import.meta.env.VITE_BACKEND_URL}/user/roadmap/${id}`
       );
       setRoadmap(response.data.roadmap);
     } catch (err) {

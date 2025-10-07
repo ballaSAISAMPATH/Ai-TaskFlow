@@ -114,7 +114,7 @@ export default function RoadMapGeneration() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/user/roadmap/generation",
+        `${import.meta.env.VITE_BACKEND_URL}/user/roadmap/generation`,
         {
           skill: skill,
           approach: approachObject,

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { ChartColumnIncreasing, Footprints, Route } from 'lucide-react';
+import { ChartColumnIncreasing, Footprints, Plus, Route } from 'lucide-react';
 
 export default function AllRoadmaps() {
   const user = useSelector((state) => state.auth.user);
@@ -26,7 +26,7 @@ export default function AllRoadmaps() {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:5000/user/${user.id}/roadmaps`,
+        `${import.meta.env.VITE_BACKEND_URL}/user/${user.id}/roadmaps`,
         {
           params: {
             skill: filters.skill,
@@ -52,25 +52,13 @@ export default function AllRoadmaps() {
     if (!window.confirm('Are you sure you want to delete this roadmap?')) return;
     
     try {
-      await axios.delete(`http://localhost:5000/user/roadmap/${roadmapId}`, {
+      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/user/roadmap/${roadmapId}`, {
         data: { userId: user.id }
       });
       fetchUserRoadmaps();
       fetchUserStats();
     } catch (err) {
       alert('Failed to delete roadmap');
-    }
-  };
-
-  const handleVisibilityToggle = async (roadmapId, currentVisibility) => {
-    try {
-      await axios.put(`http://localhost:5000/roadmap/${roadmapId}/visibility`, {
-        isPublic: !currentVisibility,
-        userId: user.id
-      });
-      fetchUserRoadmaps();
-    } catch (err) {
-      alert('Failed to update visibility');
     }
   };
 
@@ -95,12 +83,6 @@ export default function AllRoadmaps() {
       'Academic/Theoretical': 'bg-gray-100 text-gray-800 border-gray-200'
     };
     return colors[approach] || 'bg-green-100 text-green-800 border-green-200';
-  };
-
-  const getDifficultyLevel = (totalConcepts) => {
-    if (totalConcepts <= 30) return { level: 'Beginner', color: 'text-green-600', bg: 'bg-green-50', border: 'border-green-200' };
-    if (totalConcepts <= 50) return { level: 'Intermediate', color: 'text-yellow-600', bg: 'bg-yellow-50', border: 'border-yellow-200' };
-    return { level: 'Advanced', color: 'text-red-600', bg: 'bg-red-50', border: 'border-red-200' };
   };
 
   if (loading && roadmaps.length === 0) {
@@ -130,7 +112,7 @@ export default function AllRoadmaps() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                   </svg>
                 </div>
-                <h1 className="text-2xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">
+                <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">
                   My Learning Roadmaps
                 </h1>
               </div>
@@ -144,11 +126,11 @@ export default function AllRoadmaps() {
             <div className="flex items-center space-x-4">
               <Link
                 to="/user/road-map/create-roadmap"
-                className="group relative px-8 py-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                className="group  shadow-black/50 relative px-8 py-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
               >
                 <span className="flex items-center">
                   <svg className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    <Plus/>
                   </svg>
                   Create New Roadmap
                 </span>
@@ -168,7 +150,7 @@ export default function AllRoadmaps() {
               icon: (
                 <Route />
               ),
-              color: 'from-green-500 to-green-600',
+              color: 'from-yellow-500 to-yellow-600',
               bgColor: 'bg-green-50',
               textColor: 'text-green-600'
             },
@@ -203,7 +185,6 @@ export default function AllRoadmaps() {
               color: 'from-orange-500 to-orange-600',
               bgColor: 'bg-orange-50',
               textColor: 'text-orange-600',
-              suffix: '%'
             }
           ].map((stat, index) => (
             <div key={index} className={`${stat.bgColor} border-2 border-white rounded-2xl p-3 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1`}>
@@ -211,13 +192,13 @@ export default function AllRoadmaps() {
                 <div className={`w-10 h-10 bg-gradient-to-br ${stat.color} rounded-2xl flex items-center justify-center text-white shadow-lg`}>
                   {stat.icon}
                 </div>
+                <h3 className="text-lg font-semibold text-gray-700">{stat.label}</h3>
                 <div className="text-right">
                   <div className={`text-2xl font-bold ${stat.textColor} mb-1`}>
-                    {stat.value}{stat.suffix || ''}
+                    {stat.value}
                   </div>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-700">{stat.label}</h3>
               
             </div>
           ))}
@@ -268,7 +249,7 @@ export default function AllRoadmaps() {
                 <input
                   type="text"
                   value={filters.skill}
-                  onChange={(e) => setFilters({ ...filters, skill: e.target.value })}
+                  onChange={(e) => {}}
                   placeholder="Type to search..."
                   className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white"
                 />
@@ -282,7 +263,7 @@ export default function AllRoadmaps() {
               <label className="block text-sm font-semibold text-gray-700">Learning Approach</label>
               <select
                 value={filters.approach}
-                onChange={(e) => setFilters({ ...filters, approach: e.target.value })}
+                onChange={(e) => {}}
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white"
               >
                 <option value="">All Approaches</option>
@@ -298,7 +279,7 @@ export default function AllRoadmaps() {
               <label className="block text-sm font-semibold text-gray-700">Sort By</label>
               <select
                 value={filters.sortBy}
-                onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
+                onChange={(e) => {}}
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white"
               >
                 <option value="newest">Newest First</option>
@@ -356,7 +337,6 @@ export default function AllRoadmaps() {
             "space-y-6"
           }>
             {roadmaps.map((roadmap, index) => {
-              const difficulty = getDifficultyLevel(roadmap.totalConcepts);
               return (
                 <div
                   key={roadmap._id}
@@ -372,9 +352,7 @@ export default function AllRoadmaps() {
                         <h3 className="text-2xl font-bold">
                           {roadmap.skill}
                         </h3>
-                        <div className={`px-3 py-1 ${difficulty.bg} ${difficulty.color} ${difficulty.border} border rounded-full text-sm font-semibold`}>
-                          {difficulty.level}
-                        </div>
+                       
                       </div>
                       <div className="flex items-center justify-between text-green-100">
                         <div className="flex items-center space-x-4">
