@@ -1,9 +1,11 @@
-const User = require('../models/User');
-const jwt = require("jsonwebtoken");
-const admin = require('firebase-admin');
-const {logLoginEvent} = require('./historylogin-controller')
-const LoginHistory = require('../models/loginHistory');
-require("dotenv").config();
+import User from '../models/User.js';
+import jwt from "jsonwebtoken";
+import admin from 'firebase-admin';
+import { logLoginEvent } from './historylogin-controller.js';
+import LoginHistory from '../models/loginHistory.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 admin.initializeApp({
   credential: admin.credential.cert({
@@ -26,10 +28,10 @@ function generateTokens(user) {
   const payload = {
     id: user._id,
     email: user.email,
-    tokenVersion: user.tokenVersion  
+    tokenVersion: user.tokenVersion
   };
 
-  const accessToken = jwt.sign(payload, process.env.JWT_SECRET_KEY,{ expiresIn: "15m" });
+  const accessToken = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: "15m" });
   const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET_KEY, { expiresIn: "7d" });
 
   return { accessToken, refreshToken };
@@ -77,13 +79,13 @@ const loginUser = async (req, res) => {
     }
 
     const { accessToken, refreshToken } = generateTokens(user);
-     await logLoginEvent(user._id, user.name, user.email)
+    await logLoginEvent(user._id, user.name, user.email);
     res
       .cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
         sameSite: "None",
-       maxAge: 30 * 24 * 60 * 60 * 1000 , 
+        maxAge: 30 * 24 * 60 * 60 * 1000,
       })
       .json({
         success: true,
@@ -100,7 +102,7 @@ const loginUser = async (req, res) => {
       });
   } catch (error) {
     console.log(error);
-    
+
     res.status(500).json({ success: false, message: "Some error occurred" });
   }
 };
@@ -128,7 +130,7 @@ const googleLogin = async (req, res) => {
     }
 
     const { accessToken, refreshToken } = generateTokens(user);
-    await logLoginEvent(user._id, user.name, user.email)
+    await logLoginEvent(user._id, user.name, user.email);
     res
       .cookie("refreshToken", refreshToken, {
         httpOnly: true,
@@ -151,7 +153,7 @@ const googleLogin = async (req, res) => {
       });
   } catch (error) {
     console.log(error);
-    
+
     res.status(500).json({ success: false, message: "Google login failed" });
   }
 };
@@ -231,17 +233,17 @@ const authMiddleware = async (req, res, next) => {
 
 const deleteAccount = async (req, res) => {
   try {
-    const { userId } = req.body; 
-    
+    const { userId } = req.body;
+
     if (!userId) {
       return res.status(400).json({
         success: false,
         message: "User ID is required.",
       });
     }
-    
+
     const deletedUser = await User.findByIdAndDelete(userId);
-    
+
     if (!deletedUser) {
       return res.status(404).json({
         success: false,
@@ -303,9 +305,9 @@ const changePassword = async (req, res) => {
     }
 
     await User.findByIdAndUpdate(userId, {
-        password: newPassword,
-        $inc: { tokenVersion: 1 }  
-      });
+      password: newPassword,
+      $inc: { tokenVersion: 1 }
+    });
 
 
     res.status(200).json({
@@ -325,7 +327,7 @@ const changePassword = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   registerUser,
   loginUser,
   logoutUser,

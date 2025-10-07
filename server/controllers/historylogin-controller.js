@@ -1,7 +1,7 @@
-const LoginHistory = require('../models/loginHistory');
+import LoginHistory from '../models/loginHistory.js';
 
 // Helper function to log login event
-const logLoginEvent = async (userId, name, email) => {
+export const logLoginEvent = async (userId, name, email) => {
   try {
     await LoginHistory.create({
       userId,
@@ -15,7 +15,7 @@ const logLoginEvent = async (userId, name, email) => {
 };
 
 // Get last 10 recent logins
-const getRecentLogins = async (req, res) => {
+export const getRecentLogins = async (req, res) => {
   try {
     // Aggregate to get last 10 unique users by email with their most recent login
     const recentLogins = await LoginHistory.aggregate([
@@ -72,9 +72,4 @@ const getRecentLogins = async (req, res) => {
       message: 'Error fetching recent logins'
     });
   }
-};
-
-module.exports = {
-  logLoginEvent,
-  getRecentLogins
 };

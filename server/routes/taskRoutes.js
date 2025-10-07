@@ -1,8 +1,22 @@
-const express = require('express');
+import express from 'express';
+import {
+  createGoal,
+  getAllGoals,
+  getGoalById,
+  updateGoal,
+  updateDailyTaskStatus,
+  updateWeeklyTaskStatus,
+  updateMonthlyTaskStatus,
+  getDailyTasks,
+  getWeeklyTasks,
+  getMonthlyTasks,
+  deleteGoal,
+  getGoalStats,
+  addManualTask
+} from '../controllers/task-controller.js';
+
 const router = express.Router();
-const  {createGoal,getAllGoals,getGoalById,updateGoal,updateDailyTaskStatus,updateWeeklyTaskStatus,updateMonthlyTaskStatus,getDailyTasks
-  ,getWeeklyTasks,getMonthlyTasks,deleteGoal,getGoalStats,addManualTask
-} =require('../controllers/task-controller');
+
 router.post('/create', createGoal);
 router.post('/displayAll', getAllGoals);
 router.post('/stats', getGoalStats);
@@ -20,4 +34,4 @@ router.patch('/:id/weekly-tasks/status', updateWeeklyTaskStatus);
 router.get('/:id/monthly-tasks', getMonthlyTasks);
 router.patch('/:id/monthly-tasks/status', updateMonthlyTaskStatus);
 
-module.exports = router;
+export default router;

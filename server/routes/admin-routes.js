@@ -1,14 +1,13 @@
-const express = require('express');
-const router = express.Router();
-const {
+import express from 'express';
+import {
   getDashboardStats,
   getAllFeedback,
   replyToFeedback,
   getUserStatistics,
   deleteUser
-} = require('../controllers/admin-controller');
+} from '../controllers/admin-controller.js';
 
-
+const router = express.Router();
 
 router.get('/dashboard/stats', getDashboardStats);
 
@@ -18,4 +17,4 @@ router.put('/feedback/:feedbackId/reply', replyToFeedback);
 router.get('/users/statistics', getUserStatistics);
 router.delete('/users/:userId', deleteUser);
 
-module.exports = router;
+export default router;

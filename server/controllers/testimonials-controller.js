@@ -1,14 +1,13 @@
-const Testimonial = require("../models/tetstimonials");
-const Feedback = require("../models/feedback"); // Add this import
+import Testimonial from "../models/tetstimonials.js";
+import Feedback from "../models/feedback.js"; // Add this import
 
 // Get all testimonials (public route)
 const getAllTestimonials = async (req, res) => {
-  
   try {
     const testimonials = await Testimonial.find()
       .sort({ createdAt: -1 })
       .select('name content rating createdAt');
-    
+
     res.status(200).json({
       success: true,
       count: testimonials.length,
@@ -25,22 +24,22 @@ const getAllTestimonials = async (req, res) => {
 
 // Get testimonials with pagination (public route)
 const getTestimonialsWithPagination = async (req, res) => {
-    console.log(req.body);
+  console.log(req.body);
 
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
-    
+
     const testimonials = await Testimonial.find()
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .select('name content rating createdAt');
-    
+
     const total = await Testimonial.countDocuments();
     const totalPages = Math.ceil(total / limit);
-    
+
     res.status(200).json({
       success: true,
       data: testimonials,
@@ -65,11 +64,11 @@ const getTestimonialsWithPagination = async (req, res) => {
 const addFeedbackToTestimonials = async (req, res) => {
   try {
     const feedbackId = req.params.feedbackId;
-    
+
     // Check if feedback exists
     const feedback = await Feedback.findById(feedbackId)
       .populate('userId', 'userName email name');
-    
+
     if (!feedback) {
       return res.status(404).json({
         success: false,
@@ -93,7 +92,7 @@ const addFeedbackToTestimonials = async (req, res) => {
       rating: feedback.rating || 5,
       feedbackId: feedback._id // Store reference to original feedback
     });
-    
+
     res.status(201).json({
       success: true,
       message: "Feedback added to testimonials successfully",
@@ -112,16 +111,16 @@ const addFeedbackToTestimonials = async (req, res) => {
 const deleteTestimonial = async (req, res) => {
   try {
     const testimonial = await Testimonial.findById(req.params.id);
-    
+
     if (!testimonial) {
       return res.status(404).json({
         success: false,
         message: "Testimonial not found"
       });
     }
-    
+
     await Testimonial.findByIdAndDelete(req.params.id);
-    
+
     res.status(200).json({
       success: true,
       message: "Testimonial removed successfully"
@@ -135,7 +134,7 @@ const deleteTestimonial = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   getAllTestimonials,
   getTestimonialsWithPagination,
   addFeedbackToTestimonials,

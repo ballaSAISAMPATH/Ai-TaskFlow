@@ -9,7 +9,7 @@ export default function Header() {
        { id: 'competent', name: 'Competent', description: 'Applying knowledge in practical settings' },
        { id: 'proficient', name: 'Proficient', description: 'Understanding bigger picture and variations' },
        { id: 'expert', name: 'Expert', description: 'Intuitive understanding and adaptability' },
-       { id: 'guru', name: 'Guru/Master', description: 'Effortless excellence and innovation' }
+       { id: 'master', name: 'Master', description: 'Effortless excellence and innovation' }
      ];
   return (
     <div>
@@ -28,7 +28,7 @@ export default function Header() {
           <h2 className="text-2xl font-bold text-gray-800 mb-6">
             Skill Progression Framework
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
             {skillLevels.slice(1).map((level, index) => (
               <div key={index} className="text-center p-4 bg-gradient-to-b from-green-50 to-green-100 rounded-lg border border-green-200">
                 <div className="w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 font-bold text-lg">
@@ -42,7 +42,7 @@ export default function Header() {
         </div>
 
         {/* Features */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-white rounded-lg p-6 shadow-md text-center">
             <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

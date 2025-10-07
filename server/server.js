@@ -1,39 +1,50 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const path = require('path');
-require('dotenv').config(); 
-const cookieParser = require('cookie-parser');
-const taskRoutes = require('./routes/taskRoutes');
-const authRouter = require('./routes/auth-routes');
-const feedbackRouter = require('./routes/feedback-routes')
-const adminRouter = require('./routes/admin-routes')
-const landingPageRouter = require('./routes/landingpage-routes')
-const testimonialRouter = require('./routes/testimonial-routes')
-const userDashboardRoutes = require('./routes/userDashboard-routes')
-const loginHistory = require('./routes/loginHistory-routes')
-const otpRoutes = require('./routes/otp-routes')
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
+import roadmapRoutes from "./routes/roadmap-routes.js"
+import taskRoutes from './routes/taskRoutes.js';
+import authRouter from './routes/auth-routes.js';
+import feedbackRouter from './routes/feedback-routes.js';
+import adminRouter from './routes/admin-routes.js';
+import landingPageRouter from './routes/landingpage-routes.js';
+import testimonialRouter from './routes/testimonial-routes.js';
+import userDashboardRoutes from './routes/userDashboard-routes.js';
+import loginHistory from './routes/loginHistory-routes.js';
+import otpRoutes from './routes/otp-routes.js';
+
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const app = express();
-const PORT = process.env.PORT || 5000; 
-// const roadmap_router = require('./routes/roadmap-routes')
+const PORT = process.env.PORT || 5000;
+
 app.use(cors({
-  origin: process.env.CLIENT_ORIGIN, 
-  credentials: true,             
+  origin: process.env.CLIENT_ORIGIN,
+  credentials: true,
 }));
 
 app.use(cookieParser());
 app.use(express.json());
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
-// app.use("/user",roadmap_router);
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/user',roadmapRoutes)
 app.use('/api/tasks', taskRoutes);
 app.use('/api/auth', authRouter);
-app.use('/api/feedback',feedbackRouter)
-app.use('/api/admin',adminRouter)
-app.use('/api/landing-page',landingPageRouter)
-app.use('/api/testimonials',testimonialRouter)
-app.use('/api/user-dashboard',userDashboardRoutes)
-app.use('/api/loginHistory',loginHistory)
-app.use('/api/otp',otpRoutes)
+app.use('/api/feedback', feedbackRouter);
+app.use('/api/admin', adminRouter);
+app.use('/api/landing-page', landingPageRouter);
+app.use('/api/testimonials', testimonialRouter);
+app.use('/api/user-dashboard', userDashboardRoutes);
+app.use('/api/loginHistory', loginHistory);
+app.use('/api/otp', otpRoutes);
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
@@ -42,6 +53,7 @@ mongoose
   .catch((err) => {
     console.error(err);
   });
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

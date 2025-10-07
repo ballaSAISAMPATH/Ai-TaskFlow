@@ -306,9 +306,10 @@ export default function ExampleGeneration() {
   return (
     <div>
          {/* Example Sections */}
+         <div className={`text-2xl p-4 font-bold`}>Example roadmap generation</div>
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
           {/* Python Programming Example */}
-          <div className="bg-white rounded-xl shadow-lg p-8">
+          <div className="bg-white rounded-xl shadow-lg py-8 px-4">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-xl font-bold text-gray-800">
@@ -352,7 +353,6 @@ export default function ExampleGeneration() {
                 ))}
                 
                 {/* Related Skills for Python */}
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <div className="space-y-3">
                    
                     {/* Related Skills with Salaries */}
@@ -388,13 +388,12 @@ export default function ExampleGeneration() {
                     </div>
 
                   </div>
-                </div>
               </div>
             )}
           </div>
 
           {/* React Development Example */}
-          <div className="bg-white rounded-xl shadow-lg p-8">
+          <div className="bg-white rounded-xl shadow-lg py-8 px-4">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-xl font-bold text-gray-800">
@@ -438,7 +437,6 @@ export default function ExampleGeneration() {
                 ))}
                 
                 {/* Related Skills for React */}
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <div className="space-y-3">
                     
                     {/* Related Skills for React */}
@@ -474,7 +472,6 @@ export default function ExampleGeneration() {
                     </div>
 
                   </div>
-                </div>
               </div>
             )}
           </div>

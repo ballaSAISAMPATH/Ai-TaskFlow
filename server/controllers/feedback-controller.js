@@ -1,6 +1,6 @@
-const Feedback = require('../models/feedback');
+import Feedback from '../models/feedback.js';
 
-createFeedback = async (req, res) => {
+const createFeedback = async (req, res) => {
   try {
     const { userId, message, rating } = req.body;
 
@@ -17,7 +17,7 @@ createFeedback = async (req, res) => {
   }
 };
 
-getAllFeedback = async (req, res) => {
+const getAllFeedback = async (req, res) => {
   try {
     const feedbacks = await Feedback.find()
       .populate('userId', 'userName email')
@@ -29,7 +29,7 @@ getAllFeedback = async (req, res) => {
   }
 };
 
-getFeedbackByUser = async (req, res) => {
+const getFeedbackByUser = async (req, res) => {
   try {
     const { userId } = req.params;
     const feedbacks = await Feedback.find({ userId })
@@ -42,7 +42,7 @@ getFeedbackByUser = async (req, res) => {
   }
 };
 
-deleteFeedback = async (req, res) => {
+const deleteFeedback = async (req, res) => {
   try {
     const { id } = req.params;
     const feedback = await Feedback.findByIdAndDelete(id);
@@ -57,6 +57,9 @@ deleteFeedback = async (req, res) => {
   }
 };
 
-module.exports = {
-createFeedback,getAllFeedback,getFeedbackByUser,deleteFeedback
-}
+export {
+  createFeedback,
+  getAllFeedback,
+  getFeedbackByUser,
+  deleteFeedback
+};

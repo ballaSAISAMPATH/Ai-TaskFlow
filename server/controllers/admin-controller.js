@@ -1,12 +1,12 @@
-const User = require('../models/User');
-const Goal = require('../models/goal');
-const Feedback = require('../models/feedback');
-const mongoose = require('mongoose');
+import User from '../models/User.js';
+import Goal from '../models/goal.js';
+import Feedback from '../models/feedback.js';
+import mongoose from 'mongoose';
 
 const getUserFilter = () => ({
   $or: [
     { role: 'user' },
-    { role: { $exists: false } }  
+    { role: { $exists: false } }
   ]
 });
 
@@ -294,7 +294,7 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   getDashboardStats,
   getAllFeedback,
   replyToFeedback,

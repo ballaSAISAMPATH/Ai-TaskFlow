@@ -33,7 +33,10 @@ import ForgotPassword from './pages/auth/ForgotPassword';
 import ChangePassword from './pages/auth/ChangePassword';
 import CandyCrushGoalMap from './pages/UserPages/CandyCrushGoalMap';
 import ScanResume from './pages/UserPages/ScanResume';
+import RoadMapGeneration from './pages/UserPages/RoadMapGeneration';
+import RoadmapDisplay from './pages/UserPages/RoadmapDisplay';
 import RoadMap from './pages/UserPages/RoadMap';
+import AllRoadmaps from './pages/UserPages/AllRoadmaps';
 const App = () => {
   const { isLoading: authInitLoading } = useAuthInitialize();
   const { user, isAuthenticated, isLoading } = useSelector((state) => state.auth);
@@ -57,10 +60,14 @@ const App = () => {
             <Route path='change-password' element={<ChangePassword/>}/>
           </Route>
           <Route path="/user" element={<TaskLayout />}>
+            <Route path="home" element={<UserHome />}/>
             <Route path="add-task" element={<AddTask />} />
             <Route path="dashboard" element={<DashBoard />} />
-            <Route path="road-map" element={<RoadMap />} />
-            <Route path='home' element={<UserHome/>} />
+            <Route path="road-map" element={<RoadMap />}>
+              <Route path='' element={<AllRoadmaps/>} />
+              <Route path='create-roadmap' element={<RoadMapGeneration/>} />
+              <Route path='displayDetailedRoadmap/:id' element={<RoadmapDisplay/>} />
+            </Route>
             <Route path='profile' element={<UserProfile/>} />
             <Route path='add-manual' element={<ManualTask/>} />
             <Route path="goal/:goalId" element={<GoalDetail />} />

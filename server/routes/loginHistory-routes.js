@@ -1,7 +1,8 @@
-const express = require('express');
+import express from 'express';
+import { getRecentLogins } from '../controllers/historylogin-controller.js';
+
 const router = express.Router();
-const { getRecentLogins } = require('../controllers/historylogin-controller');
 
 router.get('/recent-logins', getRecentLogins);
 
-module.exports = router;
+export default router;

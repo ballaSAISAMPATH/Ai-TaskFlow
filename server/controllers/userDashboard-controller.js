@@ -1,17 +1,16 @@
-const Goal = require('../models/goal'); 
+import Goal from '../models/goal.js';
 
 const getDashboardAnalytics = async (req, res) => {
   try {
     const { userId } = req.params;
 
     const today = new Date();
-    
-    today.setHours(23, 59, 59, 999); 
+
+    today.setHours(23, 59, 59, 999);
 
     const lastWeekSameDay = new Date(today);
     lastWeekSameDay.setDate(today.getDate() - 7);
     lastWeekSameDay.setHours(0, 0, 0, 0);
-
 
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -22,7 +21,7 @@ const getDashboardAnalytics = async (req, res) => {
 
     let currentDate = new Date(lastWeekSameDay);
 
-    while (currentDate <= today) {  
+    while (currentDate <= today) {
       const nextDate = new Date(currentDate);
       nextDate.setDate(nextDate.getDate() + 1);
       nextDate.setHours(0, 0, 0, 0);
@@ -91,6 +90,6 @@ const getDashboardAnalytics = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   getDashboardAnalytics
 };

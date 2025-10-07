@@ -1,6 +1,7 @@
-const nodemailer = require('nodemailer');
-const crypto = require('crypto');
-const User = require('../models/User')
+import nodemailer from 'nodemailer';
+import crypto from 'crypto';
+import User from '../models/User.js';
+
 const createTransporter = () => {
   return nodemailer.createTransport({
     service: process.env.EMAIL_SERVICE || "gmail",
@@ -10,6 +11,7 @@ const createTransporter = () => {
     },
   });
 };
+
 const generateOTP = () => {
   return crypto.randomInt(100000, 999999).toString();
 };
@@ -34,7 +36,7 @@ const sendOTP = async (req, res) => {
     }
 
     const otpCode = generateOTP();
-    
+
     await User.findByIdAndUpdate(user._id, {
       otp: {
         code: otpCode,
@@ -121,9 +123,9 @@ const verifyOTP = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ 
+    const user = await User.findOne({
       email,
-      'otp.code': otp 
+      'otp.code': otp
     });
 
     if (!user) {
@@ -173,7 +175,7 @@ const resendOTP = async (req, res) => {
     }
 
     const otpCode = generateOTP();
-    
+
     await User.findByIdAndUpdate(user._id, {
       otp: {
         code: otpCode,
@@ -269,7 +271,7 @@ const changePassword = async (req, res) => {
 };
 
 
-module.exports = {
+export {
   sendOTP,
   verifyOTP,
   resendOTP,

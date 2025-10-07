@@ -66,7 +66,7 @@ const ResumePreviewComponent = ({ file, isLoading, results }) => {
 
   if (!file && !results) {
     return (
-      <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg border-2 border-green-500 h-40 sm:h-48 lg:h-96 flex items-center justify-center">
+      <div className="bg-white p-3 sm:p-4 lg:p-6 rounded-lg border-2 border-green-500 h-40 sm:h-48 lg:h-161 flex items-center justify-center">
         <div className="text-center">
           <FileText className="mx-auto h-8 w-8 sm:h-12 sm:w-12 lg:h-16 lg:w-16 text-gray-400 mb-2 sm:mb-4" />
           <p className="text-gray-600 text-xs sm:text-sm lg:text-base">Upload a resume to see preview</p>
