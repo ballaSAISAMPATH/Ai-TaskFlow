@@ -190,7 +190,7 @@ const UserFeedBack = () => {
     <div className="px-4 sm:px-6 lg:px-0 space-y-6 sm:space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">Your Feedback</h1>
+          <h1 className="text-lg  font-bold text-gray-900 mb-1 sm:mb-2">Your Feedback</h1>
           <p className="text-gray-600 text-sm sm:text-base">Help us improve with your valuable insights</p>
         </div>
         
@@ -220,7 +220,7 @@ const UserFeedBack = () => {
       )}
 
       {(showFeedbackForm || userFeedbacks.length === 0) && (
-        <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+        <div className="">
           <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">Share Your Experience</h2>
           
           <form onSubmit={handleSubmitFeedback} className="space-y-4 sm:space-y-6">

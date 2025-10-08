@@ -13,32 +13,24 @@ export default function AllRoadmaps() {
   const [filters, setFilters] = useState({
     skill: '',
     approach: '',
-    sortBy: 'newest'
+    sortBy: ''
   });
   const [viewMode, setViewMode] = useState('grid');
 
   // Fetch user roadmaps
   useEffect(() => {
     fetchUserRoadmaps();
-  }, [filters]);
+  }, []);
 
   const fetchUserRoadmaps = async () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/user/${user.id}/roadmaps`,
-        {
-          params: {
-            skill: filters.skill,
-            approach: filters.approach,
-            sortBy: filters.sortBy
-          }
-        }
-      );
+        `${import.meta.env.VITE_BACKEND_URL}/user/${user.id}/roadmaps`);
       setTotalRoadmaps(response.data.roadmaps.length);
+      setRoadmaps(response.data.roadmaps);
       console.log(response.data.roadmaps);
       
-      setRoadmaps(response.data.roadmaps);
       setError(null);
     } catch (err) {
       setError('Failed to fetch roadmaps');
@@ -47,10 +39,8 @@ export default function AllRoadmaps() {
       setLoading(false);
     }
   };
-
   const handleDelete = async (roadmapId) => {
     if (!window.confirm('Are you sure you want to delete this roadmap?')) return;
-    
     try {
       await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/user/roadmap/${roadmapId}`, {
         data: { userId: user.id }
@@ -205,7 +195,7 @@ export default function AllRoadmaps() {
         </div>
 
         {/* Advanced Control Panel */}
-        <div className="bg-white rounded-2xl shadow-lg border border-green-100 p-4 mb-8">
+        <div className="bg-transparent rounded-2xl shadow-lg border border-green-100 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             
               <div className="relative flex justify-center items-center ">
@@ -214,8 +204,8 @@ export default function AllRoadmaps() {
                 </div>
                 <input
                   type="text"
-                  value={filters.skill}
-                  onChange={(e) => {}}
+                  // value={filters.skill}
+                  onChange={(e) => {setFilters({...filters, skill: e.target.value})}}
                   placeholder="Type to search..."
                   className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white"
                 />
@@ -223,8 +213,9 @@ export default function AllRoadmaps() {
             
             <div className="flex items-center ">
               <select
-                value={filters.approach}
-                onChange={(e) => {}}
+                // value={filters.approach}
+                onChange={(e) => {setFilters({...filters, approach: e.target.value});console.log(e.target.value);
+                }}
                 className="w-full text-gray-800 px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white"
               >
                 <option value="">All Approaches</option>
@@ -232,14 +223,18 @@ export default function AllRoadmaps() {
                 <option value="interview-prep">Interview Preparation</option>
                 <option value="quick-recap">Quick Recap</option>
                 <option value="project-focused">Project-Based Learning</option>
-                <option value="certification-prep">Certification Prep</option>
+                <option value="certification-prep">Certification Preparation</option>
+                <option value="foundation-building">Strong Foundation</option>
+                <option value="practical-skills">Practical Skills</option>
+                <option value="competitive-programming">Competitive Programming</option>
+                <option value="academic-study">Academic/Theoretical</option>
               </select>
             </div>
             
             <div className="space-y-2">
               <select
-                value={filters.sortBy}
-                onChange={(e) => {}}
+                // value={filters.sortBy}
+                onChange={(e) => {setFilters({...filters, sortBy: e.target.value})}}
                 className="w-full flex items-center px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white"
               >
                 <option value="newest">Newest First</option>
@@ -248,24 +243,24 @@ export default function AllRoadmaps() {
                 <option value="alphabetical">Alphabetical</option>
               </select>
             </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-500">View Mode:</span>
+            <div className="flex items-center">
+              <span className="text-sm me-3 text-gray-500">View Mode:</span>
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`px-4 py-2 rounded-md rounded-e-none text-sm font-medium transition-colors ${
                     viewMode === 'grid' 
                       ? 'bg-green-500 text-white shadow-md' 
-                      : 'text-gray-600 hover:text-gray-800'
+                      :  'bg-gray-300 text-gray-600 hover:text-gray-800'
                   }`}
                 >
                   Grid
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`px-4 py-2 rounded-md rounded-s-none text-sm font-medium transition-colors ${
                     viewMode === 'list' 
                       ? 'bg-green-500 text-white shadow-md' 
-                      : 'text-gray-600 hover:text-gray-800'
+                      : 'bg-gray-300 text-gray-600 hover:text-gray-800'
                   }`}
                 >
                   List
@@ -322,114 +317,232 @@ export default function AllRoadmaps() {
           }>
             {roadmaps.map((roadmap, index) => {
               return (
-                <div
-                  key={roadmap._id}
-                  className={`group bg-white rounded-2xl shadow-lg hover:shadow-2xl border-2 border-green-100 hover:border-green-300 transition-all duration-500 overflow-hidden transform hover:-translate-y-2 ${viewMode === 'list' ? 'flex items-center' : ''}`}
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  {/* Card Header */}
-                  <div className={`bg-gradient-to-br from-green-500 to-green-600 text-white relative overflow-hidden ${viewMode === 'list' ? 'w-1/3 min-h-full flex items-center' : 'p-8'}`}>
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full transform translate-x-16 -translate-y-16"></div>
-                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full transform -translate-x-8 translate-y-8"></div>
-                    <div className={`relative z-10 ${viewMode === 'list' ? 'p-8' : ''}`}>
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-2xl font-bold">
-                          {roadmap.skill}
-                        </h3>
-                       
-                      </div>
-                      <div className="flex items-center justify-between text-green-100">
-                        <div className="flex items-center space-x-4">
-                          <div className="flex items-center">
-                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
-                            <span className="font-semibold">{roadmap.totalConcepts}</span>
-                            <span className="text-sm ml-1">concepts</span>
-                          </div>
-                          <div className="flex items-center">
-                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span className="text-sm">~{Math.round(roadmap.totalConcepts * 1.5)}h</span>
+                <div>
+
+               
+                  { filters.skill.length>0 || filters.approach.length>0 ?
+                  roadmap.skill.includes(filters.skill) && (filters.approach.length === 0 || roadmap.approach.id === filters.approach)?
+                    <div
+                    key={roadmap._id}
+                    className={`group bg-white rounded-2xl shadow-lg hover:shadow-2xl border-2 border-green-100 hover:border-green-300 transition-all duration-500 overflow-hidden transform hover:-translate-y-2 ${viewMode === 'list' ? 'flex items-center' : ''}`}
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    {/* Card Header */}
+                    <div className={`bg-gradient-to-br from-green-500 to-green-600 text-white relative overflow-hidden ${viewMode === 'list' ? 'w-1/3 min-h-full flex items-center' : 'p-8'}`}>
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full transform translate-x-16 -translate-y-16"></div>
+                      <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full transform -translate-x-8 translate-y-8"></div>
+                      <div className={`relative z-10 ${viewMode === 'list' ? 'p-8' : ''}`}>
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-2xl font-bold">
+                            {roadmap.skill}
+                          </h3>
+                        
+                        </div>
+                        <div className="flex items-center justify-between text-green-100">
+                          <div className="flex items-center space-x-4">
+                            <div className="flex items-center">
+                              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                              </svg>
+                              <span className="font-semibold">{roadmap.totalConcepts}</span>
+                              <span className="text-sm ml-1">concepts</span>
+                            </div>
+                            <div className="flex items-center">
+                              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              <span className="text-sm">~{Math.round(roadmap.totalConcepts * 1.5)}h</span>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Card Body */}
-                  <div className={`p-8 flex-1 ${viewMode === 'list' ? 'flex items-center justify-between' : 'space-y-6'}`}>
-                    <div className={viewMode === 'list' ? 'flex-1 pr-8' : ''}>
-                      <div className="flex items-center justify-between mb-4">
-                        <span className={`px-4 py-2 rounded-full text-sm font-semibold border ${getApproachBadgeColor(roadmap.approach.name)}`}>
-                          {roadmap.approach.name}
-                        </span>
-                        <span className={`px-3 py-1 text-xs font-semibold rounded-full border ${
-                          roadmap.isPublic 
-                            ? 'bg-green-50 text-green-700 border-green-200' 
-                            : 'bg-gray-50 text-gray-700 border-gray-200'
-                        }`}>
-                          {roadmap.isPublic ? 'Public' : 'Private'}
-                        </span>
-                      </div>
+                    {/* Card Body */}
+                    <div className={`p-8 flex-1 ${viewMode === 'list' ? 'flex items-center justify-between' : 'space-y-6'}`}>
+                      <div className={viewMode === 'list' ? 'flex-1 pr-8' : ''}>
+                        <div className="flex items-center justify-between mb-4">
+                          <span className={`px-4 py-2 rounded-full text-sm font-semibold border ${getApproachBadgeColor(roadmap.approach.name)}`}>
+                            {roadmap.approach.name}
+                          </span>
+                          <span className={`px-3 py-1 text-xs font-semibold rounded-full border ${
+                            roadmap.isPublic 
+                              ? 'bg-green-50 text-green-700 border-green-200' 
+                              : 'bg-gray-50 text-gray-700 border-gray-200'
+                          }`}>
+                            {roadmap.isPublic ? 'Public' : 'Private'}
+                          </span>
+                        </div>
 
-                      <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                        {roadmap.approach.description}
-                      </p>
+                        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                          {roadmap.approach.description}
+                        </p>
 
-                      <div className="text-xs text-gray-500 mb-6 flex items-center">
-                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        Created {formatDate(roadmap.createdAt)}
-                      </div>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className={`flex ${viewMode === 'list' ? 'space-x-3' : 'flex-col sm:flex-row gap-4'}`}>
-                      <Link
-                        to={`/user/road-map/displayDetailedRoadmap/${roadmap._id}`}
-                        className="group relative flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white text-center py-3 px-6 rounded-xl font-semibold transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg overflow-hidden"
-                      >
-                        <span className="relative z-10 flex items-center justify-center">
-                          <svg className="w-5 h-5 mr-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        <div className="text-xs text-gray-500 mb-6 flex items-center">
+                          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
-                          View Roadmap
-                        </span>
-                      </Link>
-                      
-                      <div className="flex space-x-2">
-                        {/* <button
-                          onClick={() => handleVisibilityToggle(roadmap._id, roadmap.isPublic)}
-                          className="p-3 text-gray-500 hover:text-green-600 hover:bg-green-50 border-2 border-gray-200 hover:border-green-300 rounded-xl transition-all duration-300"
-                          title={roadmap.isPublic ? 'Make Private' : 'Make Public'}
+                          Created {formatDate(roadmap.createdAt)}
+                        </div>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className={`flex ${viewMode === 'list' ? 'space-x-3' : 'flex-col sm:flex-row gap-4'}`}>
+                        <Link
+                          to={`/user/road-map/displayDetailedRoadmap/${roadmap._id}`}
+                          className="group relative flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white text-center py-3 px-6 rounded-xl font-semibold transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg overflow-hidden"
                         >
-                          {roadmap.isPublic ? (
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                          <span className="relative z-10 flex items-center justify-center">
+                            <svg className="w-5 h-5 mr-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                             </svg>
-                          ) : (
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                          )}
-                        </button> */}
+                            View Roadmap
+                          </span>
+                        </Link>
                         
-                        <button
-                          onClick={() => handleDelete(roadmap._id)}
-                          className="p-3 text-gray-500 hover:text-red-600 hover:bg-red-50 border-2 border-gray-200 hover:border-red-300 rounded-xl transition-all duration-300"
-                          title="Delete Roadmap"
-                        >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
-                        </button>
+                        <div className="flex space-x-2">
+                          {/* <button
+                            onClick={() => handleVisibilityToggle(roadmap._id, roadmap.isPublic)}
+                            className="p-3 text-gray-500 hover:text-green-600 hover:bg-green-50 border-2 border-gray-200 hover:border-green-300 rounded-xl transition-all duration-300"
+                            title={roadmap.isPublic ? 'Make Private' : 'Make Public'}
+                          >
+                            {roadmap.isPublic ? (
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                              </svg>
+                            ) : (
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                              </svg>
+                            )}
+                          </button> */}
+                          
+                          <button
+                            onClick={() => handleDelete(roadmap._id)}
+                            className="p-3 text-gray-500 hover:text-red-600 hover:bg-red-50 border-2 border-gray-200 hover:border-red-300 rounded-xl transition-all duration-300"
+                            title="Delete Roadmap"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
+                  :''
+                 :
+                  <div
+                    key={roadmap._id}
+                    className={`group bg-white rounded-2xl shadow-lg hover:shadow-2xl border-2 border-green-100 hover:border-green-300 transition-all duration-500 overflow-hidden transform hover:-translate-y-2 ${viewMode === 'list' ? 'flex items-center' : ''}`}
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    {/* Card Header */}
+                    <div className={`bg-gradient-to-br from-green-500 to-green-600 text-white relative overflow-hidden ${viewMode === 'list' ? 'w-1/3 min-h-full flex items-center' : 'p-8'}`}>
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full transform translate-x-16 -translate-y-16"></div>
+                      <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full transform -translate-x-8 translate-y-8"></div>
+                      <div className={`relative z-10 ${viewMode === 'list' ? 'p-8' : ''}`}>
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-2xl font-bold">
+                            {roadmap.skill}
+                          </h3>
+                        
+                        </div>
+                        <div className="flex items-center justify-between text-green-100">
+                          <div className="flex items-center space-x-4">
+                            <div className="flex items-center">
+                              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                              </svg>
+                              <span className="font-semibold">{roadmap.totalConcepts}</span>
+                              <span className="text-sm ml-1">concepts</span>
+                            </div>
+                            <div className="flex items-center">
+                              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              <span className="text-sm">~{Math.round(roadmap.totalConcepts * 1.5)}h</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Card Body */}
+                    <div className={`p-8 flex-1 ${viewMode === 'list' ? 'flex items-center justify-between' : 'space-y-6'}`}>
+                      <div className={viewMode === 'list' ? 'flex-1 pr-8' : ''}>
+                        <div className="flex items-center justify-between mb-4">
+                          <span className={`px-4 py-2 rounded-full text-sm font-semibold border ${getApproachBadgeColor(roadmap.approach.name)}`}>
+                            {roadmap.approach.name}
+                          </span>
+                          <span className={`px-3 py-1 text-xs font-semibold rounded-full border ${
+                            roadmap.isPublic 
+                              ? 'bg-green-50 text-green-700 border-green-200' 
+                              : 'bg-gray-50 text-gray-700 border-gray-200'
+                          }`}>
+                            {roadmap.isPublic ? 'Public' : 'Private'}
+                          </span>
+                        </div>
+
+                        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                          {roadmap.approach.description}
+                        </p>
+
+                        <div className="text-xs text-gray-500 mb-6 flex items-center">
+                          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          Created {formatDate(roadmap.createdAt)}
+                        </div>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className={`flex ${viewMode === 'list' ? 'space-x-3' : 'flex-col sm:flex-row gap-4'}`}>
+                        <Link
+                          to={`/user/road-map/displayDetailedRoadmap/${roadmap._id}`}
+                          className="group relative flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white text-center py-3 px-6 rounded-xl font-semibold transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg overflow-hidden"
+                        >
+                          <span className="relative z-10 flex items-center justify-center">
+                            <svg className="w-5 h-5 mr-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                            </svg>
+                            View Roadmap
+                          </span>
+                        </Link>
+                        
+                        <div className="flex space-x-2">
+                          {/* <button
+                            onClick={() => handleVisibilityToggle(roadmap._id, roadmap.isPublic)}
+                            className="p-3 text-gray-500 hover:text-green-600 hover:bg-green-50 border-2 border-gray-200 hover:border-green-300 rounded-xl transition-all duration-300"
+                            title={roadmap.isPublic ? 'Make Private' : 'Make Public'}
+                          >
+                            {roadmap.isPublic ? (
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                              </svg>
+                            ) : (
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                              </svg>
+                            )}
+                          </button> */}
+                          
+                          <button
+                            onClick={() => handleDelete(roadmap._id)}
+                            className="p-3 text-gray-500 hover:text-red-600 hover:bg-red-50 border-2 border-gray-200 hover:border-red-300 rounded-xl transition-all duration-300"
+                            title="Delete Roadmap"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                 }
                 </div>
               );
             })}

@@ -1,8 +1,9 @@
 import ExampleGeneration from "@/components/User/Roadmap/ExampleGeneration";
 import Header from "@/components/User/Roadmap/Header";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 export default function RoadMapGeneration() {
   const [skill, setSkill] = useState("");
@@ -123,7 +124,19 @@ export default function RoadMapGeneration() {
       );
       setIsLoading(false);
       console.log(response.data);
-      setGeneratedRoadmap(response.data);
+      toast.success(
+        <div>
+          <p className="text-sm text-black">Roadmap generated successfully!</p>
+          <Link 
+            to={`/user/road-map/displayDetailedRoadmap/${response.data.roadmap._id}`}
+            className=" text-sm inline-block mt-2 px-3 py-1 bg-green-500 text-white rounded hover:bg-green-700 transition"
+          >
+            View
+          </Link>
+        </div>,
+        { autoClose: 7000,theme:"light" }, // optional delay
+      );
+              setGeneratedRoadmap(response.data);
     } catch (error) {
       console.error(error);
       toast.error("Failed to generate roadmap");
