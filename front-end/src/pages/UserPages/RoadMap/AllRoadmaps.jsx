@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { ChartColumnIncreasing, Footprints, Plus, Route } from 'lucide-react';
+import { ChartColumnIncreasing, Footprints, Plus, Route, Search } from 'lucide-react';
 
 export default function AllRoadmaps() {
   const user = useSelector((state) => state.auth.user);
@@ -103,7 +103,7 @@ export default function AllRoadmaps() {
     <div className="min-h-screen pt-13 bg-gradient-to-br from-green-200 via-white to-green-50">
       {/* Header Section */}
       <div className="bg-white  border-b  shadow-lg shadow-black/30 border-green-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-full mx-auto px-4 py-4 pt-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
@@ -116,9 +116,9 @@ export default function AllRoadmaps() {
                   My Learning Roadmaps
                 </h1>
               </div>
-              <p className="text-sm sm:text-md text-gray-600 flex items-center space-x-2">
+              <p className="text-sm sm:text-md text-gray-600 flex items-center space-x-1">
                 <span>Navigate your personalized learning journey</span>
-                <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+                <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-[12px] font-medium">
                   {roadmaps.length} Active Paths
                 </span>
               </p>
@@ -140,9 +140,9 @@ export default function AllRoadmaps() {
         </div>
       </div>
 
-      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-full mx-auto px-4 py-4">
         {/* Enhanced Stats Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
           {[
             { 
               label: 'Total Roadmaps', 
@@ -187,16 +187,16 @@ export default function AllRoadmaps() {
               textColor: 'text-orange-600',
             }
           ].map((stat, index) => (
-            <div key={index} className={`${stat.bgColor} border-2 border-white rounded-2xl p-3 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1`}>
-              <div className="flex items-center justify-between">
-                <div className={`w-7 h-7  rounded-2xl flex items-center justify-center ${stat.textColor} shadow-lg`}>
+            <div key={index} className={`${stat.bgColor} flex justify-between border-2 border-white rounded-2xl p-3 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1`}>
+              <div className="flex items-center gap-2 justify-start">
+                <div className={`w-7 h-7  rounded-2xl  ${stat.textColor} shadow-lg`}>
                   {stat.icon}
                 </div>
-                <h3 className="text-sm font-semibold text-gray-700">{stat.label}</h3>
-                <div className="text-right">
-                  <div className={`text-md font-bold ${stat.textColor}`}>
-                    {stat.value}
-                  </div>
+                <h3 className="text-[12px] font-semibold text-gray-700">{stat.label}</h3>
+              </div>
+              <div className="text-right">
+                <div className={`text-md font-bold ${stat.textColor}`}>
+                  {stat.value}
                 </div>
               </div>
               
@@ -206,6 +206,48 @@ export default function AllRoadmaps() {
 
         {/* Advanced Control Panel */}
         <div className="bg-white rounded-2xl shadow-lg border border-green-100 p-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            
+              <div className="relative flex justify-center items-center ">
+                <div className="absolute left-4 text-gray-400">
+                  <Search/>
+                </div>
+                <input
+                  type="text"
+                  value={filters.skill}
+                  onChange={(e) => {}}
+                  placeholder="Type to search..."
+                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white"
+                />
+              </div>
+            
+            <div className="flex items-center ">
+              <select
+                value={filters.approach}
+                onChange={(e) => {}}
+                className="w-full text-gray-800 px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white"
+              >
+                <option value="">All Approaches</option>
+                <option value="complete-mastery">Complete Mastery</option>
+                <option value="interview-prep">Interview Preparation</option>
+                <option value="quick-recap">Quick Recap</option>
+                <option value="project-focused">Project-Based Learning</option>
+                <option value="certification-prep">Certification Prep</option>
+              </select>
+            </div>
+            
+            <div className="space-y-2">
+              <select
+                value={filters.sortBy}
+                onChange={(e) => {}}
+                className="w-full flex items-center px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white"
+              >
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="concepts">Most Complex</option>
+                <option value="alphabetical">Alphabetical</option>
+              </select>
+            </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-500">View Mode:</span>
                 <button
@@ -230,52 +272,6 @@ export default function AllRoadmaps() {
                 </button>            
             </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">Search Skills</label>
-              <div className="relative">
-                <input
-                  type="text"
-                  value={filters.skill}
-                  onChange={(e) => {}}
-                  placeholder="Type to search..."
-                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white"
-                />
-                <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">Learning Approach</label>
-              <select
-                value={filters.approach}
-                onChange={(e) => {}}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white"
-              >
-                <option value="">All Approaches</option>
-                <option value="complete-mastery">Complete Mastery</option>
-                <option value="interview-prep">Interview Preparation</option>
-                <option value="quick-recap">Quick Recap</option>
-                <option value="project-focused">Project-Based Learning</option>
-                <option value="certification-prep">Certification Prep</option>
-              </select>
-            </div>
-            
-            <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">Sort By</label>
-              <select
-                value={filters.sortBy}
-                onChange={(e) => {}}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white"
-              >
-                <option value="newest">Newest First</option>
-                <option value="oldest">Oldest First</option>
-                <option value="concepts">Most Complex</option>
-                <option value="alphabetical">Alphabetical</option>
-              </select>
-            </div>
           </div>
         </div>
 
