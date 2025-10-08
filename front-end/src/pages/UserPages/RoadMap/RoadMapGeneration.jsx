@@ -134,7 +134,7 @@ export default function RoadMapGeneration() {
             View
           </Link>
         </div>,
-        { autoClose: 7000,theme:"light" }, // optional delay
+        { autoClose: 7000,theme:"light" }, 
       );
               setGeneratedRoadmap(response.data);
     } catch (error) {
