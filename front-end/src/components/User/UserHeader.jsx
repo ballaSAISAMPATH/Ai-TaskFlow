@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Brain, Zap, TrendingUp, Home, BarChart3, User, Target, LogOut, Plus, CheckCircle, Clock, Edit, MessageSquare,FileScan } from 'lucide-react';
+import { Brain,Route, Zap, TrendingUp, Home, BarChart3, User, Target, LogOut, Plus, CheckCircle, Clock, Edit, MessageSquare,FileScan } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -78,15 +78,15 @@ const UserHeader = () => {
     },
     {
       icon: Plus,
-      label: 'Add AI Task',
+      label: 'Add Task',
       path: '/user/add-task',
       description: 'Add new AI tasks'
     },
     {
-      icon: Edit,
-      label: 'Add Manual Task',
-      path: '/user/add-manual',
-      description: 'Add manual tasks'
+      icon: Route,
+      label: 'Road Map',
+      path: '/user/road-map',
+      description: 'Get journey-map with AI'
     },
     {
       icon: BarChart3,
@@ -94,7 +94,7 @@ const UserHeader = () => {
       path: '/user/dashboard',
       description: 'View analytics'
     },
-    {
+      {
       icon: FileScan,
       label: 'Resume Check',
       path: '/user/check-resume',
@@ -104,7 +104,7 @@ const UserHeader = () => {
       icon: MessageSquare,
       label: 'Feedback',
       path: '/user/feedback',
-      description: 'Share your thoughts'
+      description: 'Share feedback'
     },
     {
       icon: User,
