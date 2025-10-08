@@ -100,9 +100,9 @@ export default function AllRoadmaps() {
   }
 
   return (
-    <div className="min-h-screen pt-20 bg-gradient-to-br from-green-50 via-white to-green-50">
+    <div className="min-h-screen pt-13 bg-gradient-to-br from-green-200 via-white to-green-50">
       {/* Header Section */}
-      <div className="bg-white shadow-sm border-b border-green-100">
+      <div className="bg-white  border-b  shadow-lg shadow-black/30 border-green-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="space-y-3">
@@ -116,7 +116,7 @@ export default function AllRoadmaps() {
                   My Learning Roadmaps
                 </h1>
               </div>
-              <p className="text-sm sm:text-lg text-gray-600 flex items-center space-x-2">
+              <p className="text-sm sm:text-md text-gray-600 flex items-center space-x-2">
                 <span>Navigate your personalized learning journey</span>
                 <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
                   {roadmaps.length} Active Paths
@@ -126,10 +126,10 @@ export default function AllRoadmaps() {
             <div className="flex items-center space-x-4">
               <Link
                 to="/user/road-map/create-roadmap"
-                className="group  shadow-black/50 relative px-8 py-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                className="group text-sm  shadow-black/50 relative px-4 py-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
               >
                 <span className="flex items-center">
-                  <svg className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 mr-2 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <Plus/>
                   </svg>
                   Create New Roadmap
@@ -150,9 +150,9 @@ export default function AllRoadmaps() {
               icon: (
                 <Route />
               ),
-              color: 'from-yellow-500 to-yellow-600',
-              bgColor: 'bg-green-50',
-              textColor: 'text-green-600'
+              color: 'from-red-500 to-red-600',
+              bgColor: 'bg-red-100',
+              textColor: 'text-red-600'
             },
             { 
               label: 'Concepts Mapped', 
@@ -161,7 +161,7 @@ export default function AllRoadmaps() {
                 <ChartColumnIncreasing />
               ),
               color: 'from-blue-500 to-blue-600',
-              bgColor: 'bg-blue-50',
+              bgColor: 'bg-blue-100',
               textColor: 'text-blue-600'
             },
             { 
@@ -173,7 +173,7 @@ export default function AllRoadmaps() {
                 </svg>
               ),
               color: 'from-purple-500 to-purple-600',
-              bgColor: 'bg-purple-50',
+              bgColor: 'bg-purple-100',
               textColor: 'text-purple-600'
             },
             { 
@@ -183,18 +183,18 @@ export default function AllRoadmaps() {
                 <Footprints />
               ),
               color: 'from-orange-500 to-orange-600',
-              bgColor: 'bg-orange-50',
+              bgColor: 'bg-orange-100',
               textColor: 'text-orange-600',
             }
           ].map((stat, index) => (
             <div key={index} className={`${stat.bgColor} border-2 border-white rounded-2xl p-3 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1`}>
-              <div className="flex items-center justify-between mb-4">
-                <div className={`w-10 h-10 bg-gradient-to-br ${stat.color} rounded-2xl flex items-center justify-center text-white shadow-lg`}>
+              <div className="flex items-center justify-between">
+                <div className={`w-7 h-7  rounded-2xl flex items-center justify-center ${stat.textColor} shadow-lg`}>
                   {stat.icon}
                 </div>
-                <h3 className="text-lg font-semibold text-gray-700">{stat.label}</h3>
+                <h3 className="text-sm font-semibold text-gray-700">{stat.label}</h3>
                 <div className="text-right">
-                  <div className={`text-2xl font-bold ${stat.textColor} mb-1`}>
+                  <div className={`text-md font-bold ${stat.textColor}`}>
                     {stat.value}
                   </div>
                 </div>
@@ -205,19 +205,9 @@ export default function AllRoadmaps() {
         </div>
 
         {/* Advanced Control Panel */}
-        <div className="bg-white rounded-2xl shadow-lg border border-green-100 p-8 mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-800">Filter & Sort</h3>
-            </div>
+        <div className="bg-white rounded-2xl shadow-lg border border-green-100 p-4 mb-8">
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-500">View Mode:</span>
-              <div className="flex bg-gray-100 rounded-lg p-1">
                 <button
                   onClick={() => setViewMode('grid')}
                   className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -237,10 +227,8 @@ export default function AllRoadmaps() {
                   }`}
                 >
                   List
-                </button>
-              </div>
+                </button>            
             </div>
-          </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
