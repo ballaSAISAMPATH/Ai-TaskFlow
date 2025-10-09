@@ -109,7 +109,7 @@ const UserSideBar = () => {
       icon: Route,
       label: 'Road Map',
       path: '/user/road-map',
-      description: 'Track your AI learning journey'
+      description: 'Get journey-map with AI'
     },
     {
       icon: BarChart3,
@@ -145,7 +145,7 @@ const UserSideBar = () => {
 
   return (
     <aside className="hidden md:flex fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-white/95 backdrop-blur-md border-r border-gray-200 z-40 flex-col justify-between">
-      <div className="p-6">
+      <div className="p-3">
         <nav className="space-y-2">
           {menuItems.map((item) => {
             const Icon = item.icon;

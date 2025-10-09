@@ -75,6 +75,11 @@ const roadmapSchema = new mongoose.Schema({
       type: String,
       required: true,
       trim: true
+    },
+    id:{
+      type: String,
+      required: true,
+      trim: true
     }
   },
   userId: {

@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { logoutUser } from '@/store/auth';
 import { LogOut } from 'lucide-react';
-
+import UserFeedBack from './UserFeedBack';
 const UserProfile = () => {
   const navigate = useNavigate()
   const { user, isLoading } = useSelector((state) => state.auth);
@@ -125,7 +125,7 @@ const UserProfile = () => {
               <p className="text-xs text-gray-500">Update your account password</p>
             </div>
           )}
-
+          <UserFeedBack/>
           <div className="pt-6 border-t border-gray-200">
             <div className="space-y-2">
               <label className="block text-sm font-medium text-red-700">

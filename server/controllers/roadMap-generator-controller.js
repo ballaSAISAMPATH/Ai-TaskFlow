@@ -267,6 +267,7 @@ export const generateRoadmapController = async (req, res) => {
       approach: {
         name: approach.name,
         description: approach.description,
+        id: approach.id,
         roadmapStyle: approach.roadmapStyle
       },
       userId: id // Store as string as per your schema
