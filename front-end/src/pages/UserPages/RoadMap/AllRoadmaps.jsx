@@ -239,8 +239,7 @@ export default function AllRoadmaps() {
               >
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>
-                <option value="concepts">Most Complex</option>
-                <option value="alphabetical">Alphabetical</option>
+                <option value="alphabetical">Alphabetical</option>  
               </select>
             </div>
             <div className="flex items-center">
@@ -316,10 +315,10 @@ export default function AllRoadmaps() {
     "space-y-4"
   }>
     {roadmaps.map((roadmap, index) => {   
-      const shouldShowRoadmap = (filters.skill.length === 0 || roadmap.skill.includes(filters.skill) && 
-         (filters.approach.length === 0 || roadmap.approach.id === filters.approach));
+      let shouldShowRoadmap = (filters.skill.length === 0 || roadmap.skill.includes(filters.skill) )&& 
+      (filters.approach.length === 0 || roadmap.approach.id === filters.approach);
       if (!shouldShowRoadmap) return null;
-
+      
       return (
         <div
           key={roadmap._id}
@@ -341,7 +340,7 @@ export default function AllRoadmaps() {
             <div className="relative p-6">
               {/* Skill Title */}
               <div className="flex items-start justify-between mb-4">
-                <h3 className="text-xl font-bold leading-tight pr-2">
+                <h3 className="text-xl capitalize font-bold leading-tight pr-2">
                   {roadmap.skill}
                 </h3>
                 <div className="flex-shrink-0">
