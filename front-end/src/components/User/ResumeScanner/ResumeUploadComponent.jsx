@@ -132,7 +132,7 @@ const ResumeUploadComponent = ({ onFileUpload, onJdChange, onScanResume, isLoadi
         <textarea 
           value={jd}
           onChange={handleJdChange}
-          placeholder="Paste the job description here..."
+          placeholder="Eg : A skilled prompt engineer..."
           className="w-full h-24 sm:h-32 lg:h-40 p-2 sm:p-3 lg:p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-black text-xs sm:text-sm lg:text-base"
           disabled={isLoading}
         />
