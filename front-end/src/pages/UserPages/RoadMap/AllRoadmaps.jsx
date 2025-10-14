@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { ChartColumnIncreasing, Footprints, Plus, Route, Search } from 'lucide-react';
+import { ChartColumnIncreasing, Footprints, LockKeyhole, LockKeyholeOpen, Plus, Route, Search } from 'lucide-react';
 
 export default function AllRoadmaps() {
   const user = useSelector((state) => state.auth.user);
@@ -33,7 +33,7 @@ export default function AllRoadmaps() {
       
       setError(null);
     } catch (err) {
-      setError('Failed to fetch roadmaps');
+      setError('check your connection');
       console.error('Error fetching roadmaps:', err);
     } finally {
       setLoading(false);
@@ -124,7 +124,7 @@ export default function AllRoadmaps() {
     <div className="min-h-screen pt-13 bg-gradient-to-br from-green-200 via-white to-green-50">
       {/* Header Section */}
       <div className="bg-white border-b shadow-lg shadow-black/30 border-green-100">
-        <div className="max-w-full mx-auto px-4 py-4 pt-8">
+        <div className="max-w-full mx-auto px-4 py-2 pt-2">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
@@ -183,7 +183,7 @@ export default function AllRoadmaps() {
             },
             { 
               label: 'Learning Hours', 
-              value: Math.round(roadmaps.length * 45.5), 
+              value: roadmaps.reduce((sum, rm) => sum + (rm.totalConcepts || 0), 0) * 1.5,
               icon: (
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -202,7 +202,7 @@ export default function AllRoadmaps() {
               textColor: 'text-orange-600',
             }
           ].map((stat, index) => (
-            <div key={index} className={`${stat.bgColor} flex justify-between border-2 border-white rounded-xl p-2 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1`}>
+            <div key={index} className={`${stat.bgColor} flex justify-between border-2 border-white rounded-xl p-2 shadow-md shadow-black/40 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1`}>
               <div className="flex items-center gap-1 justify-start">
                 <div className={`w-5 h-5 rounded-xl ${stat.textColor} shadow-md`}>
                   {stat.icon}
@@ -353,7 +353,7 @@ export default function AllRoadmaps() {
         {/* Roadmaps Display */}
         {filteredAndSortedRoadmaps.length > 0 && (
           <div className={viewMode === 'grid' ? 
-            "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4" : 
+            "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4" : 
             "space-y-3"
           }>
             {filteredAndSortedRoadmaps.map((roadmap, index) => (
@@ -377,7 +377,7 @@ export default function AllRoadmaps() {
                   <div className="relative p-4">
                     {/* Skill Title */}
                     <div className="flex items-start justify-between mb-3">
-                      <h3 className="text-lg capitalize font-bold leading-tight pr-2">
+                      <h3 className="text-sm capitalize font-bold leading-tight pr-2">
                         {roadmap.skill}
                       </h3>
                       <div className="flex-shrink-0">
@@ -388,17 +388,18 @@ export default function AllRoadmaps() {
                         }`}>
                           {roadmap.isPublic ? (
                             <>
-                              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                              </svg>
+                            <div className='me-1'>
+
+                              <LockKeyholeOpen size={14}/>
+                            </div>
                               Public
                             </>
                           ) : (
                             <>
-                              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m0 0v2m0-2h2m-2 0H10m2-15a2.998 2.998 0 00-2.83 2H6a2 2 0 00-2 2v10a2 2 0 002 2h1.17A2.998 2.998 0 0010 17h4a2.998 2.998 0 002.83-2H18a2 2 0 002-2V7a2 2 0 00-2-2h-1.17A2.998 2.998 0 0016 3H8z" />
-                              </svg>
+                            <div className='me-1'>
+
+                              <LockKeyhole size={14}/>
+                            </div>
                               Private
                             </>
                           )}

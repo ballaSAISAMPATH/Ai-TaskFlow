@@ -21,9 +21,9 @@ export default function RoadmapDisplay() {
         roadmap.levels.forEach((_, index) => {
           setTimeout(() => {
             setVisibleCards((prev) => new Set([...prev, index]));
-          }, index * 200);
+          }, index * 150);
         });
-      }, 500);
+      }, 300);
 
       return () => clearTimeout(timer);
     }
@@ -48,7 +48,7 @@ export default function RoadmapDisplay() {
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
-      month: "long",
+      month: "short",
       day: "numeric",
     });
   };
@@ -57,15 +57,14 @@ export default function RoadmapDisplay() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="relative mb-8">
-            <div className="w-20 h-20 border-4 border-green-200 rounded-full animate-spin border-t-green-600"></div>
-            <div className="absolute inset-0 w-16 h-16 m-auto border-4 border-emerald-100 rounded-full animate-pulse"></div>
+          <div className="relative mb-4">
+            <div className="absolute inset-0 w-8 h-8 m-auto border-t-3 border-green-500 animate-spin rounded-full "></div>
           </div>
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4">
-            Crafting Your Learning Journey
+          <h2 className="text-lg font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">
+            Loading Roadmap
           </h2>
-          <p className="text-gray-600 text-lg">
-            Preparing your personalized roadmap...
+          <p className="text-gray-600 text-sm">
+            Preparing your learning path...
           </p>
         </div>
       </div>
@@ -75,10 +74,10 @@ export default function RoadmapDisplay() {
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-50 to-pink-50 flex items-center justify-center">
-        <div className="text-center p-8">
-          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <div className="text-center p-6">
+          <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg
-              className="w-10 h-10 text-red-500"
+              className="w-6 h-6 text-red-500"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -91,10 +90,10 @@ export default function RoadmapDisplay() {
               />
             </svg>
           </div>
-          <h2 className="text-xl font-bold text-red-700 mb-2">
-            Oops! Something went wrong
+          <h2 className="text-lg font-bold text-red-700 mb-2">
+            Something went wrong
           </h2>
-          <p className="text-red-600">{error}</p>
+          <p className="text-red-600 text-sm">{error}</p>
         </div>
       </div>
     );
@@ -103,28 +102,28 @@ export default function RoadmapDisplay() {
   if (!roadmap) return null;
 
   return (
-    <div className="min-h-screen pt-20 bg-gradient-to-br from-green-50 via-white to-emerald-50">
-      {/* Hero Section with Animated Background */}
-      <div className=" border-b bg-green-100 border-gray-200 py-6 ">
-        <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen pt-16 bg-gradient-to-br from-green-50 via-white to-emerald-50">
+      {/* Hero Section - Compact */}
+      <div className="border-b bg-green-100 border-gray-200 py-3">
+        <div className="max-w-full mx-auto px-3 sm:px-4">
           {/* Main Title */}
-          <div className="text-center mb-6">
-            <h1 className="text-3xl sm:text-4xl font-bold text-green-600 uppercase tracking-wide">
+          <div className="text-center mb-3">
+            <h1 className="text-lg sm:text-xl font-bold text-green-600 uppercase tracking-wide">
               {roadmap.skill}
             </h1>
           </div>
 
           {/* Approach Section */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-center gap-4 mb-6">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 shadow-lg/50 shadow-black bg-green-100 text-green-800 px-3 py-2 rounded-full text-sm font-medium">
-                <GraduationCap className="w-4 h-4" />
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-center gap-2 mb-3">
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 shadow-sm bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                <GraduationCap className="w-3 h-3" />
                 {roadmap.approach.name}
               </div>
             </div>
-            <div className="inline-flex items-center gap-2 shadow-lg/50 shadow-black bg-red-100 text-red-800 px-3 py-2 rounded-full text-sm font-medium max-w-2xl">
+            <div className="inline-flex items-center gap-1.5 shadow-sm bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium max-w-xl">
               <svg
-                className="w-4 h-4 flex-shrink-0"
+                className="w-3 h-3 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -136,15 +135,15 @@ export default function RoadmapDisplay() {
                   d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <span className="truncate ">{roadmap.approach.description}</span>
+              <span className="truncate text-xs">{roadmap.approach.description}</span>
             </div>
           </div>
 
-          {/* Stats Badges */}
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-            <span className="inline-flex shadow-lg/50 shadow-black items-center gap-2 bg-blue-100 text-blue-800 px-3 py-2 rounded-full text-sm font-medium">
+          {/* Stats Badges - Compact */}
+          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
+            <span className="inline-flex shadow-sm items-center gap-1.5 bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
               <svg
-                className="w-4 h-4"
+                className="w-3 h-3"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -156,12 +155,12 @@ export default function RoadmapDisplay() {
                   d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                 />
               </svg>
-              {roadmap.totalConcepts} Learning Concepts
+              {roadmap.totalConcepts} Concepts
             </span>
 
-            <span className="inline-flex shadow-lg/50 shadow-black items-center gap-2 bg-green-100 text-green-800 px-3 py-2 rounded-full text-sm font-medium">
+            <span className="inline-flex shadow-sm items-center gap-1.5 bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
               <svg
-                className="w-4 h-4"
+                className="w-3 h-3"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -173,12 +172,12 @@ export default function RoadmapDisplay() {
                   d="M13 10V3L4 14h7v7l9-11h-7z"
                 />
               </svg>
-              6 Mastery Levels
+              6 Levels
             </span>
 
-            <span className="inline-flex shadow-lg/50 shadow-black items-center gap-2 bg-purple-100 text-purple-800 px-3 py-2 rounded-full text-sm font-medium">
+            <span className="inline-flex shadow-sm items-center gap-1.5 bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs font-medium">
               <svg
-                className="w-4 h-4"
+                className="w-3 h-3"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -190,32 +189,31 @@ export default function RoadmapDisplay() {
                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                 />
               </svg>
-              Created {formatDate(roadmap.createdAt)}
+              {formatDate(roadmap.createdAt)}
             </span>
           </div>
         </div>
       </div>
 
-      {/* Main Content - Two Column Layout */}
-      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 lg:gap-12">
+      {/* Main Content - Compact Layout */}
+      <div className="max-w-full mx-auto px-3 sm:px-4 py-4 sm:py-6">
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-4 lg:gap-6">
           {/* Left Column - Learning Path */}
           <div className="xl:col-span-8">
-            {/* Section Header */}
-            <div className="text-center xl:text-left mb-8 lg:mb-12">
-              <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4">
-                Your Learning Journey
+            {/* Section Header - Compact */}
+            <div className="text-center xl:text-left mb-4 lg:mb-6">
+              <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">
+                Learning Journey
               </h2>
-              <p className="text-lg sm:text-xl text-gray-600">
-                Master {roadmap.skill} through this carefully structured
-                progression
+              <p className="text-xs sm:text-sm text-gray-600">
+                Master {roadmap.skill} through structured progression
               </p>
             </div>
 
-            {/* Learning Path */}
+            {/* Learning Path - Compact */}
             <div className="relative">
-              {/* Flowing Connection Line */}
-              <div className="absolute left-6 sm:left-8 top-0 w-1 h-full bg-gradient-to-b from-green-400 via-emerald-400 to-green-600 rounded-full opacity-30"></div>
+              {/* Connection Line */}
+              <div className="absolute left-4 sm:left-5 top-0 w-0.5 h-full bg-gradient-to-b from-green-400 via-emerald-400 to-green-600 rounded-full opacity-30"></div>
 
               {roadmap.levels.map((level, levelIndex) => {
                 const isVisible = visibleCards.has(levelIndex);
@@ -223,36 +221,36 @@ export default function RoadmapDisplay() {
                 return (
                   <div
                     key={levelIndex}
-                    className={`relative mb-8 sm:mb-12 transition-all duration-700 ${
+                    className={`relative mb-4 sm:mb-6 transition-all duration-500 ${
                       isVisible
                         ? "opacity-100 translate-x-0"
-                        : "opacity-0 translate-x-8"
+                        : "opacity-0 translate-x-6"
                     }`}
                   >
-                    {/* Level Number Icon */}
-                    <div className="absolute left-2 sm:left-4 w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center text-white font-bold text-sm sm:text-lg z-10 shadow-lg bg-gradient-to-br from-green-500 to-green-600 transition-all duration-500 transform hover:scale-110">
+                    {/* Level Number Icon - Compact */}
+                    <div className="absolute left-1 sm:left-2 w-6 h-6 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center text-white font-bold text-xs sm:text-sm z-10 shadow-md bg-gradient-to-br from-green-500 to-green-600 transition-all duration-300 transform hover:scale-110">
                       {levelIndex + 1}
                     </div>
 
-                    {/* Level Content Card */}
-                    <div className="ml-16 sm:ml-20">
-                      <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border-2 border-gray-100 hover:border-green-200 transition-all duration-500 transform hover:scale-[1.02] hover:shadow-2xl">
-                        {/* Level Header */}
-                        <div className="relative p-4 sm:p-6 lg:p-8 overflow-hidden">
+                    {/* Level Content Card - Compact */}
+                    <div className="ml-10 sm:ml-12">
+                      <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 hover:border-green-200 transition-all duration-300 transform hover:scale-[1.01] hover:shadow-xl">
+                        {/* Level Header - Compact */}
+                        <div className="relative p-3 sm:p-4 overflow-hidden">
                           {/* Decorative Elements */}
-                          <div className="absolute top-0 right-0 w-32 h-32 sm:w-40 sm:h-40 rounded-full transform translate-x-16 sm:translate-x-20 -translate-y-16 sm:-translate-y-20 opacity-10 bg-gradient-to-br from-green-400 to-green-600"></div>
+                          <div className="absolute top-0 right-0 w-16 h-16 sm:w-20 sm:h-20 rounded-full transform translate-x-8 sm:translate-x-10 -translate-y-8 sm:-translate-y-10 opacity-10 bg-gradient-to-br from-green-400 to-green-600"></div>
 
                           <div className="relative z-10">
-                            <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent">
+                            <h3 className="text-base sm:text-lg font-bold mb-2 bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent">
                               {level.level}
                             </h3>
-                            <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-6 leading-relaxed">
+                            <p className="text-gray-600 text-xs sm:text-sm mb-3 leading-relaxed">
                               {level.description}
                             </p>
-                            <div className="flex flex-wrap items-center gap-3 sm:gap-4 lg:gap-6 text-xs sm:text-sm text-gray-500">
-                              <span className="flex items-center px-3 sm:px-4 py-2 rounded-xl font-medium bg-gray-200 text-green-600">
+                            <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
+                              <span className="flex items-center px-2 py-1 rounded-lg font-medium bg-gray-200 text-green-600">
                                 <svg
-                                  className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2"
+                                  className="w-3 h-3 mr-1"
                                   fill="none"
                                   stroke="currentColor"
                                   viewBox="0 0 24 24"
@@ -266,9 +264,9 @@ export default function RoadmapDisplay() {
                                 </svg>
                                 {level.duration}
                               </span>
-                              <span className="flex items-center px-3 sm:px-4 py-2 rounded-xl font-medium bg-green-100 text-green-600">
+                              <span className="flex items-center px-2 py-1 rounded-lg font-medium bg-green-100 text-green-600">
                                 <svg
-                                  className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2"
+                                  className="w-3 h-3 mr-1"
                                   fill="none"
                                   stroke="currentColor"
                                   viewBox="0 0 24 24"
@@ -286,21 +284,20 @@ export default function RoadmapDisplay() {
                           </div>
                         </div>
 
-                        {/* Always Visible Concepts */}
-                        <div className="px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8 bg-gradient-to-br from-gray-50 to-white">
-                          <h4 className="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-900 mb-4 sm:mb-6 flex items-center">
-                            {/* <span className="w-2 h-2 sm:w-3 sm:h-3 rounded-full mr-2 sm:mr-3 bg-green-500"></span> */}
+                        {/* Concepts - Compact */}
+                        <div className="px-3 sm:px-4 pb-3 sm:pb-4 bg-gradient-to-br from-gray-50 to-white">
+                          <h4 className="text-sm sm:text-base font-semibold text-gray-900 mb-2 sm:mb-3">
                             Learning Concepts
                           </h4>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3 sm:gap-4">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             {level.concepts.map((concept, conceptIndex) => (
                               <div
                                 key={conceptIndex}
-                                className="group p-3 rounded-2xl  border-2 bg-gradient-to-br from-green-50 to-white border-green-100 hover:border-green-300 transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+                                className="group p-2 rounded-lg border bg-gradient-to-br from-green-50 to-white border-green-100 hover:border-green-300 transition-all duration-200 transform hover:scale-[1.02] hover:shadow-md"
                               >
                                 <div className="flex items-center">
-                                  <span className="w-2 h-2  rounded-full mr-2 sm:mr-3 p-1 bg-green-500"></span>
-                                  <span className="font-semibold text-gray-800 text-xs sm:text-sm lg:text-sm group-hover:text-gray-900 transition-colors duration-200">
+                                  <span className="w-1.5 h-1.5 rounded-full mr-2 bg-green-500"></span>
+                                  <span className="font-medium text-gray-800 text-xs group-hover:text-gray-900 transition-colors duration-200">
                                     {concept}
                                   </span>
                                 </div>
@@ -316,32 +313,31 @@ export default function RoadmapDisplay() {
             </div>
           </div>
 
-          {/* Right Column - Skills */}
-          <div className="xl:col-span-4 space-y-6 sm:space-y-8">
-            <div className="sticky top-20">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center xl:text-left mb-6 sm:mb-8 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                Expand Your Horizon
+          {/* Right Column - Skills - Compact */}
+          <div className="xl:col-span-4 space-y-4">
+            <div className="sticky top-16">
+              <h2 className="text-lg sm:text-xl font-bold text-center xl:text-left mb-4 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                Expand Skills
               </h2>
 
-              {/* Complementary Skills */}
-              <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-blue-100 p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 transform hover:scale-105 transition-transform duration-300">
-                <div className="flex items-center mb-4 sm:mb-6">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mr-3 sm:mr-4">
-                    {/* Lucide React Icon in place of raw SVG */}
-                    <Link className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              {/* Complementary Skills - Compact */}
+              <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-blue-100 p-3 sm:p-4 mb-4 transform hover:scale-[1.02] transition-transform duration-200">
+                <div className="flex items-center mb-3">
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-2 sm:mr-3">
+                    <Link className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
                   </div>
-                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">
+                  <h3 className="text-sm sm:text-base font-bold text-gray-900">
                     Complementary Skills
                   </h3>
                 </div>
-                <p className="text-gray-900 text-sm mb-4">
-                  Skills that enhance and strengthen your {roadmap.skill}
+                <p className="text-gray-900 text-xs mb-3">
+                  Skills that enhance {roadmap.skill}
                 </p>
-                <div className="flex flex-wrap gap-2 sm:gap-3">
+                <div className="flex flex-wrap gap-1.5">
                   {roadmap.relatedSkills.complementary.map((skill, index) => (
                     <span
                       key={index}
-                      className="px-3 sm:px-4 py-2 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 rounded-full text-xs sm:text-sm font-semibold shadow-md hover:shadow-lg transition-shadow duration-200 transform hover:scale-105"
+                      className="px-2 py-1 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 rounded-full text-xs font-medium shadow-sm hover:shadow-md transition-shadow duration-200 transform hover:scale-105"
                     >
                       {skill}
                     </span>
@@ -349,25 +345,24 @@ export default function RoadmapDisplay() {
                 </div>
               </div>
 
-              {/* Next Level Skills */}
-              <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-green-100 p-4 sm:p-6 lg:p-8 transform hover:scale-105 transition-transform duration-300">
-                <div className="flex items-center mb-4 sm:mb-6">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br text-white from-red-500 to-red-600 rounded-2xl flex items-center justify-center mr-3 sm:mr-4">
-                    <Route />
+              {/* Next Level Skills - Compact */}
+              <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-green-100 p-3 sm:p-4 transform hover:scale-[1.02] transition-transform duration-200">
+                <div className="flex items-center mb-3">
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br text-white from-red-500 to-red-600 rounded-lg flex items-center justify-center mr-2 sm:mr-3">
+                    <Route className="w-3 h-3 sm:w-4 sm:h-4" />
                   </div>
-                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">
-                    Future roadmaps
+                  <h3 className="text-sm sm:text-base font-bold text-gray-900">
+                    Future Roadmaps
                   </h3>
                 </div>
-                <p className="text-gray-900 text-sm mb-4">
-                  further tracks after {roadmap.skill}
+                <p className="text-gray-900 text-xs mb-3">
+                  Advanced tracks after {roadmap.skill}
                 </p>
-
-                <div className="flex flex-wrap gap-2 sm:gap-3">
+                <div className="flex flex-wrap gap-1.5">
                   {roadmap.relatedSkills.nextLevel.map((skill, index) => (
                     <span
                       key={index}
-                      className="px-3 sm:px-4 py-2 bg-gradient-to-r from-red-100 to-red-200 text-red-800 rounded-full text-xs sm:text-sm font-semibold shadow-md hover:shadow-lg transition-shadow duration-200 transform hover:scale-105"
+                      className="px-2 py-1 bg-gradient-to-r from-red-100 to-red-200 text-red-800 rounded-full text-xs font-medium shadow-sm hover:shadow-md transition-shadow duration-200 transform hover:scale-105"
                     >
                       {skill}
                     </span>
@@ -378,13 +373,13 @@ export default function RoadmapDisplay() {
           </div>
         </div>
 
-        {/* Career Opportunities - Full Width at Bottom */}
-        <div className="mt-12 sm:mt-16 lg:mt-20">
-          <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100 p-6 sm:p-8 lg:p-10">
-            <div className="flex flex-col sm:flex-row items-center justify-center mb-8 sm:mb-12">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl sm:rounded-3xl flex items-center justify-center mr-0 sm:mr-6 mb-4 sm:mb-0">
+        {/* Career Opportunities - Compact */}
+        <div className="mt-6 sm:mt-8">
+          <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row items-center justify-center mb-4 sm:mb-6">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center mr-0 sm:mr-4 mb-2 sm:mb-0">
                 <svg
-                  className="w-6 h-6 sm:w-8 sm:h-8 text-white"
+                  className="w-4 h-4 sm:w-5 sm:h-5 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -397,38 +392,38 @@ export default function RoadmapDisplay() {
                   />
                 </svg>
               </div>
-              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-800 bg-clip-text text-transparent text-center sm:text-left">
+              <h3 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-800 bg-clip-text text-transparent text-center sm:text-left">
                 Career Opportunities
               </h3>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {roadmap.relatedSkills.specializations.map((spec, index) => (
                 <div
                   key={index}
-                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:border-emerald-300 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
+                  className="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-lg p-3 sm:p-4 hover:border-emerald-300 hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1"
                 >
-                  <h4 className="font-bold text-gray-900 mb-3 text-lg sm:text-xl">
+                  <h4 className="font-bold text-gray-900 mb-2 text-sm sm:text-base">
                     {spec.role}
                   </h4>
-                  <p className="text-xs sm:text-sm text-gray-600 mb-4 sm:mb-6 leading-relaxed">
+                  <p className="text-xs text-gray-600 mb-3 leading-relaxed">
                     {spec.averageSalary.description}
                   </p>
-                  <div className="space-y-3 sm:space-y-4">
-                    <div className="flex justify-between items-center p-2 sm:p-3 bg-emerald-50 rounded-xl">
-                      <span className="text-xs sm:text-sm font-semibold text-gray-700 flex items-center">
-                        <span className="text-base sm:text-lg mr-2">🇮🇳</span>{" "}
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center p-2 bg-emerald-50 rounded-lg">
+                      <span className="text-xs font-medium text-gray-700 flex items-center">
+                        <span className="text-sm mr-1.5">🇮🇳</span>
                         India
                       </span>
-                      <span className="text-xs sm:text-sm font-bold text-emerald-700 bg-white px-2 sm:px-3 py-1 rounded-lg shadow-sm">
+                      <span className="text-xs font-bold text-emerald-700 bg-white px-2 py-0.5 rounded shadow-sm">
                         {spec.averageSalary.india}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center p-2 sm:p-3 bg-blue-50 rounded-xl">
-                      <span className="text-xs sm:text-sm font-semibold text-gray-700 flex items-center">
-                        <span className="text-base sm:text-lg mr-2">🇺🇸</span>{" "}
+                    <div className="flex justify-between items-center p-2 bg-blue-50 rounded-lg">
+                      <span className="text-xs font-medium text-gray-700 flex items-center">
+                        <span className="text-sm mr-1.5">🇺🇸</span>
                         USA
                       </span>
-                      <span className="text-xs sm:text-sm font-bold text-blue-700 bg-white px-2 sm:px-3 py-1 rounded-lg shadow-sm">
+                      <span className="text-xs font-bold text-blue-700 bg-white px-2 py-0.5 rounded shadow-sm">
                         {spec.averageSalary.us}
                       </span>
                     </div>
@@ -444,7 +439,7 @@ export default function RoadmapDisplay() {
         @keyframes fade-in-up {
           from {
             opacity: 0;
-            transform: translate3d(0, 40px, 0);
+            transform: translate3d(0, 20px, 0);
           }
           to {
             opacity: 1;
@@ -452,47 +447,8 @@ export default function RoadmapDisplay() {
           }
         }
 
-        @keyframes blob {
-          0% {
-            transform: translate(0px, 0px) scale(1);
-          }
-          33% {
-            transform: translate(30px, -50px) scale(1.1);
-          }
-          66% {
-            transform: translate(-20px, 20px) scale(0.9);
-          }
-          100% {
-            transform: translate(0px, 0px) scale(1);
-          }
-        }
-
         .animate-fade-in-up {
-          animation: fade-in-up 0.8s ease-out;
-        }
-
-        .animation-delay-200 {
-          animation-delay: 200ms;
-        }
-
-        .animation-delay-400 {
-          animation-delay: 400ms;
-        }
-
-        .animation-delay-600 {
-          animation-delay: 600ms;
-        }
-
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-
-        .animation-delay-4000 {
-          animation-delay: 4s;
+          animation: fade-in-up 0.6s ease-out;
         }
       `}</style>
     </div>
