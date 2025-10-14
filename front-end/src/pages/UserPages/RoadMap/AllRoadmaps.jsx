@@ -253,7 +253,7 @@ export default function AllRoadmaps() {
                 <option value="academic-study">Academic/Theoretical</option>
               </select>
             </div>
-
+                
             <div className="space-y-2">
               <select
                 value={filters.sortBy}
