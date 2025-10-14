@@ -155,7 +155,7 @@ const UserSideBar = () => {
               <button
                 key={item.path}
                 onClick={() => navigate(item.path)}
-                className={` cursor-pointer w-full group flex items-center space-x-3 px-3 py-3 rounded-lg transition-all duration-300 text-left ${
+                className={`cursor-pointer w-full group flex items-center space-x-3 px-3 py-3 rounded-lg transition-all duration-300 text-left ${
                   isActive
                     ? 'bg-gradient-to-r from-green-500 to-[#8FE877] text-white shadow-lg shadow-green-500/25 transform scale-[1.02]'
                     : 'text-gray-700 hover:text-green-500 hover:bg-green-500/5 hover:translate-x-1'
@@ -178,7 +178,7 @@ const UserSideBar = () => {
                 </div>
                 <div className="flex-1">
                   <div
-                    className={`font-medium text-sm ${
+                    className={`font-medium text-xs ${
                       isActive ? 'text-white' : 'text-gray-900'
                     }`}
                   >
@@ -217,21 +217,21 @@ const UserSideBar = () => {
             </div>
           ) : stats ? (
             <div className="space-y-2">
-              <div className="flex justify-between items-center text-sm">
+              <div className="flex justify-between items-center text-xs">
                 <span className="text-gray-600 flex items-center gap-1">
                   <Clock className="w-3 h-3" />
                   Active Goals
                 </span>
                 <span className="font-semibold text-green-500">{activeGoals}</span>
               </div>
-              <div className="flex justify-between items-center text-sm">
+              <div className="flex justify-between items-center text-xs">
                 <span className="text-gray-600 flex items-center gap-1">
                   <CheckCircle className="w-3 h-3" />
                   Completed
                 </span>
                 <span className="font-semibold text-gray-900">{stats.completedGoals}</span>
               </div>
-              <div className="flex justify-between items-center text-sm">
+              <div className="flex justify-between items-center text-xs">
                 <span className="text-gray-600 flex items-center gap-1">
                   <TrendingUp className="w-3 h-3" />
                   Progress
