@@ -9,7 +9,7 @@ configDotenv();
 const model = new ChatGoogleGenerativeAI({
   model: "gemini-2.0-flash-exp",
   apiKey: process.env.GEMINI_API,
-  maxOutputTokens: 4096,
+  maxOutputTokens: 8000,
 });
 
 // Fixed structured output schema with required fields
