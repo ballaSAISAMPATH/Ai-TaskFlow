@@ -183,7 +183,7 @@ export default function AllRoadmaps() {
             },
             { 
               label: 'Learning Hours', 
-              value: Math.round(roadmaps.length * 45.5), 
+              value: roadmaps.reduce((sum, rm) => sum + (rm.totalConcepts || 0), 0) * 1.5,
               icon: (
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -253,7 +253,7 @@ export default function AllRoadmaps() {
                 <option value="academic-study">Academic/Theoretical</option>
               </select>
             </div>
-            
+
             <div className="space-y-2">
               <select
                 value={filters.sortBy}
@@ -353,7 +353,7 @@ export default function AllRoadmaps() {
         {/* Roadmaps Display */}
         {filteredAndSortedRoadmaps.length > 0 && (
           <div className={viewMode === 'grid' ? 
-            "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4" : 
+            "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4" : 
             "space-y-3"
           }>
             {filteredAndSortedRoadmaps.map((roadmap, index) => (
