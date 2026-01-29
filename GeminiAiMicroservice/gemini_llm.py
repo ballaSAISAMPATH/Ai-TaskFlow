@@ -1,16 +1,23 @@
 from typing import Optional, List
-from langchain.llms.base import LLM
+from langchain_core.language_models.llms import LLM
 import requests
 
 class GeminiLLM(LLM):
     api_key: str
-    model: str = "gemini-2.0-flash-exp"
+    model: str = "gemini-2.0-flash"
     temperature: float = 0.8
     max_tokens: int = 8000
 
     @property
     def _llm_type(self) -> str:
         return "gemini"
+    @property
+    def _identifying_params(self):
+        return {
+            "model": self.model,
+            "temperature": self.temperature,
+            "max_tokens": self.max_tokens,
+        }
 
     def _call(
         self,
